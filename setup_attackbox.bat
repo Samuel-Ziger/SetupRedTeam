@@ -2,11 +2,11 @@
 setlocal
 
 :: Caminho do script PowerShell
-set SCRIPT=%~dp0setup_attackbox.ps1
+set SCRIPT=%~dp0setup-attackbox.ps1
 
 :: Verifica se o script existe
 if not exist "%SCRIPT%" (
-    echo ERRO: O arquivo setup_attackbox.ps1 nao foi encontrado no mesmo diretorio.
+    echo ERRO: O arquivo setup-attackbox.ps1 nao foi encontrado no mesmo diretorio.
     pause
     exit /b 1
 )

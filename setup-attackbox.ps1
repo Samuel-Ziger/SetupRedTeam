@@ -52,7 +52,7 @@ Set-ExecutionPolicy Unrestricted -Force
 # ---------------------------
 #   INSTALAR WSL2 + KALI
 # ---------------------------
-Write-Host "`n[+] Instalar WSL2 + Kali Linux..." -ForegroundColor Cyan
+Write-Host "`n[+] Instalando WSL2 + Kali Linux..." -ForegroundColor Cyan
 wsl --install -d kali-linux
 
 # ---------------------------
@@ -62,7 +62,7 @@ Write-Host "`n[+] Instalando Chocolatey..." -ForegroundColor Cyan
 
 Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = 3072
-iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+iex ((New-Object System.Net.WebClient).DownloadString("https://community.chocolatey.org/install.ps1"))
 
 # ---------------------------
 #   INSTALAR FERRAMENTAS
@@ -86,28 +86,23 @@ gem install evil-winrm
 # ---------------------------
 
 Write-Host "`n[+] Baixando Bloodhound..." -ForegroundColor Cyan
-Invoke-WebRequest -Uri "https://github.com/BloodHoundAD/BloodHound/releases/latest/download/BloodHound-win-x64.zip" `
-    -OutFile "C:\Tools\AD\Bloodhound\Bloodhound.zip"
+Invoke-WebRequest -Uri "https://github.com/BloodHoundAD/BloodHound/releases/latest/download/BloodHound-win-x64.zip" -OutFile "C:\Tools\AD\Bloodhound\Bloodhound.zip"
 
 Write-Host "`n[+] Baixando SharpHound..." -ForegroundColor Cyan
-Invoke-WebRequest -Uri "https://github.com/BloodHoundAD/SharpHound/releases/latest/download/SharpHound.zip" `
-    -OutFile "C:\Tools\AD\SharpHound\SharpHound.zip"
+Invoke-WebRequest -Uri "https://github.com/BloodHoundAD/SharpHound/releases/latest/download/SharpHound.zip" -OutFile "C:\Tools\AD\SharpHound\SharpHound.zip"
 
 # ---------------------------
 #   BAIXAR FERRAMENTAS POST EXPLOIT
 # ---------------------------
 
 Write-Host "`n[+] Baixando Rubeus..." -ForegroundColor Cyan
-Invoke-WebRequest -Uri "https://github.com/GhostPack/Rubeus/releases/latest/download/Rubeus.zip" `
-    -OutFile "C:\Tools\PostEx\Rubeus\Rubeus.zip"
+Invoke-WebRequest -Uri "https://github.com/GhostPack/Rubeus/releases/latest/download/Rubeus.zip" -OutFile "C:\Tools\PostEx\Rubeus\Rubeus.zip"
 
 Write-Host "`n[+] Baixando Seatbelt..." -ForegroundColor Cyan
-Invoke-WebRequest -Uri "https://github.com/GhostPack/Seatbelt/releases/latest/download/Seatbelt.zip" `
-    -OutFile "C:\Tools\PostEx\Seatbelt\Seatbelt.zip"
+Invoke-WebRequest -Uri "https://github.com/GhostPack/Seatbelt/releases/latest/download/Seatbelt.zip" -OutFile "C:\Tools\PostEx\Seatbelt\Seatbelt.zip"
 
 Write-Host "`n[+] Baixando WinPEAS..." -ForegroundColor Cyan
-Invoke-WebRequest -Uri "https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEAS.zip" `
-    -OutFile "C:\Tools\PostEx\WinPEAS\WinPEAS.zip"
+Invoke-WebRequest -Uri "https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEAS.zip" -OutFile "C:\Tools\PostEx\WinPEAS\WinPEAS.zip"
 
 # ---------------------------
 #   DESATIVAR WINDOWS DEFENDER
@@ -120,7 +115,7 @@ Add-MpPreference -ExclusionPath "C:\Users\$env:USERNAME\AppData\Local\Temp"
 
 Write-Host "[+] Exclusões adicionadas!" -ForegroundColor Green
 
-Write-Host "`n[+] Desativando proteções do Defender (tempo real, comportamento)..." -ForegroundColor Cyan
+Write-Host "`n[+] Desativando proteções do Defender..." -ForegroundColor Cyan
 
 Set-MpPreference -DisableRealtimeMonitoring $true
 Set-MpPreference -DisableIOAVProtection $true
