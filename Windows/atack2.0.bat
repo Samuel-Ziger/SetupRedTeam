@@ -1,11 +1,25 @@
 @echo off
-title AttackBox Ultimate Setup (NOTEBOOK 2)
+title Windows Attack Box - Notebook 2 Setup (AD/Lateral Movement/Post-Ex)
 chcp 65001 >nul
 
 REM ============================================================
+REM WINDOWS ATTACK BOX - NOTEBOOK 2
+REM
+REM Função: Máquina Windows para ataques/pós-exploração realistas
+REM Foco: Active Directory, Lateral Movement, Insider Attacks
+REM 
+REM Ferramentas instaladas:
+REM  - BloodHound + SharpHound (análise AD)
+REM  - Evil-WinRM (lateral movement)
+REM  - Rubeus, Seatbelt, WinPEAS (post-ex)
+REM  - Donut, ScareCrow, Nimcrypt2 (payload evasion)
+REM  - CrackMapExec via WSL2 + Kali
+REM  - Impacket Suite
+REM  - Office/HTA/MSI payload tools
+REM ============================================================
+
+REM ============================================================
 REM VERIFICA SE O SCRIPT ESTÁ SENDO EXECUTADO COMO ADMINISTRADOR
-REM - 'net session' só funciona com privilégios elevados
-REM - Se não estiver como admin, o script se reinicia com RunAs
 REM ============================================================
 net session >nul 2>&1
 if %errorlevel% neq 0 (
@@ -16,9 +30,14 @@ if %errorlevel% neq 0 (
 
 cls
 echo =====================================================
-echo        ATTACKBOX NOTEBOOK 2 - INSTALLER FINAL
+echo   WINDOWS ATTACK BOX - NOTEBOOK 2 (i5-3210M/12GB)
+echo   Configuracao para AD/Lateral Movement/Post-Ex
 echo =====================================================
 echo.
+echo [i] Funcao: Ataques Windows Realistas
+echo [i] Foco: Active Directory + Insider Attacks
+echo.
+pause
 
 REM ============================================================
 REM LIBERAR POWERSHELL PARA EXECUTAR SCRIPTS NO PROCESSO ATUAL
@@ -61,48 +80,70 @@ powershell -Command "Start-Service sshd"
 powershell -Command "Set-Service sshd -StartupType Automatic"
 
 REM ============================================================
-REM CRIAR ESTRUTURA DE DIRETÓRIOS BÁSICA
-REM - O "2>nul" evita erro caso a pasta já exista
+REM CRIAR ESTRUTURA DE DIRETÓRIOS (PROFISSIONAL)
+REM - Organização baseada em categorias de ataque
+REM - Estrutura otimizada para engagements AD
 REM ============================================================
-echo [+] Criando estrutura...
+echo [+] Criando estrutura profissional...
 
-set ROOT=C:\AttackBox
+set ROOT=C:\Tools
 
 mkdir %ROOT% 2>nul
 
-mkdir %ROOT%\Bloodhound
-mkdir %ROOT%\SharpHound
+REM === Active Directory ===
+mkdir %ROOT%\AD 2>nul
+mkdir %ROOT%\AD\Bloodhound 2>nul
+mkdir %ROOT%\AD\SharpHound 2>nul
+mkdir %ROOT%\AD\PowerView 2>nul
+mkdir %ROOT%\AD\PowerUp 2>nul
+mkdir %ROOT%\AD\PowerSharpPack 2>nul
+mkdir %ROOT%\AD\ADRecon 2>nul
 
-mkdir %ROOT%\AD-Tools
-mkdir %ROOT%\AD-Tools\Powerview
-mkdir %ROOT%\AD-Tools\PowerUp
-mkdir %ROOT%\AD-Tools\PowerSharpPack
-mkdir %ROOT%\AD-Tools\AD-Recon
+REM === Post-Exploitation ===
+mkdir %ROOT%\PostEx 2>nul
+mkdir %ROOT%\PostEx\Rubeus 2>nul
+mkdir %ROOT%\PostEx\Seatbelt 2>nul
+mkdir %ROOT%\PostEx\SharpUp 2>nul
+mkdir %ROOT%\PostEx\WinPEAS 2>nul
+mkdir %ROOT%\PostEx\SharpMapExec 2>nul
+mkdir %ROOT%\PostEx\Certify 2>nul
+mkdir %ROOT%\PostEx\SharpDPAPI 2>nul
 
-mkdir %ROOT%\PostEx
-mkdir %ROOT%\PostEx\Rubeus
-mkdir %ROOT%\PostEx\Seatbelt
-mkdir %ROOT%\PostEx\SharpUp
-mkdir %ROOT%\PostEx\WinPEAS
-mkdir %ROOT%\PostEx\SharpMapExec
-mkdir %ROOT%\PostEx\PrinterNightmare
+REM === Payloads & Evasion ===
+mkdir %ROOT%\Payloads 2>nul
+mkdir %ROOT%\Payloads\Office 2>nul
+mkdir %ROOT%\Payloads\HTA 2>nul
+mkdir %ROOT%\Payloads\MSI 2>nul
+mkdir %ROOT%\Payloads\LNK 2>nul
+mkdir %ROOT%\Payloads\VBS 2>nul
+mkdir %ROOT%\Payloads\Donut 2>nul
+mkdir %ROOT%\Payloads\ScareCrow 2>nul
+mkdir %ROOT%\Payloads\Nimcrypt2 2>nul
 
-mkdir %ROOT%\Payloads
-mkdir %ROOT%\Payloads\Office
-mkdir %ROOT%\Payloads\HTA
-mkdir %ROOT%\Payloads\MSI
-mkdir %ROOT%\Payloads\EXE
+REM === Enumerations ===
+mkdir %ROOT%\Enum 2>nul
+mkdir %ROOT%\Enum\SMB 2>nul
+mkdir %ROOT%\Enum\LDAP 2>nul
+mkdir %ROOT%\Enum\HTTP 2>nul
+mkdir %ROOT%\Enum\Kerberos 2>nul
 
-mkdir %ROOT%\Enum
-mkdir %ROOT%\Enum\smb
-mkdir %ROOT%\Enum\http
-mkdir %ROOT%\Enum\ldap
+REM === Ferramentas Gerais ===
+mkdir %ROOT%\Tools 2>nul
+mkdir %ROOT%\Tools\Sysinternals 2>nul
+mkdir %ROOT%\Tools\Mimikatz 2>nul
+mkdir %ROOT%\Tools\Impacket 2>nul
+mkdir %ROOT%\Tools\EvilWinRM 2>nul
+mkdir %ROOT%\Tools\Responder 2>nul
 
-mkdir %ROOT%\Tools
-mkdir %ROOT%\Tools\sysinternals
-mkdir %ROOT%\Tools\mimikatz
-mkdir %ROOT%\Tools\impacket
-mkdir %ROOT%\Tools\evilwinrm
+REM === Outputs de Engagements ===
+mkdir %ROOT%\Engagements 2>nul
+mkdir %ROOT%\Loot 2>nul
+mkdir %ROOT%\Loot\Credentials 2>nul
+mkdir %ROOT%\Loot\Hashes 2>nul
+mkdir %ROOT%\Loot\Tickets 2>nul
+
+echo [OK] Estrutura criada em C:\Tools\
+echo.
 
 REM ============================================================
 REM AVISO SOBRE GIT CLONE / EXPAND-ARCHIVE
@@ -111,29 +152,40 @@ REM - 'Expand-Archive' falha se zip estiver corrompido
 REM - Execuções repetidas podem abortar o script
 REM ============================================================
 
-echo [+] Baixando ferramentas AD / Post-Ex / Payloads...
+echo [+] Baixando ferramentas AD (BloodHound, SharpHound, PowerView)...
 
-REM BLOODHOUND GUI
-if not exist "%ROOT%\Bloodhound\Bloodhound.zip" (
-    powershell -Command "iwr https://github.com/BloodHoundAD/BloodHound/releases/latest/download/BloodHound-win32-x64.zip -OutFile %ROOT%\Bloodhound\Bloodhound.zip"
-    powershell -Command "Expand-Archive %ROOT%\Bloodhound\Bloodhound.zip -DestinationPath %ROOT%\Bloodhound -Force"
+REM BLOODHOUND GUI (essencial para analise AD)
+if not exist "%ROOT%\AD\Bloodhound\BloodHound.exe" (
+    echo [DOWNLOAD] BloodHound GUI...
+    powershell -Command "iwr https://github.com/BloodHoundAD/BloodHound/releases/latest/download/BloodHound-win32-x64.zip -OutFile %ROOT%\AD\Bloodhound\Bloodhound.zip"
+    powershell -Command "Expand-Archive %ROOT%\AD\Bloodhound\Bloodhound.zip -DestinationPath %ROOT%\AD\Bloodhound -Force"
 ) else (
-    echo [INFO] Bloodhound ja baixado, pulando...
+    echo [OK] BloodHound ja instalado.
 )
 
-REM SHARPHOUND
-if not exist "%ROOT%\SharpHound\SharpHound.zip" (
-    powershell -Command "iwr https://github.com/BloodHoundAD/SharpHound/releases/latest/download/SharpHound.zip -OutFile %ROOT%\SharpHound\SharpHound.zip"
-    powershell -Command "Expand-Archive %ROOT%\SharpHound\SharpHound.zip -DestinationPath %ROOT%\SharpHound -Force"
+REM SHARPHOUND (coletor de dados AD)
+if not exist "%ROOT%\AD\SharpHound\SharpHound.exe" (
+    echo [DOWNLOAD] SharpHound...
+    powershell -Command "iwr https://github.com/BloodHoundAD/SharpHound/releases/latest/download/SharpHound-v2.5.7.zip -OutFile %ROOT%\AD\SharpHound\SharpHound.zip"
+    powershell -Command "Expand-Archive %ROOT%\AD\SharpHound\SharpHound.zip -DestinationPath %ROOT%\AD\SharpHound -Force"
 ) else (
-    echo [INFO] SharpHound ja baixado, pulando...
+    echo [OK] SharpHound ja instalado.
 )
 
-REM POWERVIEW
-if not exist "%ROOT%\AD-Tools\Powerview\.git" (
-    git clone https://github.com/PowerShellEmpire/PowerTools "%ROOT%\AD-Tools\Powerview"
+REM POWERVIEW (PowerShell AD enum)
+if not exist "%ROOT%\AD\PowerView\PowerView.ps1" (
+    echo [DOWNLOAD] PowerView...
+    powershell -Command "iwr https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1 -OutFile %ROOT%\AD\PowerView\PowerView.ps1"
 ) else (
-    echo [INFO] PowerView ja clonado, pulando...
+    echo [OK] PowerView ja instalado.
+)
+
+REM POWERUP (privilege escalation)
+if not exist "%ROOT%\AD\PowerUp\PowerUp.ps1" (
+    echo [DOWNLOAD] PowerUp...
+    powershell -Command "iwr https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1 -OutFile %ROOT%\AD\PowerUp\PowerUp.ps1"
+) else (
+    echo [OK] PowerUp ja instalado.
 )
 
 REM RUBEUS
@@ -177,33 +229,53 @@ if not exist "%ROOT%\PostEx\WinPEAS\winpeas.zip" (
 )
 
 REM DONUT
-if not exist "%ROOT%\Payloads\donut.zip" (
-    powershell -Command "iwr https://github.com/TheWover/donut/releases/latest/download/donut.zip -OutFile %ROOT%\Payloads\donut.zip"
-    powershell -Command "Expand-Archive %ROOT%\Payloads\donut.zip -DestinationPath %ROOT%\Payloads -Force"
+echo [+] Baixando ferramentas de Payload/Evasion (Office, HTA, MSI)...
+
+REM DONUT (exe -> shellcode)
+if not exist "%ROOT%\Payloads\Donut\donut.exe" (
+    echo [DOWNLOAD] Donut...
+    powershell -Command "iwr https://github.com/TheWover/donut/releases/latest/download/donut_v1.0_win64.zip -OutFile %ROOT%\Payloads\Donut\donut.zip"
+    powershell -Command "Expand-Archive %ROOT%\Payloads\Donut\donut.zip -DestinationPath %ROOT%\Payloads\Donut -Force"
 ) else (
-    echo [INFO] Donut ja baixado, pulando...
+    echo [OK] Donut ja instalado.
 )
 
-REM SCARECROW
+REM SCARECROW (payload obfuscation + Office/HTA)
 if not exist "%ROOT%\Payloads\ScareCrow\.git" (
+    echo [DOWNLOAD] ScareCrow (AV evasion)...
     git clone https://github.com/optiv/ScareCrow "%ROOT%\Payloads\ScareCrow"
 ) else (
-    echo [INFO] ScareCrow ja clonado, pulando...
+    echo [OK] ScareCrow ja clonado.
 )
 
-REM NIMCRYPT2
+REM NIMCRYPT2 (.NET crypter)
 if not exist "%ROOT%\Payloads\Nimcrypt2\.git" (
+    echo [DOWNLOAD] Nimcrypt2...
     git clone https://github.com/icyguider/Nimcrypt2 "%ROOT%\Payloads\Nimcrypt2"
 ) else (
-    echo [INFO] Nimcrypt2 ja clonado, pulando...
+    echo [OK] Nimcrypt2 ja clonado.
 )
 
-REM IMPACKET
-if not exist "%ROOT%\Tools\impacket\.git" (
-    git clone https://github.com/fortra/impacket "%ROOT%\Tools\impacket"
+echo.
+
+REM IMPACKET (SMB/LDAP/Kerberos tools)
+if not exist "%ROOT%\Tools\Impacket\.git" (
+    echo [DOWNLOAD] Impacket Suite...
+    git clone https://github.com/fortra/impacket "%ROOT%\Tools\Impacket"
+    echo [INFO] Para instalar: cd %ROOT%\Tools\Impacket; pip install .
 ) else (
-    echo [INFO] Impacket ja clonado, pulando...
+    echo [OK] Impacket ja clonado.
 )
+
+REM RESPONDER (LLMNR/NBT-NS poisoning)
+if not exist "%ROOT%\Tools\Responder\.git" (
+    echo [DOWNLOAD] Responder (LLMNR poisoning)...
+    git clone https://github.com/lgandx/Responder "%ROOT%\Tools\Responder"
+) else (
+    echo [OK] Responder ja clonado.
+)
+
+echo.
 
 REM EVIL-WINRM
 gem install evil-winrm

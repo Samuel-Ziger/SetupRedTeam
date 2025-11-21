@@ -33,12 +33,16 @@ Scripts-Bat/
 │       └── zphisher/        # Ferramenta de phishing educacional
 │
 └── Windows/                 # Scripts para Windows
+    ├── atack2.0-optimized.bat  # Setup Notebook 2 (AD/Lateral Movement) ⭐ NOVO!
     ├── setup-attackbox.ps1  # Setup PowerShell (RECOMENDADO)
     ├── setup_attackbox.bat  # Launcher do setup
     ├── atack2.0.bat         # Setup completo com WSL2
     ├── bloqueioAPP.bat      # Bloqueio de aplicativos (ambientes controlados)
+    ├── rollback.bat         # Reverter configurações ⭐ NOVO!
     ├── verificao.bat        # Verificação pós-instalação
-    └── setup-debug.bat      # Modo debug para troubleshooting
+    ├── setup-debug.bat      # Modo debug para troubleshooting
+    ├── README.md            # Documentação Windows
+    └── NOTEBOOK2-GUIDE.md   # Guia específico Notebook 2 (i5-3210M) ⭐ NOVO!
 ```
 
 ---
@@ -67,7 +71,29 @@ sudo ./Kali/setup-kali.sh
 
 ### **Windows**
 
-#### **Opção 1: Setup Completo (Recomendado)**
+#### **Opção 1: Notebook 2 - Attack Box Especializada (i5-3210M/12GB)** ⭐
+
+**Focado em Active Directory, Lateral Movement e Post-Exploitation**
+
+```powershell
+# Executar como Administrador
+.\Windows\atack2.0-optimized.bat
+```
+
+**O que será instalado:**
+- BloodHound + SharpHound (análise AD)
+- Evil-WinRM (lateral movement)
+- Rubeus, Certify (Kerberos attacks)
+- Seatbelt, WinPEAS (enumeration)
+- Donut, ScareCrow, Nimcrypt2 (payload evasion)
+- Impacket + Responder
+- WSL2 + Kali com CrackMapExec
+
+📖 **Guia completo**: [Windows/NOTEBOOK2-GUIDE.md](./Windows/NOTEBOOK2-GUIDE.md)
+
+---
+
+#### **Opção 2: Setup Completo Genérico**
 
 ```powershell
 # Executar como Administrador

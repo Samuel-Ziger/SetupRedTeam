@@ -10,11 +10,14 @@ Conjunto de scripts para configuração automatizada de ambiente Windows para Pe
 
 ### **Scripts Principais**
 
-| Script | Descrição | Uso |
-|--------|-----------|-----|
-| `setup-attackbox.ps1` | Setup PowerShell completo **(RECOMENDADO)** | Via `setup_attackbox.bat` |
-| `setup_attackbox.bat` | Launcher para o script PowerShell | Clique duplo ou execute como admin |
-| `atack2.0.bat` | Setup completo com WSL2 + Kali | Execute como admin |
+| Script | Descrição | Hardware Alvo | Uso |
+|--------|-----------|---------------|-----|
+| `atack2.0-optimized.bat` | **Setup Notebook 2** - Attack Box AD/Lateral Movement **(RECOMENDADO)** | i5-3210M / 12GB | Execute como admin |
+| `setup-attackbox.ps1` | Setup PowerShell genérico | Qualquer PC | Via `setup_attackbox.bat` |
+| `setup_attackbox.bat` | Launcher para o script PowerShell | Qualquer PC | Clique duplo |
+| `atack2.0.bat` | Setup completo com WSL2 + Kali (versão original) | Qualquer PC | Execute como admin |
+
+**📖 Guia específico do Notebook 2**: Veja [NOTEBOOK2-GUIDE.md](./NOTEBOOK2-GUIDE.md)
 
 ### **Scripts Auxiliares**
 
