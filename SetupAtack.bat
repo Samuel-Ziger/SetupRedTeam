@@ -1,109 +1,102 @@
 @echo off
-title AttackBox Windows - Configuração Completa
+title AttackBox Safe Setup - Notebook 2
 color 0a
 
-echo ================================================
-echo   CONFIGURAÇÃO DO NOTEBOOK 2 – ARMA WINDOWS
-echo ================================================
+:: -------------------------
+:: Verifica elevação (Admin)
+:: -------------------------
+openfiles >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [!] Este script deve ser executado como Administrador.
+    echo [!] Clique com o botao direito -> Executar como administrador.
+    pause
+    exit /b 1
+)
+
+echo ====================================================
+echo   AttackBox - Preparacao Segura (WSL2 + Tooling)
+echo ====================================================
 echo.
 
-:: --- Criar diretórios principais ---
-echo [1/12] Criando estrutura de pastas...
-mkdir C:\AttackBox
-mkdir C:\AttackBox\Tools
-mkdir C:\AttackBox\Bloodhound
-mkdir C:\AttackBox\Payloads
-mkdir C:\AttackBox\PostEx
-mkdir C:\AttackBox\WordPayloads
-mkdir C:\AttackBox\WSL
+:: -------------------------
+:: 1) Criar estrutura de pastas
+:: -------------------------
+echo [1/6] Criando pastas em C:\AttackBox...
+mkdir "C:\AttackBox" 2>nul
+mkdir "C:\AttackBox\Tools" 2>nul
+mkdir "C:\AttackBox\Payloads" 2>nul
+mkdir "C:\AttackBox\PostEx" 2>nul
+mkdir "C:\AttackBox\WSL" 2>nul
+mkdir "C:\AttackBox\Downloads" 2>nul
 echo OK.
 echo.
 
+:: -------------------------
+:: 2) Habilitar WSL e VirtualMachinePlatform
+:: -------------------------
+echo [2/6] Habilitando WSL2 e VirtualMachinePlatform (pode pedir reinicio)...
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart >nul 2>&1
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart >nul 2>&1
+if %errorlevel% equ 0 (
+    echo Recursos WSL habilitados (será necessario reiniciar apos instalacao do Kali).
+) else (
+    echo [!] Erro ao habilitar recursos WSL (verifique privileges). Continuando...
+)
+echo.
 
-:: --- Ativar recursos do Windows necessários ---
-echo [2/12] Ativando WSL2 e VirtualMachinePlatform...
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+:: -------------------------
+:: 3) Instalar Chocolatey (se nao existir)
+:: -------------------------
+echo [3/6] Instalando Chocolatey (se necessario)...
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')) } else {Write-Output 'choco ja instalado'}"
 echo OK.
 echo.
 
-:: --- Instalar WSL2 + Kali ---
-echo [3/12] Instalando WSL2 com Kali Linux...
-wsl --install -d kali-linux
-echo OK. Quando acabar, abra o Kali pelo menos 1 vez para finalizar.
-echo.
-
-
-:: --- Instalar .NET para rodar ferramentas C#/.NET ---
-echo [4/12] Instalando .NET Runtime 6...
-powershell -Command "Invoke-WebRequest https://download.visualstudio.microsoft.com/download/pr/493a2a52-baaa-4e8f-b1b2-f809f3bbcc22/2f4e8e15870d5840b3c2b8b016c04a2a/dotnet-runtime-6.0.36-win-x64.exe -OutFile C:\AttackBox\dotnet.exe"
-C:\AttackBox\dotnet.exe /quiet /norestart
+:: -------------------------
+:: 4) Instalar pacotes basicos via choco
+:: -------------------------
+echo [4/6] Instalando pacotes basicos: git, python, dotnet-runtime, sysinternals, 7zip...
+choco feature enable -n allowGlobalConfirmation >nul 2>&1
+choco install -y git python dotnet-runtime --no-progress
+choco install -y sysinternals 7zip --no-progress
 echo OK.
 echo.
 
+:: -------------------------
+:: 5) Instalar WSL2 (Kali) via wsl.exe (opcao 1 - sem GUI)
+:: -------------------------
+echo [5/6] Instalando Kali (WSL2) - aguarde. Pode pedir credenciais ao abrir pela primeira vez.
+wsl --install -d kali-linux >nul 2>&1
+if %errorlevel% equ 0 (
+    echo Kali solicitado para instalacao via WSL2.
+    echo Obs: Abra o aplicativo 'Kali' no menu iniciar apos reboot para completar a criacao do usuario.
+) else (
+    echo [!] Falha automatica ao invocar wsl --install. Tente instalar manualmente via: wsl --install -d kali-linux
+)
+echo.
 
-:: --- Baixar SharpHound ---
-echo [5/12] Baixando SharpHound...
-powershell -Command "Invoke-WebRequest https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Collectors/SharpHound.ps1 -OutFile C:\AttackBox\Bloodhound\SharpHound.ps1"
+:: -------------------------
+:: 6) Defender: adicionar exclusao apenas para C:\AttackBox (NAO desativa Defender)
+:: -------------------------
+echo [6/6] Protegendo rotina: adicionando exclusao no Windows Defender para C:\AttackBox...
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "Try { Add-MpPreference -ExclusionPath 'C:\AttackBox' ; Write-Output 'Exclusao adicionada.' } Catch { Write-Output 'Falha ao adicionar exclusao no Defender: ' + $_.Exception.Message }"
 echo OK.
 echo.
 
-:: --- Baixar BloodHound GUI ---
-echo [6/12] Baixando BloodHound GUI...
-powershell -Command "Invoke-WebRequest https://github.com/BloodHoundAD/BloodHound/releases/download/v5.0.0/BloodHound-win32-x64.zip -OutFile C:\AttackBox\Bloodhound\bloodhound.zip"
-powershell -Command "Expand-Archive C:\AttackBox\Bloodhound\bloodhound.zip C:\AttackBox\Bloodhound\BH"
-echo OK.
-echo.
+:: -------------------------
+:: Final: instrucoes e checklist
+:: -------------------------
+echo ====================================================
+echo Finalizado. Confira os proximos passos (LEIA):
+echo 1) Reinicie o sistema para finalizar a habilitacao do WSL/VirtualMachinePlatform.
+echo 2) Abra o 'Kali' pelo menu iniciar e complete a criacao de usuario no primeiro boot.
+echo 3) Dentro do WSL (Kali) rode: sudo apt update && sudo apt upgrade -y
+echo 4) Instale ferramentas dentro do WSL APENAS em rede isolada / laboratorio.
+echo 5) Crie uma snapshot/imagem do sistema (backup) antes de testar payloads reais.
+echo 6) Configure VLAN isolada / switch separado para o lab. NUNCA conecte essa maquina a redes de producao sem autorizacao.
+echo ====================================================
 
-:: --- Baixar Powerview ---
-echo [7/12] Baixando Powerview.ps1...
-powershell -Command "Invoke-WebRequest https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1 -OutFile C:\AttackBox\PostEx\PowerView.ps1"
-echo OK.
-echo.
-
-:: --- Baixar EvilWinRM ---
-echo [8/12] Baixando EvilWinRM...
-powershell -Command "Invoke-WebRequest https://github.com/Hackplayers/evil-winrm/archive/refs/heads/master.zip -OutFile C:\AttackBox\Tools\evilwinrm.zip"
-powershell -Command "Expand-Archive C:\AttackBox\Tools\evilwinrm.zip C:\AttackBox\Tools\EvilWinRM"
-echo OK.
-echo.
-
-:: --- Payloads Office / HTA / MSI templates ---
-echo [9/12] Baixando templates de payloads Office/HTA/MSI...
-powershell -Command "Invoke-WebRequest https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1218.005/src/hta_payload.hta -OutFile C:\AttackBox\Payloads\template.hta"
-powershell -Command "Invoke-WebRequest https://raw.githubusercontent.com/benrpearson/security-macros/master/payload.docm -OutFile C:\AttackBox\WordPayloads\payload.docm"
-echo OK.
-echo.
-
-:: --- Ferramentas de pós exploração .NET ---
-echo [10/12] Baixando executáveis úteis (.NET)...
-powershell -Command "Invoke-WebRequest https://github.com/Flangvik/SharpCollection/archive/refs/heads/master.zip -OutFile C:\AttackBox\PostEx\SharpCollection.zip"
-powershell -Command "Expand-Archive C:\AttackBox\PostEx\SharpCollection.zip C:\AttackBox\PostEx\SharpCollection"
-echo OK.
-echo.
-
-:: --- Configurações opcionais para não interferência ---
-echo [11/12] Ajustando Defender (opcional)...
-echo REM :: Defender OFF - Se quiser habilitar, remova o REM
-REM powershell -Command "Set-MpPreference -DisableRealtimeMonitoring $true"
-echo OK.
-echo.
-
-:: --- Configurar PATH ---
-echo [12/12] Adicionando ferramentas ao PATH...
-setx PATH "%PATH%;C:\AttackBox\Tools;C:\AttackBox\PostEx;C:\AttackBox\Bloodhound\BH"
-echo OK.
-echo.
-
-echo ================================================
-echo     AMBIENTE DE ATAQUE WINDOWS PRONTO
-echo ================================================
-echo - BloodHound instalado
-echo - SharpHound instalado
-echo - Powerview instalado
-echo - EvilWinRM instalado
-echo - Payloads Office/HTA/MSI prontos
-echo - Estrutura completa configurada
-echo.
-echo Reinicie o PC para ativar o WSL2 corretamente.
 pause
+exit /b 0
