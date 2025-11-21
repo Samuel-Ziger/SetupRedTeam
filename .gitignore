@@ -1,0 +1,67 @@
+# Arquivos temporários do Windows
+*.tmp
+*.log
+*.bak
+*.swp
+*~
+
+# Arquivos de sistema
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Outputs de verificação
+defender.tmp
+wsl.tmp
+
+# Diretórios de ferramentas baixadas (muito grandes para git)
+**/Tools/
+**/AttackBox/
+
+# Arquivos compilados
+*.exe
+*.dll
+*.zip
+*.tar.gz
+*.rar
+
+# Credenciais e configurações sensíveis
+*.credentials
+*.config
+*password*
+*secret*
+
+# Node modules (caso use ferramentas JS)
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+
+# Logs
+*.log
+logs/
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ferramentas específicas (evitar subir binários)
+Kali/Ferramentas/zphisher/*.dat
+Kali/Ferramentas/zphisher/.sites/
+
+# Output de scripts
+output/
+results/
+loot/
+enum/
+recon/

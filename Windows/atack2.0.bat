@@ -114,48 +114,96 @@ REM ============================================================
 echo [+] Baixando ferramentas AD / Post-Ex / Payloads...
 
 REM BLOODHOUND GUI
-powershell -Command "iwr https://github.com/BloodHoundAD/BloodHound/releases/latest/download/BloodHound-win32-x64.zip -OutFile %ROOT%\Bloodhound\Bloodhound.zip"
-powershell -Command "Expand-Archive %ROOT%\Bloodhound\Bloodhound.zip -DestinationPath %ROOT%\Bloodhound -Force"
+if not exist "%ROOT%\Bloodhound\Bloodhound.zip" (
+    powershell -Command "iwr https://github.com/BloodHoundAD/BloodHound/releases/latest/download/BloodHound-win32-x64.zip -OutFile %ROOT%\Bloodhound\Bloodhound.zip"
+    powershell -Command "Expand-Archive %ROOT%\Bloodhound\Bloodhound.zip -DestinationPath %ROOT%\Bloodhound -Force"
+) else (
+    echo [INFO] Bloodhound ja baixado, pulando...
+)
 
 REM SHARPHOUND
-powershell -Command "iwr https://github.com/BloodHoundAD/SharpHound/releases/latest/download/SharpHound.zip -OutFile %ROOT%\SharpHound\SharpHound.zip"
-powershell -Command "Expand-Archive %ROOT%\SharpHound\SharpHound.zip -DestinationPath %ROOT%\SharpHound -Force"
+if not exist "%ROOT%\SharpHound\SharpHound.zip" (
+    powershell -Command "iwr https://github.com/BloodHoundAD/SharpHound/releases/latest/download/SharpHound.zip -OutFile %ROOT%\SharpHound\SharpHound.zip"
+    powershell -Command "Expand-Archive %ROOT%\SharpHound\SharpHound.zip -DestinationPath %ROOT%\SharpHound -Force"
+) else (
+    echo [INFO] SharpHound ja baixado, pulando...
+)
 
 REM POWERVIEW
-git clone https://github.com/PowerShellEmpire/PowerTools "%ROOT%\AD-Tools\Powerview"
+if not exist "%ROOT%\AD-Tools\Powerview\.git" (
+    git clone https://github.com/PowerShellEmpire/PowerTools "%ROOT%\AD-Tools\Powerview"
+) else (
+    echo [INFO] PowerView ja clonado, pulando...
+)
 
 REM RUBEUS
-powershell -Command "iwr https://github.com/GhostPack/Rubeus/releases/latest/download/Rubeus.zip -OutFile %ROOT%\PostEx\Rubeus\Rubeus.zip"
-powershell -Command "Expand-Archive %ROOT%\PostEx\Rubeus\Rubeus.zip -DestinationPath %ROOT%\PostEx\Rubeus -Force"
+if not exist "%ROOT%\PostEx\Rubeus\Rubeus.zip" (
+    powershell -Command "iwr https://github.com/GhostPack/Rubeus/releases/latest/download/Rubeus.zip -OutFile %ROOT%\PostEx\Rubeus\Rubeus.zip"
+    powershell -Command "Expand-Archive %ROOT%\PostEx\Rubeus\Rubeus.zip -DestinationPath %ROOT%\PostEx\Rubeus -Force"
+) else (
+    echo [INFO] Rubeus ja baixado, pulando...
+)
 
 REM SEATBELT
-powershell -Command "iwr https://github.com/GhostPack/Seatbelt/releases/latest/download/Seatbelt.zip -OutFile %ROOT%\PostEx\Seatbelt\Seatbelt.zip"
-powershell -Command "Expand-Archive %ROOT%\PostEx\Seatbelt\Seatbelt.zip -DestinationPath %ROOT%\PostEx\Seatbelt -Force"
+if not exist "%ROOT%\PostEx\Seatbelt\Seatbelt.zip" (
+    powershell -Command "iwr https://github.com/GhostPack/Seatbelt/releases/latest/download/Seatbelt.zip -OutFile %ROOT%\PostEx\Seatbelt\Seatbelt.zip"
+    powershell -Command "Expand-Archive %ROOT%\PostEx\Seatbelt\Seatbelt.zip -DestinationPath %ROOT%\PostEx\Seatbelt -Force"
+) else (
+    echo [INFO] Seatbelt ja baixado, pulando...
+)
 
 REM SHARPUP
-powershell -Command "iwr https://github.com/GhostPack/SharpUp/releases/latest/download/SharpUp.zip -OutFile %ROOT%\PostEx\SharpUp\SharpUp.zip"
-powershell -Command "Expand-Archive %ROOT%\PostEx\SharpUp\SharpUp.zip -DestinationPath %ROOT%\PostEx\SharpUp -Force"
+if not exist "%ROOT%\PostEx\SharpUp\SharpUp.zip" (
+    powershell -Command "iwr https://github.com/GhostPack/SharpUp/releases/latest/download/SharpUp.zip -OutFile %ROOT%\PostEx\SharpUp\SharpUp.zip"
+    powershell -Command "Expand-Archive %ROOT%\PostEx\SharpUp\SharpUp.zip -DestinationPath %ROOT%\PostEx\SharpUp -Force"
+) else (
+    echo [INFO] SharpUp ja baixado, pulando...
+)
 
 REM SHARPMAPEXEC
-powershell -Command "iwr https://github.com/anthemtotheego/SharpMapExec/releases/latest/download/SharpMapExec.zip -OutFile %ROOT%\PostEx\SharpMapExec\SharpMapExec.zip"
-powershell -Command "Expand-Archive %ROOT%\PostEx\SharpMapExec\SharpMapExec.zip -DestinationPath %ROOT%\PostEx\SharpMapExec -Force"
+if not exist "%ROOT%\PostEx\SharpMapExec\SharpMapExec.zip" (
+    powershell -Command "iwr https://github.com/anthemtotheego/SharpMapExec/releases/latest/download/SharpMapExec.zip -OutFile %ROOT%\PostEx\SharpMapExec\SharpMapExec.zip"
+    powershell -Command "Expand-Archive %ROOT%\PostEx\SharpMapExec\SharpMapExec.zip -DestinationPath %ROOT%\PostEx\SharpMapExec -Force"
+) else (
+    echo [INFO] SharpMapExec ja baixado, pulando...
+)
 
 REM WINPEAS
-powershell -Command "iwr https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEASany.zip -OutFile %ROOT%\PostEx\WinPEAS\winpeas.zip"
-powershell -Command "Expand-Archive %ROOT%\PostEx\WinPEAS\winpeas.zip -DestinationPath %ROOT%\PostEx\WinPEAS -Force"
+if not exist "%ROOT%\PostEx\WinPEAS\winpeas.zip" (
+    powershell -Command "iwr https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEASany.zip -OutFile %ROOT%\PostEx\WinPEAS\winpeas.zip"
+    powershell -Command "Expand-Archive %ROOT%\PostEx\WinPEAS\winpeas.zip -DestinationPath %ROOT%\PostEx\WinPEAS -Force"
+) else (
+    echo [INFO] WinPEAS ja baixado, pulando...
+)
 
 REM DONUT
-powershell -Command "iwr https://github.com/TheWover/donut/releases/latest/download/donut.zip -OutFile %ROOT%\Payloads\donut.zip"
-powershell -Command "Expand-Archive %ROOT%\Payloads\donut.zip -DestinationPath %ROOT%\Payloads -Force"
+if not exist "%ROOT%\Payloads\donut.zip" (
+    powershell -Command "iwr https://github.com/TheWover/donut/releases/latest/download/donut.zip -OutFile %ROOT%\Payloads\donut.zip"
+    powershell -Command "Expand-Archive %ROOT%\Payloads\donut.zip -DestinationPath %ROOT%\Payloads -Force"
+) else (
+    echo [INFO] Donut ja baixado, pulando...
+)
 
 REM SCARECROW
-git clone https://github.com/optiv/ScareCrow "%ROOT%\Payloads\ScareCrow"
+if not exist "%ROOT%\Payloads\ScareCrow\.git" (
+    git clone https://github.com/optiv/ScareCrow "%ROOT%\Payloads\ScareCrow"
+) else (
+    echo [INFO] ScareCrow ja clonado, pulando...
+)
 
 REM NIMCRYPT2
-git clone https://github.com/icyguider/Nimcrypt2 "%ROOT%\Payloads\Nimcrypt2"
+if not exist "%ROOT%\Payloads\Nimcrypt2\.git" (
+    git clone https://github.com/icyguider/Nimcrypt2 "%ROOT%\Payloads\Nimcrypt2"
+) else (
+    echo [INFO] Nimcrypt2 ja clonado, pulando...
+)
 
 REM IMPACKET
-git clone https://github.com/fortra/impacket "%ROOT%\Tools\impacket"
+if not exist "%ROOT%\Tools\impacket\.git" (
+    git clone https://github.com/fortra/impacket "%ROOT%\Tools\impacket"
+) else (
+    echo [INFO] Impacket ja clonado, pulando...
+)
 
 REM EVIL-WINRM
 gem install evil-winrm
