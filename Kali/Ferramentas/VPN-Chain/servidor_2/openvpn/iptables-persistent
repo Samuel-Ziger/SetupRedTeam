@@ -1,0 +1,3 @@
+sudo iptables -t nat -A POSTROUTING -s 10.9.0.0/24 -o eth0 -j MASQUERADE
+sudo apt install iptables-persistent -y
+sudo netfilter-persistent save

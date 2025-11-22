@@ -1,0 +1,12 @@
+pyaes
+psutil==5.9.2
+rsa==4.0
+netaddr==0.7.19
+tinyec
+poster
+win_inet_pton
+dnslib
+dukpy
+zeroconf==0.19.1
+https://github.com/alxchk/urllib-auth/archive/master.zip
+ushlex; python_version<'3'

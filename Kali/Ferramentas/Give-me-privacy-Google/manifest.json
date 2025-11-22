@@ -1,0 +1,30 @@
+{
+  "name": "Give me privacy, Google",
+  "description": "Removes any tracking at Google Services",
+  "version": "1.6",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "run_at": "document_start",
+      "js": ["inject.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "contentscript.js" ],
+      "matches": [ "https://*/*" ]
+    }
+  ],
+  "icons": {
+    "48": "icon48.png",
+    "96": "icon96.png"
+  },
+  "options_ui": {
+    "page": "options.html"
+    
+  },
+  "permissions": [
+    "storage"
+  ]
+}

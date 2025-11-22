@@ -1,0 +1,53 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from pupy.pupylib.PupyModule import config, PupyModule, PupyArgumentParser
+from pupy.pupylib.PupyOutput import Pygment
+
+import sys
+
+from pygments import lexers
+import json
+
+if sys.version_info.major > 2:
+    unicode = str
+
+__class_name__="CloudInfo"
+
+
+@config(cat="gather")
+class CloudInfo(PupyModule):
+    """ Retrieve EC2/DigitalOcean metadata """
+
+    dependencies = ['cloudinfo']
+
+    @classmethod
+    def init_argparse(cls):
+        cls.arg_parser = PupyArgumentParser(prog="cloudinfo", description=cls.__doc__)
+
+    def run(self, args):
+        cloudinfo = self.client.remote('cloudinfo', 'metadata')
+
+        cloud, metadata = cloudinfo()
+
+        if not cloud:
+            self.error('Unknown cloud or non-cloud environment')
+            return
+
+        self.success('Cloud: {}'.format(cloud))
+
+        formatted_json = json.dumps(metadata, indent=1, sort_keys=True)
+
+        self.log(
+            Pygment(lexers.JsonLexer(), unicode(formatted_json, 'UTF-8'))
+        )
+
+        if cloud == 'EC2' and 'meta-data' in metadata and 'iam' in metadata['meta-data']:
+            iam = metadata['meta-data']['iam']
+            if 'info' in iam and 'security-credentials' in iam and iam['info']['Code'] == 'Success':
+                arn = iam['info']['InstanceProfileArn'].split('/', 1)[-1]
+                self.success('IAM: {}'.format(arn))

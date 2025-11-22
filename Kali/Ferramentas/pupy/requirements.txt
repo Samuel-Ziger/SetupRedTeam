@@ -1,0 +1,50 @@
+pycryptodome
+pefile 
+pyyaml
+rsa
+netaddr
+ecdsa==0.13
+paramiko==2.0.2
+tinyec @ https://github.com/alxchk/tinyec/archive/master.zip
+psutil
+netifaces
+pylzma
+colorama
+mss==4.0.3
+pyOpenSSL
+scapy
+impacket
+dnslib
+http-parser
+cerberus
+logutils
+secretstorage==2.3.1
+pypykatz @ https://github.com/AlessandroZ/pypykatz/archive/master.zip
+ed25519==1.5
+pygments
+requests
+tornado
+win_inet_pton
+scandir
+msgpack==0.6.2
+hexdump
+M2Crypto>=0.30.1
+fusepy
+defusedxml
+keyboard==0.13.4
+dateparser
+puttykeys
+pyelftools
+filemagic
+xattr
+dukpy
+pyaes
+chardet
+urllib-auth @ https://github.com/alxchk/urllib-auth/archive/master.zip
+http_request
+kcp @ git+https://github.com/n1nj4sec/pykcp
+flake8
+flake8-per-file-ignores
+ushlex; python_version<'3'
+pyuv @ git+https://github.com/n1nj4sec/pyuv@fix-building-against-python311
+tqdm

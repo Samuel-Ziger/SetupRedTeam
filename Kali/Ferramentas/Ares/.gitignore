@@ -1,0 +1,6 @@
+venv
+*.pyc
+server/uploads
+*.db
+server/agents
+TODO

@@ -59,29 +59,6 @@ logs/
 Kali/Ferramentas/zphisher/*.dat
 Kali/Ferramentas/zphisher/.sites/
 
-# Ferramentas clonadas (repositórios grandes)
-Kali/Ferramentas/SecLists/
-Kali/Ferramentas/Anon-Check/
-Kali/Ferramentas/VPN-Chain/
-Kali/Ferramentas/Ares/
-Kali/Ferramentas/Building-Malicious-Chrome-Extensions/
-Kali/Ferramentas/CSRF-to-RCE-on-Backdrop-CMS/
-Kali/Ferramentas/Crypter/
-Kali/Ferramentas/Exploit-XSS-Polyglot-on-Moodle-3.9.2/
-Kali/Ferramentas/Exploiting-WP-Database-Backup-WordPress-Plugin/
-Kali/Ferramentas/Give-me-privacy-Google/
-Kali/Ferramentas/HTThief/
-Kali/Ferramentas/LeakLooker/
-Kali/Ferramentas/Proton-VPN-Helper/
-Kali/Ferramentas/Scavenger/
-Kali/Ferramentas/buster/
-Kali/Ferramentas/injector/
-Kali/Ferramentas/pupy/
-Kali/Ferramentas/pwndb/
-Kali/Ferramentas/reconftw/
-Kali/Ferramentas/webdiscover/
-Kali/Ferramentas/xmr-stak/
-
 # Output de scripts
 output/
 results/
