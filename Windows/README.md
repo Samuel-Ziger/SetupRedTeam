@@ -4,6 +4,28 @@
 
 Conjunto de scripts para configuração automatizada de ambiente Windows para Penetration Testing e Red Team Operations.
 
+### 🎯 Análise do Repositório Windows
+
+**Estatísticas:**
+- **Scripts totais:** 12 arquivos
+- **Scripts principais:** 4 (atack2.0-optimized.bat, setup-attackbox.ps1, atack2.0.bat, rollback.bat)
+- **Scripts auxiliares:** 4 (verificao.bat, setup-debug.bat, bloqueioAPP.bat, setup_attackbox.bat)
+- **Documentação:** 2 (README.md, NOTEBOOK2-GUIDE.md)
+- **Linguagens:** Batch (.bat), PowerShell (.ps1)
+
+**Novidades (v2.0):**
+- ✅ **atack2.0-optimized.bat** - Otimizado para Notebook 2 (i5-3210M, 12GB) focado em AD/Lateral Movement
+- ✅ **rollback.bat** - Reverter todas as configurações de segurança
+- ✅ **NOTEBOOK2-GUIDE.md** - Guia completo de 400+ linhas com workflows práticos
+- ✅ **Verificação de duplicatas** - Scripts não baixam/clonam ferramentas já existentes
+- ✅ **Melhor tratamento de erros** - Mensagens informativas em português
+
+**Foco Especializado:**
+- 🎯 **Active Directory:** BloodHound, SharpHound, Rubeus, PowerView, Certify
+- 🎯 **Lateral Movement:** Evil-WinRM, Impacket, CrackMapExec (via WSL2)
+- 🎯 **Post-Exploitation:** Seatbelt, WinPEAS, SharpUp, SharpDPAPI
+- 🎯 **Payload Evasion:** Donut, ScareCrow, Nimcrypt2
+
 ---
 
 ## 📁 Arquivos Disponíveis
@@ -89,55 +111,155 @@ Para desfazer todas as alterações do setup:
 
 ## 🛠️ Ferramentas Instaladas
 
-### **Via Chocolatey**
-- Git
-- Python
-- Ruby
-- Nmap
-- Wireshark
-- Sysinternals Suite
-- 7-Zip
-- VS Code
-- JQ
-- OpenSSH
+### **📦 Via Chocolatey (Gerenciador de Pacotes)**
+| Ferramenta | Descrição | Uso |
+|------------|-----------|-----|
+| **Git** | Sistema de controle de versão | Clone de ferramentas, versionamento |
+| **Python** | Linguagem de programação | Impacket, scripts custom |
+| **Ruby** | Linguagem de programação | Evil-WinRM (gem install) |
+| **Nmap** | Network scanner | Port scanning, service enumeration |
+| **Wireshark** | Packet analyzer | Traffic analysis, protocol debugging |
+| **Sysinternals Suite** | Utilities Windows | PsExec, ProcMon, Process Explorer |
+| **7-Zip** | File archiver | Extração de payloads, compressão |
+| **VS Code** | Editor de código | Script editing, development |
+| **JQ** | JSON processor | Parse outputs de ferramentas |
+| **OpenSSH** | SSH client/server | Remote access, tunneling |
 
-### **Ferramentas AD (Active Directory)**
+### **🎯 Ferramentas AD (Active Directory)**
 ```
 C:\Tools\AD\
-├── Bloodhound\          # GUI para análise de AD
-├── SharpHound\          # Coletor de dados AD
+├── Bloodhound\          # Análise gráfica de relações AD
+│   ├── BloodHound.exe   # GUI principal
+│   └── Neo4j database   # Graph database
+│
+├── SharpHound\          # Coletor de dados AD (C#)
+│   └── SharpHound.exe   # Executável standalone
+│
 └── Powerview\           # Scripts PowerShell para enum AD
+    └── PowerView.ps1    # Módulo PowerShell
 ```
 
-### **Post-Exploitation**
+**Descrições Detalhadas:**
+
+- **BloodHound:** Ferramenta gráfica que usa teoria de grafos para revelar relações ocultas em Active Directory. Identifica caminhos de ataque (attack paths) de usuários de baixo privilégio até Domain Admins.
+  
+- **SharpHound:** Coletor de dados (ingestor) para BloodHound. Faz enumeração massiva de AD (usuários, grupos, GPOs, ACLs, sessions) e exporta para JSON.
+
+- **PowerView:** Suite PowerShell para enumeração e exploitation de AD. Funções para encontrar usuários privilegiados, shares acessíveis, GPOs mal configuradas, etc.
+
+### **💣 Post-Exploitation**
 ```
 C:\Tools\PostEx\
-├── Rubeus\              # Kerberos attacks
-├── Seatbelt\            # Enumeration de segurança
-├── WinPEAS\             # Privilege escalation
-├── SharpUp\             # Privilege escalation checker
-└── SharpMapExec\        # Lateral movement
+├── Rubeus\              # Kerberos attacks (C#)
+│   └── Rubeus.exe       # Kerberoasting, AS-REP roasting, Golden/Silver tickets
+│
+├── Seatbelt\            # Enumeration de segurança (C#)
+│   └── Seatbelt.exe     # Security posture checker
+│
+├── WinPEAS\             # Privilege escalation automation
+│   └── winPEASx64.exe   # PE enumeration + exploit suggester
+│
+├── SharpUp\             # Privilege escalation checker (C#)
+│   └── SharpUp.exe      # Misconfiguration finder
+│
+├── SharpMapExec\        # Lateral movement (C#)
+│   └── SharpMapExec.exe # WMI/SMB lateral movement
+│
+├── Certify\             # AD Certificate Services exploitation
+│   └── Certify.exe      # Find vulnerable certificate templates
+│
+└── SharpDPAPI\          # DPAPI credential extractor
+    └── SharpDPAPI.exe   # Chrome/Edge/RDP credential dumping
 ```
 
-### **Payloads**
+**Descrições Detalhadas:**
+
+- **Rubeus:** Toolkit completo para ataques Kerberos. Kerberoasting (extract TGS), AS-REP roasting, Pass-the-Ticket, Golden/Silver ticket creation.
+
+- **Seatbelt:** Enumera configurações de segurança do Windows (antivirus, AppLocker, LAPS, credential guard, autologon, etc.). Essencial para situational awareness.
+
+- **WinPEAS:** Script automatizado que procura vulnerabilidades de privilege escalation. Verifica unquoted service paths, weak permissions, scheduled tasks, registry keys, etc.
+
+- **SharpUp:** Similar ao WinPEAS mas focado em C#. Checa AlwaysInstallElevated, services, DLL hijacking, modifiable binaries.
+
+- **SharpMapExec:** Execução lateral de comandos via WMI/SMB. Alternative ao PsExec/WMI diretamente.
+
+- **Certify:** Explora AD Certificate Services (ADCS) mal configurados. Encontra templates vulneráveis que permitem privilege escalation.
+
+- **SharpDPAPI:** Extrai credenciais armazenadas via DPAPI (browsers, RDP, wireless networks). Requer privilégios do usuário alvo.
+
+### **🚀 Payloads & Evasion**
 ```
 C:\Tools\Payloads\
-├── Office\              # Payloads Office (macro, etc.)
-├── HTA\                 # HTML Applications
+├── Office\              # Payloads Office (VBA macros, etc.)
+├── HTA\                 # HTML Applications (mshta.exe)
 ├── MSI\                 # Instaladores maliciosos
-├── EXE\                 # Executáveis
-├── ScareCrow\           # Payload obfuscation
-├── Nimcrypt2\           # .NET encryptor
+├── EXE\                 # Executáveis compilados
+│
+├── ScareCrow\           # Payload obfuscation com EDR evasion
+│   └── ScareCrow.exe    # .NET/shellcode -> obfuscated loader
+│
+├── Nimcrypt2\           # .NET executable encryptor
+│   └── Nimcrypt2.exe    # AES encryption + Nim loader
+│
 └── donut\               # Shellcode generator
+    └── donut.exe        # .NET assembly -> position-independent shellcode
 ```
 
-### **Outras Ferramentas**
+**Descrições Detalhadas:**
+
+- **Donut:** Converte .NET assemblies (EXE/DLL) em shellcode position-independent. Permite injetar ferramentas C# (Rubeus, Seatbelt) diretamente em processos via process injection.
+
+- **ScareCrow:** Obfuscador de payloads com evasão de EDR. Usa técnicas como syscalls diretos, API unhooking, encryption. Suporta shellcode e executáveis.
+
+- **Nimcrypt2:** Encripta executáveis .NET usando AES e cria loader em Nim (linguagem menos detectada por AVs). Bypass de assinaturas estáticas.
+
+### **🌐 Networking & Lateral Movement**
 ```
 C:\Tools\Tools\
-├── impacket\            # Suite Python para protocolos de rede
-├── evilwinrm\           # WinRM shell (via Ruby gem)
-├── sysinternals\        # Suite Sysinternals
-└── mimikatz\            # (Baixar manualmente)
+├── impacket\            # Suite Python para protocolos de rede Windows
+│   ├── psexec.py        # Remote command execution via SMB
+│   ├── smbexec.py       # Stealthier psexec alternative
+│   ├── wmiexec.py       # WMI-based remote execution
+│   ├── secretsdump.py   # Dump NTLM hashes/LSA secrets
+│   ├── GetUserSPNs.py   # Kerberoasting
+│   ├── GetNPUsers.py    # AS-REP roasting
+│   └── ntlmrelayx.py    # NTLM relay attacks
+│
+├── evilwinrm\           # WinRM shell (Ruby gem)
+│   └── evil-winrm       # Interactive PowerShell over WinRM
+│
+└── sysinternals\        # Sysinternals Suite
+    ├── PsExec.exe       # Remote execution
+    ├── ProcMon.exe      # Process monitoring
+    ├── TCPView.exe      # Network connections viewer
+    └── ...
+```
+
+**Descrições Detalhadas:**
+
+- **Impacket:** Suite Python que implementa protocolos de rede Windows (SMB, MSRPC, Kerberos). Ferramentas essenciais para lateral movement, credential dumping e exploitation.
+
+- **Evil-WinRM:** Shell interativa via WinRM (Windows Remote Management). Suporta upload/download de arquivos, load de scripts PowerShell, pass-the-hash.
+
+- **Sysinternals:** Coleção de utilitários oficiais da Microsoft para troubleshooting e análise. PsExec para execução remota, ProcMon para monitorar processos/registry.
+
+### **🐧 WSL2 + Kali Linux**
+
+O script instala **WSL2** com **Kali Linux** completo, permitindo usar ferramentas Linux diretamente no Windows:
+
+```bash
+# Ferramentas instaladas no Kali via WSL2:
+wsl -d kali-linux
+
+# CrackMapExec (lateral movement suite)
+crackmapexec smb 192.168.1.0/24 -u admin -p password
+
+# Metasploit Framework
+msfconsole
+
+# Nmap (versão Linux)
+nmap -sC -sV target.com
 ```
 
 ---

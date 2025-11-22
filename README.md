@@ -4,6 +4,15 @@
 
 Repositório de scripts de automação para configuração rápida de ambientes de **Penetration Testing** e **Red Team Operations**, suportando Windows e Kali Linux.
 
+### 📊 Estatísticas do Repositório
+
+- **Total de arquivos:** 6,800+
+- **Tamanho total:** ~310 MB
+- **Scripts principais:** 12 (Windows) + 1 (Kali)
+- **Ferramentas Kali:** 22 toolkits completos
+- **Linguagens:** Batch, PowerShell, Bash, Python
+- **Última atualização:** Novembro 2025
+
 ## ⚠️ AVISO LEGAL
 
 **Este repositório é destinado EXCLUSIVAMENTE para:**
@@ -29,8 +38,21 @@ Scripts-Bat/
 ├── Kali/                    # Scripts para Kali Linux
 │   ├── setup-kali.sh        # Setup completo automatizado
 │   ├── ExecutarSetup-Kali.md
-│   └── Ferramentas/
-│       └── zphisher/        # Ferramenta de phishing educacional
+│   ├── README.md            # Documentação Kali
+│   └── Ferramentas/         # 22 ferramentas especializadas (305MB)
+│       ├── zphisher/        # Phishing framework (30+ templates)
+│       ├── pupy/            # Cross-platform RAT/C2
+│       ├── reconftw/        # Automated reconnaissance
+│       ├── SecLists/        # Wordlists profissionais (1GB+)
+│       ├── pwndb/           # Breach database search
+│       ├── xmr-stak/        # Cryptocurrency miner
+│       ├── LeakLooker/      # Open database finder
+│       ├── Ares/            # Python RAT framework
+│       ├── Crypter/         # Ransomware builder
+│       ├── HTThief/         # HTTP/HTTPS traffic stealer
+│       ├── injector/        # DLL/Shellcode injector
+│       ├── buster/          # Brute-force tool
+│       └── ...              # +10 ferramentas adicionais
 │
 └── Windows/                 # Scripts para Windows
     ├── atack2.0-optimized.bat  # Setup Notebook 2 (AD/Lateral Movement) ⭐ NOVO!
@@ -138,34 +160,77 @@ Verifica:
 
 ## 🛠️ Ferramentas Incluídas
 
-### **Active Directory**
-- BloodHound / SharpHound
-- Rubeus (Kerberos)
-- PowerView
-- Impacket Suite
+### **🎯 Active Directory (Windows)**
+- **BloodHound** - Análise gráfica de relações AD
+- **SharpHound** - Coletor de dados AD (C#)
+- **Rubeus** - Kerberos exploitation toolkit
+- **PowerView** - PowerShell para enum AD
+- **Impacket Suite** - Protocolos de rede Windows
+- **Certify** - AD Certificate Services exploitation
 
-### **Post-Exploitation**
-- Seatbelt
-- WinPEAS
-- SharpUp
-- SharpMapExec
+### **🔓 Post-Exploitation (Windows)**
+- **Seatbelt** - Enumeration de segurança Windows
+- **WinPEAS** - Privilege escalation automation
+- **SharpUp** - Privilege escalation checker
+- **SharpMapExec** - Lateral movement framework
+- **SharpDPAPI** - DPAPI credential extractor
+- **Mimikatz** - Credential dumping (manual)
 
-### **Networking**
-- Nmap
-- Masscan
-- Ffuf
-- Gobuster
+### **🌐 Networking & Scanning**
+- **Nmap** - Network scanner
+- **Masscan** - Port scanner massivo
+- **Ffuf** - Fast web fuzzer
+- **Gobuster** - Directory/DNS/vhost brute-forcer
+- **Wireshark** - Packet analyzer
 
-### **Exploitation**
-- Metasploit Framework
-- SQLMap
-- ExploitDB
-- Veil-Evasion
+### **💥 Exploitation Frameworks**
+- **Metasploit Framework** - Exploitation framework
+- **SQLMap** - SQL injection automation
+- **ExploitDB** - Exploit database local
+- **Veil-Evasion** - Payload obfuscation
 
-### **Payloads**
-- Donut
-- ScareCrow
-- Nimcrypt2
+### **🎭 Payloads & Evasion (Windows)**
+- **Donut** - Shellcode generator (.NET to shellcode)
+- **ScareCrow** - Payload obfuscation with EDR evasion
+- **Nimcrypt2** - .NET executable encryptor
+
+### **🐧 Ferramentas Kali Linux (22 Toolkits)**
+
+#### **Reconnaissance & OSINT**
+- **reconftw** - Automated reconnaissance workflow (subdomain enum, vulnerability scan, screenshots)
+- **SecLists** - Wordlists profissionais (1GB+) - Passwords, usernames, DNS, fuzzing
+- **webdiscover** - Web subdomain discovery
+- **Scavenger** - OSINT framework
+
+#### **Credential & Breach Search**
+- **pwndb** - Search leaked credentials via Tor (requer Tor service)
+- **LeakLooker** - Find open databases (Elasticsearch, MongoDB, S3 buckets, Jenkins, etc.)
+
+#### **Command & Control (C2)**
+- **pupy** - Cross-platform RAT (Windows/Linux/macOS) - In-memory execution, reflective DLL
+- **Ares** - Python-based RAT framework
+
+#### **Social Engineering**
+- **zphisher** - Phishing framework (30+ templates: Instagram, Facebook, Netflix, etc.)
+- **Give-me-privacy-Google** - Google privacy exploitation
+
+#### **Web Exploitation**
+- **buster** - Advanced web brute-forcer
+- **injector** - SQL/XSS/LFI injection automation
+- **HTThief** - HTTP/HTTPS traffic stealer
+- **CSRF-to-RCE-on-Backdrop-CMS** - Backdrop CMS exploit chain
+- **Exploit-XSS-Polyglot-on-Moodle-3.9.2** - Moodle XSS polyglot
+- **Exploiting-WP-Database-Backup-WordPress-Plugin** - WordPress DB Backup exploit
+- **Building-Malicious-Chrome-Extensions** - Chrome extension attack toolkit
+
+#### **Malware & Ransomware**
+- **Crypter** - Ransomware builder (educacional)
+- **xmr-stak** - Cryptocurrency miner (Monero/RagerX)
+
+#### **Privacy & Anonymity**
+- **Anon-Check** - Anonymity checker
+- **Proton-VPN-Helper** - ProtonVPN automation
+- **VPN-Chain** - Multi-VPN chaining
 
 ---
 
