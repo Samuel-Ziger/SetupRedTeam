@@ -1,0 +1,3 @@
+[submodule "EchoPhish"]
+	path = EchoPhish
+	url = https://github.com/zr0n/EchoPhish.git
