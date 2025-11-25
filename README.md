@@ -7,10 +7,10 @@ Repositório de scripts de automação para configuração rápida de ambientes 
 
 ### 📊 Estatísticas do Repositório
 
-- **Total de arquivos:** 6,800+
-- **Tamanho total:** ~310 MB
+- **Total de arquivos:** 6,900+
+- **Tamanho total:** ~312 MB
 - **Scripts principais:** 12 (Windows) + 1 (Kali)
-- **Ferramentas Kali:** 23 toolkits completos
+- **Ferramentas Kali:** 29 toolkits completos
 - **Linguagens:** Batch, PowerShell, Bash, Python
 - **Última atualização:** Novembro 2025
 
@@ -40,8 +40,9 @@ Scripts-Bat/
 │   ├── setup-kali.sh        # Setup completo automatizado
 │   ├── ExecutarSetup-Kali.md
 │   ├── README.md            # Documentação Kali
-│   └── Ferramentas/         # 22 ferramentas especializadas (305MB)
+│   └── Ferramentas/         # 29 ferramentas especializadas (312MB)
 │       ├── zphisher/        # Phishing framework (30+ templates)
+│       ├── EchoPhish/       # Instagram phishing com 2FA ⭐ NOVO!
 │       ├── pupy/            # Cross-platform RAT/C2
 │       ├── reconftw/        # Automated reconnaissance
 │       ├── SecLists/        # Wordlists profissionais (1GB+)
@@ -54,7 +55,12 @@ Scripts-Bat/
 │       ├── HTThief/         # HTTP/HTTPS traffic stealer
 │       ├── injector/        # DLL/Shellcode injector
 │       ├── buster/          # Brute-force tool
-│       └── ...              # +9 ferramentas adicionais
+│       ├── Auto_Tor_IP_changer/ # Automatic Tor IP rotation ⭐ NOVO!
+│       ├── rce-scanner/     # RCE vulnerability scanner ⭐ NOVO!
+│       ├── whatsappsess/    # WhatsApp session hijacking ⭐ NOVO!
+│       ├── whatsintruder/   # WhatsApp media collector ⭐ NOVO!
+│       ├── zportal/         # 2FA captive portal for M5 Cardputer ⭐ NOVO!
+│       └── ...              # +8 ferramentas adicionais
 │
 └── Windows/                 # Scripts para Windows
     ├── atack2.0-optimized.bat  # Setup Notebook 2 (AD/Lateral Movement) ⭐ NOVO!
@@ -196,7 +202,7 @@ Verifica:
 - **ScareCrow** - Payload obfuscation with EDR evasion
 - **Nimcrypt2** - .NET executable encryptor
 
-### **🐧 Ferramentas Kali Linux (22 Toolkits)**
+### **🐧 Ferramentas Kali Linux (29 Toolkits)**
 
 #### **Reconnaissance & OSINT**
 - **reconftw** - Automated reconnaissance workflow (subdomain enum, vulnerability scan, screenshots)
@@ -212,13 +218,18 @@ Verifica:
 - **pupy** - Cross-platform RAT (Windows/Linux/macOS) - In-memory execution, reflective DLL
 - **Ares** - Python-based RAT framework
 
-#### **Social Engineering**
+#### **Social Engineering & Phishing**
 - **zphisher** - Phishing framework (30+ templates: Instagram, Facebook, Netflix, etc.)
+- **EchoPhish** ⭐ **NOVO!** - Instagram phishing avançado com captura de 2FA, cookies e sessões ativas
+- **whatsappsess** ⭐ **NOVO!** - WhatsApp session hijacking via phishing com Selenium
+- **whatsintruder** ⭐ **NOVO!** - WhatsApp media collector via APK malicioso (Android 6.0+)
+- **zportal** ⭐ **NOVO!** - Captive portal 2FA para M5 Cardputer (integração com EchoPhish)
 - **Give-me-privacy-Google** - Google privacy exploitation
 
 #### **Web Exploitation**
 - **buster** - Advanced web brute-forcer
 - **injector** - SQL/XSS/LFI injection automation
+- **rce-scanner** ⭐ **NOVO!** - Scanner automatizado de RCE (PHPUnit, ThinkPHP, Laravel, FCKeditor, elFinder)
 - **HTThief** - HTTP/HTTPS traffic stealer
 - **CSRF-to-RCE-on-Backdrop-CMS** - Backdrop CMS exploit chain
 - **Exploit-XSS-Polyglot-on-Moodle-3.9.2** - Moodle XSS polyglot
@@ -233,6 +244,7 @@ Verifica:
 - **DDos (Slowloris Pro)** - Advanced Slowloris DDoS attack (HTTP/HTTPS, proxy support)
 
 #### **Privacy & Anonymity**
+- **Auto_Tor_IP_changer** ⭐ **NOVO!** - Rotação automática de IP via Tor com configuração de intervalo
 - **Anon-Check** - Anonymity checker
 - **Proton-VPN-Helper** - ProtonVPN automation
 - **VPN-Chain** - Multi-VPN chaining

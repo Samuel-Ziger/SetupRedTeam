@@ -8,10 +8,10 @@ Script de automação completa para configuração de Kali Linux como plataforma
 
 **Estatísticas:**
 - **Script principal:** 1 (setup-kali.sh)
-- **Ferramentas incluídas:** 23 toolkits completos
-- **Tamanho total:** ~310 MB
-- **Categorias:** C2, Recon, Web Exploitation, OSINT, Malware, Privacy, DDoS
-- **Linguagens:** Bash, Python, C/C++, Go
+- **Ferramentas incluídas:** 29 toolkits completos
+- **Tamanho total:** ~312 MB
+- **Categorias:** C2, Recon, Web Exploitation, OSINT, Malware, Privacy, DDoS, Phishing
+- **Linguagens:** Bash, Python, C/C++, Go, Java
 
 **Destaques:**
 - ✅ **pupy** - RAT profissional com execução in-memory
@@ -30,8 +30,9 @@ Kali/
 ├── setup-kali.sh              # Script principal de setup
 ├── ExecutarSetup-Kali.md      # Guia de execução
 ├── README.md                  # Documentação (este arquivo)
-└── Ferramentas/               # 22 toolkits completos (~305MB)
+└── Ferramentas/               # 29 toolkits completos (~312MB)
     ├── zphisher/              # Phishing framework
+    ├── EchoPhish/             # Instagram phishing + 2FA ⭐ NOVO!
     ├── pupy/                  # Cross-platform RAT
     ├── reconftw/              # Automated reconnaissance
     ├── SecLists/              # Wordlists profissionais (1GB+)
@@ -47,6 +48,11 @@ Kali/
     ├── webdiscover/           # Subdomain discovery
     ├── Scavenger/             # OSINT framework
     ├── Anon-Check/            # Anonymity checker
+    ├── Auto_Tor_IP_changer/   # Tor IP rotation ⭐ NOVO!
+    ├── rce-scanner/           # RCE vulnerability scanner ⭐ NOVO!
+    ├── whatsappsess/          # WhatsApp session hijacking ⭐ NOVO!
+    ├── whatsintruder/         # WhatsApp media collector ⭐ NOVO!
+    ├── zportal/               # 2FA captive portal ⭐ NOVO!
     ├── Proton-VPN-Helper/     # ProtonVPN automation
     ├── VPN-Chain/             # Multi-VPN chaining
     ├── Give-me-privacy-Google/             # Google privacy exploitation
@@ -396,6 +402,85 @@ cd Ferramentas/zphisher
 bash zphisher.sh
 ```
 
+#### **EchoPhish** ⭐ **NOVO!**
+- **Descrição:** Ferramenta de phishing especializada para Instagram com captura avançada
+- **Recursos:**
+  - Aceita login apenas com credenciais corretas
+  - Captura cookies para bypass de 2FA
+  - Suporta todos os métodos de autenticação (SMS, App, Email)
+  - Registra tudo em arquivos separados (correto/incorreto)
+  - Integração com Discord webhook
+- **Requisitos:** Python 3, requests
+- **Uso:** Red team operations, social engineering awareness
+- **⚠️ USO EDUCACIONAL APENAS!**
+
+```bash
+cd Ferramentas/EchoPhish
+chmod +x EchoPhish
+./EchoPhish
+```
+
+#### **whatsappsess** ⭐ **NOVO!**
+- **Descrição:** PoC de phishing para captura de sessão WhatsApp Web
+- **Técnica:** Phishing page + Selenium automation
+- **Recursos:**
+  - Captura QR code e sessão ativa
+  - Interface idêntica ao WhatsApp Web
+  - Compatível com Windows e Linux
+- **Requisitos:** Python 3, Selenium, Firefox Geckodriver
+- **Uso:** Awareness training, penetration testing
+- **⚠️ USO EDUCACIONAL APENAS!**
+
+```bash
+cd Ferramentas/whatsappsess
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python whatsappsess.py
+```
+
+#### **whatsintruder** ⭐ **NOVO!**
+- **Descrição:** Coleta todas as mídias do WhatsApp via APK malicioso
+- **Técnica:** APK trojanizado com payload Metasploit
+- **Recursos:**
+  - Scan automático de diretórios WhatsApp
+  - Upload em tempo real para servidor
+  - Build automático do APK
+  - Túnel público via Serveo/localhost.run
+- **Requisitos:** Java 17, Android SDK, APKTool, APKSigner
+- **Compatibilidade:** Android 6.0+
+- **⚠️ USO ESTRITAMENTE EDUCACIONAL!**
+
+```bash
+cd Ferramentas/whatsintruder
+chmod +x whatsintruder.sh
+./whatsintruder.sh
+```
+
+#### **zportal** ⭐ **NOVO!**
+- **Descrição:** Captive portal 2FA para M5 Cardputer
+- **Hardware:** M5Stack Cardputer
+- **Integração:** Funciona com EchoPhish
+- **Recursos:**
+  - Captive portal automático
+  - Captura 2FA codes
+  - Configuração via interface
+  - Conecta-se a rede com internet
+- **Uso:** Physical penetration testing, Wi-Fi attacks
+- **⚠️ USO EDUCACIONAL APENAS!**
+
+```bash
+# Configurar EchoPhish primeiro
+cd Ferramentas/EchoPhish
+./EchoPhish
+# Copiar URL gerada
+
+# Editar firmware Cardputer
+cd Ferramentas/zportal/ziron-portal-cardputer
+# Substituir URL do phishing no código
+# Compilar e gravar no M5 Cardputer via Arduino IDE
+```
+
 ---
 
 ### **🎯 Command & Control (C2) / RATs**
@@ -517,6 +602,30 @@ python3 leaklooker.py
 - **Tipos:** SQL injection, XSS, LFI, command injection
 - **Uso:** Web application testing
 
+#### **rce-scanner** ⭐ **NOVO!**
+- **Descrição:** Scanner automatizado de vulnerabilidades RCE em aplicações web PHP
+- **Alvos Suportados:**
+  - PHPUnit RCE (`eval-stdin.php`)
+  - ThinkPHP 5.0.x RCE
+  - Laravel Ignition RCE
+  - FCKeditor file upload
+  - elFinder exposure
+  - PHPFileManager detection
+- **Recursos:**
+  - Multi-threaded fast scanning
+  - Bypass redirect detection
+  - Detecção automática http/https
+  - Salva resultados em `results.txt`
+- **Requisitos:** Python 3.7+, requests
+- **Uso:** Bug bounty, web application security assessment
+
+```bash
+cd Ferramentas/rce-scanner
+pip install -r requirements.txt
+# Criar list.txt com targets
+python scanner.py
+```
+
 #### **HTThief**
 - **Descrição:** HTTP/HTTPS traffic interceptor e credential stealer
 - **Recursos:** Man-in-the-middle, SSL stripping, credential capture
@@ -590,6 +699,26 @@ cd Ferramentas/xmr-stak
 
 ### **🔒 Privacy & Anonymity**
 
+#### **Auto_Tor_IP_changer** ⭐ **NOVO!**
+- **Descrição:** Rotação automática de IP através da rede Tor
+- **Recursos:**
+  - Mudança automática de IP em intervalos configuráveis
+  - Suporte a rotação infinita (0 = infinito)
+  - Instalação automática de dependências
+  - Configuração de SOCKS proxy (127.0.0.1:9050)
+- **Requisitos:** Tor, requests[socks]
+- **Uso:** Anonymity, web scraping, bypass rate limiting
+- **Comando global:** `aut` (após instalação)
+
+```bash
+cd Ferramentas/Auto_Tor_IP_changer
+python3 install.py
+# Após instalação, digite 'aut' em qualquer diretório
+aut
+# Configurar: intervalo de mudança + quantidade de rotações
+# Configurar navegador/aplicação: SOCKS proxy 127.0.0.1:9050
+```
+
 #### **Anon-Check**
 - **Descrição:** Verifica nível de anonimato da conexão
 - **Testa:** DNS leaks, WebRTC leaks, IP exposure, browser fingerprinting
@@ -616,27 +745,32 @@ cd Ferramentas/xmr-stak
 
 | Categoria | Quantidade | Ferramentas Principais |
 |-----------|------------|------------------------|
-| **Social Engineering** | 1 | zphisher |
+| **Social Engineering & Phishing** | 5 | zphisher, EchoPhish ⭐, whatsappsess ⭐, whatsintruder ⭐, zportal ⭐ |
 | **C2/RATs** | 2 | pupy, Ares |
 | **Reconnaissance** | 4 | reconftw, SecLists, webdiscover, Scavenger |
 | **Credentials** | 2 | pwndb, LeakLooker |
-| **Web Exploitation** | 7 | buster, injector, HTThief, CSRF-to-RCE, Moodle XSS, WP exploit, Chrome extensions |
+| **Web Exploitation** | 8 | buster, injector, rce-scanner ⭐, HTThief, CSRF-to-RCE, Moodle XSS, WP exploit, Chrome extensions |
 | **Malware/Crypto** | 2 | Crypter, xmr-stak |
 | **DDoS** | 1 | Slowloris Pro |
-| **Privacy** | 4 | Anon-Check, Proton-VPN-Helper, VPN-Chain, Give-me-privacy-Google |
-| **TOTAL** | **23 toolkits** | **~310 MB** |
+| **Privacy & Anonymity** | 5 | Auto_Tor_IP_changer ⭐, Anon-Check, Proton-VPN-Helper, VPN-Chain, Give-me-privacy-Google |
+| **TOTAL** | **29 toolkits** | **~312 MB** |
 
 ---
 
-## 🔐 Ferramentas de Phishing (zphisher)
+## 🔐 Ferramentas de Phishing
 
 **⚠️ USO EDUCACIONAL APENAS!**
 
-O diretório `Ferramentas/zphisher/` contém um framework de phishing.
+O diretório `Ferramentas/` contém múltiplas ferramentas de phishing:
+- **zphisher** - Framework multi-plataforma (30+ templates)
+- **EchoPhish** - Instagram phishing com captura 2FA
+- **whatsappsess** - WhatsApp Web session hijacking
+- **whatsintruder** - WhatsApp media collector (Android)
+- **zportal** - Captive portal 2FA para M5 Cardputer
 
 **NUNCA use contra alvos reais sem autorização expressa.**
 
-Para executar:
+Para executar zphisher:
 ```bash
 cd Ferramentas/zphisher
 bash zphisher.sh
