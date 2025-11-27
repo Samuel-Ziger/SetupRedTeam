@@ -37,10 +37,12 @@ echo [1/8] Restaurando arquivo hosts...
 set hostsfile=%SystemRoot%\System32\drivers\etc\hosts
 
 :: Assumir propriedade
-takeown /f "%hostsfile%" >nul 2>&1
-icacls "%hostsfile%" /grant Administrators:F >nul 2>&1
+echo    Assumindo propriedade do arquivo hosts...
+takeown /f "%hostsfile%"
+icacls "%hostsfile%" /grant Administrators:F
 
 :: Escrever conteudo padrao
+echo    Escrevendo conteudo padrao no hosts...
 (
     echo # Copyright (c) 1993-2009 Microsoft Corp.
     echo # This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
@@ -50,17 +52,21 @@ icacls "%hostsfile%" /grant Administrators:F >nul 2>&1
 ) > "%hostsfile%"
 
 echo    [OK] Hosts restaurado
+timeout /t 2 /nobreak >nul
 
 :: -------------------------
 :: 2) LIMPAR CACHE DNS
 :: -------------------------
+echo.
 echo [2/8] Limpando cache DNS...
-ipconfig /flushdns >nul 2>&1
+ipconfig /flushdns
 echo    [OK] Cache DNS limpo
+timeout /t 2 /nobreak >nul
 
 :: -------------------------
 :: 3) REMOVER REGRAS DE FIREWALL
 :: -------------------------
+echo.
 echo [3/8] Removendo TODAS as regras de firewall de bloqueio...
 
 :: Lista de executaveis que podem estar bloqueados
@@ -72,66 +78,84 @@ set "launchers=%launchers% C:\Program Files (x86)\Garena\Garena\Garena.exe"
 set "launchers=%launchers% C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe"
 
 for %%i in (%launchers%) do (
-    netsh advfirewall firewall delete rule name="Bloqueio %%i" >nul 2>&1
-    netsh advfirewall firewall delete rule program="%%i" >nul 2>&1
+    echo    Removendo bloqueio de: %%i
+    netsh advfirewall firewall delete rule name="Bloqueio %%i"
+    netsh advfirewall firewall delete rule program="%%i"
 )
 
 :: Remover regras com padroes de nome
-netsh advfirewall firewall delete rule name=all dir=out >nul 2>&1
+echo    Procurando outras regras com "Bloqueio" no nome...
 netsh advfirewall firewall show rule name=all | findstr /i "bloqueio" >nul 2>&1
 if %errorlevel% equ 0 (
-    echo    Removendo regras com "Bloqueio" no nome...
+    echo    Removendo regras adicionais encontradas...
     for /f "tokens=2 delims=:" %%a in ('netsh advfirewall firewall show rule name^=all ^| findstr /i /c:"Nome da Regra" /c:"Rule Name"') do (
         set rulename=%%a
         echo !rulename! | findstr /i "bloqueio" >nul
         if !errorlevel! equ 0 (
-            netsh advfirewall firewall delete rule name="!rulename!" >nul 2>&1
+            echo    Removendo: !rulename!
+            netsh advfirewall firewall delete rule name="!rulename!"
         )
     )
 )
 
 echo    [OK] Regras de firewall removidas
+timeout /t 2 /nobreak >nul
 
 :: -------------------------
 :: 4) REMOVER SOFTWARE RESTRICTION POLICY (SRP)
 :: -------------------------
+echo.
 echo [4/8] Removendo restricoes de execucao (SRP/Safer)...
-reg delete "HKLM\Software\Policies\Microsoft\Windows\Safer\CodeIdentifiers" /f >nul 2>&1
-reg delete "HKLM\Software\Policies\Microsoft\Windows\Safer" /f >nul 2>&1
-reg delete "HKLM\Software\Policies\Microsoft\Windows\SrpV2" /f >nul 2>&1
-reg delete "HKCU\Software\Policies\Microsoft\Windows\Safer" /f >nul 2>&1
+echo    Removendo HKLM\Software\Policies\Microsoft\Windows\Safer...
+reg delete "HKLM\Software\Policies\Microsoft\Windows\Safer\CodeIdentifiers" /f
+reg delete "HKLM\Software\Policies\Microsoft\Windows\Safer" /f
+reg delete "HKLM\Software\Policies\Microsoft\Windows\SrpV2" /f
+reg delete "HKCU\Software\Policies\Microsoft\Windows\Safer" /f
 echo    [OK] SRP removido
+timeout /t 2 /nobreak >nul
 
 :: -------------------------
 :: 5) DESBLOQUEAR PENDRIVE/USB
 :: -------------------------
+echo.
 echo [5/8] Desbloqueando dispositivos USB...
-reg delete "HKLM\Software\Policies\Microsoft\Windows\RemovableStorageDevices" /f >nul 2>&1
-reg delete "HKLM\System\CurrentControlSet\Control\StorageDevicePolicies" /f >nul 2>&1
-reg delete "HKLM\System\CurrentControlSet\Services\USBSTOR" /v Start /f >nul 2>&1
-reg add "HKLM\System\CurrentControlSet\Services\USBSTOR" /v Start /t REG_DWORD /d 3 /f >nul 2>&1
+echo    Removendo politicas de RemovableStorageDevices...
+reg delete "HKLM\Software\Policies\Microsoft\Windows\RemovableStorageDevices" /f
+echo    Removendo StorageDevicePolicies...
+reg delete "HKLM\System\CurrentControlSet\Control\StorageDevicePolicies" /f
+echo    Habilitando servico USBSTOR...
+reg add "HKLM\System\CurrentControlSet\Services\USBSTOR" /v Start /t REG_DWORD /d 3 /f
 echo    [OK] USB desbloqueado
+timeout /t 2 /nobreak >nul
 
 :: -------------------------
 :: 6) RESTAURAR DOWNLOADS
 :: -------------------------
+echo.
 echo [6/8] Restaurando permissoes de download...
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments" /f >nul 2>&1
-reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments" /f >nul 2>&1
+echo    Removendo restricoes em HKCU...
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments" /f
+echo    Removendo restricoes em HKLM...
+reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments" /f
 echo    [OK] Downloads restaurados
+timeout /t 2 /nobreak >nul
 
 :: -------------------------
 :: 7) REMOVER APPLOCKER (se existir)
 :: -------------------------
+echo.
 echo [7/8] Limpando AppLocker...
-powershell -Command "Try { Set-AppLockerPolicy -XMLPolicy '<AppLockerPolicy Version=\"1\" />' -ErrorAction Stop } Catch { }" >nul 2>&1
-echo    [OK] AppLocker limpo
+powershell -Command "Try { Set-AppLockerPolicy -XMLPolicy '<AppLockerPolicy Version=\"1\" />' -ErrorAction Stop; Write-Host '    AppLocker limpo' } Catch { Write-Host '    AppLocker nao estava configurado' }"
+echo    [OK] AppLocker verificado
+timeout /t 2 /nobreak >nul
 
 :: -------------------------
 :: 8) ATUALIZAR POLITICAS
 :: -------------------------
+echo.
 echo [8/8] Aplicando mudancas nas politicas do sistema...
-gpupdate /force >nul 2>&1
+echo    Isto pode levar alguns segundos...
+gpupdate /force
 echo    [OK] Politicas atualizadas
 
 :: -------------------------
@@ -148,6 +172,18 @@ echo  2. Apos reiniciar, verifique se tudo funciona
 echo  3. Se ainda houver bloqueios, execute este
 echo     script novamente como administrador
 echo.
+echo Resumo do que foi feito:
+echo  [OK] Arquivo hosts restaurado
+echo  [OK] Cache DNS limpo
+echo  [OK] Regras de firewall removidas
+echo  [OK] Restricoes de execucao (SRP) removidas
+echo  [OK] Dispositivos USB desbloqueados
+echo  [OK] Permissoes de download restauradas
+echo  [OK] AppLocker limpo
+echo  [OK] Politicas do sistema atualizadas
+echo.
 echo ================================================
-pause
+echo.
+echo Pressione qualquer tecla para fechar...
+pause >nul
 exit /b 0
