@@ -125,11 +125,11 @@ if exist "%APPDATA%\.minecraft\tlauncher.exe" (
 :: -------------------------
 :: 9) REMOCAO DE OUTRAS CHAVES DE POLITICA QUE PODEM TER SIDO ALTERADAS
 :: -------------------------
-echo [9/9] Removendo outras chaves de Politicas (tentativa geral)...
-reg delete "HKLM\Software\Policies\Microsoft\Windows" /f >nul 2>&1
+echo [9/9] Removendo chaves especificas de Politicas de bloqueio...
+:: NAO deletar toda a arvore de politicas do Windows, apenas as especificas criadas
+reg delete "HKLM\System\CurrentControlSet\Control\StorageDevicePolicies" /v WriteProtect /f >nul 2>&1
 
-:: OBS: o comando acima pode falhar parcialmente se existirem chaves protegidas por GPO corporativa.
-:: Em sistemas onde este PC e controlado por dominio, as politicas de dominio podem repopular chaves.
+:: OBS: Evitamos deletar HKLM\Software\Policies\Microsoft\Windows inteiro pois pode afetar outras configuracoes do sistema
 
 echo.
 echo Aplicando gpupdate para garantir que politicas locais sejam recarregadas...

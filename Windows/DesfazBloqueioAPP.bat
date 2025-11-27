@@ -23,7 +23,9 @@ echo [2/7] Removendo regras de Firewall...
 set launchers="C:\Program Files (x86)\Steam\steam.exe" "C:\Program Files (x86)\Epic Games\Launcher\Portal\Binaries\Win64\EpicGamesLauncher.exe" "C:\Riot Games\Riot Client\RiotClientServices.exe" "C:\Program Files (x86)\Battle.net\Battle.net.exe" "C:\Program Files (x86)\Garena\Garena\Garena.exe" "C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe"
 
 for %%i in (%launchers%) do (
-    netsh advfirewall firewall delete rule name="Bloqueio %%i" >nul
+    netsh advfirewall firewall delete rule name="Bloqueio %%i" >nul 2>&1
+    netsh advfirewall firewall delete rule program=%%i >nul 2>&1
+    echo   Desbloqueado: %%i
 )
 
 :: ---------------------------------------------------
@@ -62,8 +64,9 @@ echo [5/7] Instaladores liberados.
 :: ---------------------------------------------------
 echo [6/7] Restaurando acesso ao USB...
 
-reg delete "HKLM\Software\Policies\Microsoft\Windows\RemovableStorageDevices" /v Deny_All /f >nul 2>nul
-reg delete "HKLM\Software\Policies\Microsoft\Windows\RemovableStorageDevices" /f >nul 2>nul
+reg delete "HKLM\Software\Policies\Microsoft\Windows\RemovableStorageDevices" /v Deny_All /f >nul 2>&1
+reg delete "HKLM\Software\Policies\Microsoft\Windows\RemovableStorageDevices" /f >nul 2>&1
+reg delete "HKLM\System\CurrentControlSet\Control\StorageDevicePolicies" /v WriteProtect /f >nul 2>&1
 
 :: ---------------------------------------------------
 :: 7. APLICAR POLÍTICAS
