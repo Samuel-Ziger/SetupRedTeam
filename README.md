@@ -1,5 +1,14 @@
 # SetupRedTam
 
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Scripts](https://img.shields.io/badge/scripts-31-green)
+![Ferramentas](https://img.shields.io/badge/ferramentas-29-orange)
+![Vulnerabilidades](https://img.shields.io/badge/vulnerabilidades_rastreadas-54-red)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Kali%20Linux-lightgrey)
+![License](https://img.shields.io/badge/license-Educational-yellow)
+
+📑 **[Ver Índice Completo](./INDEX.md)** - Navegação rápida por todo o repositório  
+📝 **[Ver Changelog](./CHANGELOG.md)** - Histórico de atualizações
 
 ## 🎯 Propósito
 
@@ -9,9 +18,12 @@ Repositório de scripts de automação para configuração rápida de ambientes 
 
 - **Total de arquivos:** 6,900+
 - **Tamanho total:** ~312 MB
-- **Scripts principais:** 12 (Windows) + 1 (Kali)
-- **Ferramentas Kali:** 29 toolkits completos
-- **Linguagens:** Batch, PowerShell, Bash, Python
+- **Scripts Windows:** 18 arquivos (Attack Box, bloqueios, verificação)
+- **Scripts Kali:** 1 setup principal
+- **Scripts Pentest:** 13 scripts (1 DDoS + 5 legacy + 7 retestesh)
+- **Ferramentas Kali:** 29 toolkits completos (~312MB)
+- **Vulnerabilidades rastreadas:** 54 (6 alvos monitorados)
+- **Linguagens:** Batch, PowerShell, Bash, Python, Ruby, Go
 - **Última atualização:** Novembro 2025
 
 ## ⚠️ AVISO LEGAL
@@ -40,9 +52,9 @@ Scripts-Bat/
 │   ├── setup-kali.sh        # Setup completo automatizado
 │   ├── ExecutarSetup-Kali.md
 │   ├── README.md            # Documentação Kali
-│   └── Ferramentas/         # 29 ferramentas especializadas (312MB)
+│   └── Ferramentas/         # 29 ferramentas especializadas (~312MB)
 │       ├── zphisher/        # Phishing framework (30+ templates)
-│       ├── EchoPhish/       # Instagram phishing com 2FA ⭐ NOVO!
+│       ├── EchoPhish/       # Instagram phishing com 2FA ⭐
 │       ├── pupy/            # Cross-platform RAT/C2
 │       ├── reconftw/        # Automated reconnaissance
 │       ├── SecLists/        # Wordlists profissionais (1GB+)
@@ -55,24 +67,58 @@ Scripts-Bat/
 │       ├── HTThief/         # HTTP/HTTPS traffic stealer
 │       ├── injector/        # DLL/Shellcode injector
 │       ├── buster/          # Brute-force tool
-│       ├── Auto_Tor_IP_changer/ # Automatic Tor IP rotation ⭐ NOVO!
-│       ├── rce-scanner/     # RCE vulnerability scanner ⭐ NOVO!
-│       ├── whatsappsess/    # WhatsApp session hijacking ⭐ NOVO!
-│       ├── whatsintruder/   # WhatsApp media collector ⭐ NOVO!
-│       ├── zportal/         # 2FA captive portal for M5 Cardputer ⭐ NOVO!
-│       └── ...              # +8 ferramentas adicionais
+│       ├── Auto_Tor_IP_changer/ # Automatic Tor IP rotation ⭐
+│       ├── rce-scanner/     # RCE vulnerability scanner ⭐
+│       ├── whatsappsess/    # WhatsApp session hijacking ⭐
+│       ├── whatsintruder/   # WhatsApp media collector ⭐
+│       ├── zportal/         # 2FA captive portal for M5 Cardputer ⭐
+│       ├── webdiscover/     # Web subdomain discovery
+│       ├── Scavenger/       # OSINT framework
+│       ├── Anon-Check/      # Anonymity checker
+│       ├── Proton-VPN-Helper/ # ProtonVPN automation
+│       ├── VPN-Chain/       # Multi-VPN chaining
+│       ├── Give-me-privacy-Google/ # Google privacy exploitation
+│       ├── Building-Malicious-Chrome-Extensions/ # Chrome extension attacks
+│       ├── CSRF-to-RCE-on-Backdrop-CMS/ # Backdrop CMS exploit
+│       ├── Exploit-XSS-Polyglot-on-Moodle-3.9.2/ # Moodle XSS
+│       └── Exploiting-WP-Database-Backup-WordPress-Plugin/ # WordPress exploit
 │
-└── Windows/                 # Scripts para Windows
-    ├── atack2.0-optimized.bat  # Setup Notebook 2 (AD/Lateral Movement) ⭐ NOVO!
-    ├── setup-attackbox.ps1  # Setup PowerShell (RECOMENDADO)
-    ├── setup_attackbox.bat  # Launcher do setup
-    ├── atack2.0.bat         # Setup completo com WSL2
-    ├── bloqueioAPP.bat      # Bloqueio de aplicativos (ambientes controlados)
-    ├── rollback.bat         # Reverter configurações ⭐ NOVO!
-    ├── verificao.bat        # Verificação pós-instalação
-    ├── setup-debug.bat      # Modo debug para troubleshooting
-    ├── README.md            # Documentação Windows
-    └── NOTEBOOK2-GUIDE.md   # Guia específico Notebook 2 (i5-3210M) ⭐ NOVO!
+├── Windows/                 # Scripts para Windows
+│   ├── atack2.0-optimized.bat  # Setup Notebook 2 (AD/Lateral Movement) ⭐
+│   ├── setup-attackbox.ps1  # Setup PowerShell (RECOMENDADO)
+│   ├── setup_attackbox.bat  # Launcher do setup
+│   ├── atack2.0.bat         # Setup completo com WSL2
+│   ├── bloqueioAPP.bat      # Bloqueio de aplicativos (ambientes controlados)
+│   ├── rollback.bat         # Reverter configurações ⭐
+│   ├── verificao.bat        # Verificação pós-instalação
+│   ├── setup-debug.bat      # Modo debug para troubleshooting
+│   ├── DesbloqueioCompleto.bat # Desfaz bloqueios aplicados
+│   ├── BloqueioGeral.bat    # Bloqueio geral de recursos
+│   ├── Bloqueiojogos.bat    # Bloqueio específico de jogos
+│   ├── DesfazBloqueioAPP.bat # Desfaz bloqueios de aplicativos
+│   ├── DesfazBloqueioAPP.ps1 # PowerShell version
+│   ├── desfazer_geral.bat   # Desfaz bloqueio geral
+│   ├── README.md            # Documentação Windows
+│   └── NOTEBOOK2-GUIDE.md   # Guia específico Notebook 2 (i5-3210M) ⭐
+│
+└── ScrpitPentestSH/         # Scripts de Pentest e Reteste
+    ├── TESTE_DDOS_CONTROLADO.sh # Teste controlado de DDoS
+    ├── 01_RETESTE_ADIVISAO.sh
+    ├── 02_RETESTE_DIVISAODEELITE.sh
+    ├── 03_RETESTE_ACHEUMVETERANO.sh
+    ├── 04_RETESTE_IDIVIS.sh
+    ├── 05_RETESTE_PLANODECHAMADAS.sh
+    └── retestesh/           # Scripts de reteste organizados
+        ├── executar_todos_retestes.sh # Executa todos os retestes ⭐
+        ├── GUIA_RAPIDO.md   # Guia rápido de uso
+        ├── INDICE_VULNERABILIDADES.md # Índice consolidado
+        ├── README.md        # Documentação completa
+        ├── reteste_acheumveterano.sh
+        ├── reteste_adivisao.sh
+        ├── reteste_divisaodeelite.sh
+        ├── reteste_idivis.sh
+        ├── reteste_ngrok.sh
+        └── reteste_planodechamadas.sh
 ```
 
 ---
@@ -336,9 +382,38 @@ Remove-Item C:\Tools\<pasta> -Recurse -Force
 
 ## 📚 Documentação Adicional
 
-- [Windows/](./Windows/) - Detalhes sobre scripts Windows
-- [Kali/](./Kali/) - Detalhes sobre scripts Kali
-- [Kali/ExecutarSetup-Kali.md](./Kali/ExecutarSetup-Kali.md) - Guia de execução Kali
+### **Por Categoria:**
+
+- **[Windows/README.md](./Windows/README.md)** - Documentação completa dos scripts Windows
+  - Setup Attack Box
+  - Scripts de bloqueio/desbloqueio
+  - Troubleshooting Windows
+  
+- **[Windows/NOTEBOOK2-GUIDE.md](./Windows/NOTEBOOK2-GUIDE.md)** - Guia especializado Notebook 2
+  - Workflows práticos para AD
+  - Comandos de lateral movement
+  - Exemplos de uso das ferramentas
+
+- **[Kali/README.md](./Kali/README.md)** - Documentação completa Kali Linux
+  - Setup automatizado
+  - Descrição das 29 ferramentas
+  - Otimizações aplicadas
+  
+- **[Kali/ExecutarSetup-Kali.md](./Kali/ExecutarSetup-Kali.md)** - Guia rápido de execução
+
+- **[ScrpitPentestSH/README.md](./ScrpitPentestSH/README.md)** - Overview dos scripts de pentest
+  - Estrutura dos scripts
+  - Alvos monitorados
+  - Fluxo de trabalho
+
+- **[ScrpitPentestSH/retestesh/README.md](./ScrpitPentestSH/retestesh/README.md)** - Documentação detalhada de retestes
+  - Cada script explicado
+  - Vulnerabilidades testadas
+  - Interpretação de resultados
+
+- **[ScrpitPentestSH/retestesh/GUIA_RAPIDO.md](./ScrpitPentestSH/retestesh/GUIA_RAPIDO.md)** - Início rápido para retestes
+
+- **[ScrpitPentestSH/retestesh/INDICE_VULNERABILIDADES.md](./ScrpitPentestSH/retestesh/INDICE_VULNERABILIDADES.md)** - Índice de 54 vulnerabilidades
 
 ---
 
@@ -367,12 +442,101 @@ Este projeto é fornecido "como está", sem garantias. Use por sua conta e risco
 
 ---
 
+## 🌐 Recursos Externos Úteis
+
+### **Documentação de Ferramentas**
+- [BloodHound Documentation](https://bloodhound.readthedocs.io/) - Análise de Active Directory
+- [Impacket GitHub](https://github.com/fortra/impacket) - Suite de protocolos Windows
+- [Evil-WinRM Wiki](https://github.com/Hackplayers/evil-winrm/wiki) - WinRM shell
+- [Metasploit Unleashed](https://www.metasploit.com/unleashed) - Curso gratuito de Metasploit
+
+### **Wordlists e Payloads**
+- [SecLists](https://github.com/danielmiessler/SecLists) - Wordlists profissionais
+- [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings) - Repositório de payloads
+- [FuzzDB](https://github.com/fuzzdb-project/fuzzdb) - Patterns para fuzzing
+
+### **Privilege Escalation**
+- [PEASS-ng](https://github.com/carlospolop/PEASS-ng) - WinPEAS/LinPEAS
+- [GTFOBins](https://gtfobins.github.io/) - Unix binaries para bypass
+- [LOLBAS](https://lolbas-project.github.io/) - Living Off The Land Binaries
+
+### **Active Directory**
+- [HackTricks - AD](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology) - Metodologia AD
+- [WADComs](https://wadcoms.github.io/) - Comandos AD interativos
+- [AD Security](https://adsecurity.org/) - Blog especializado
+
+### **Cheat Sheets**
+- [HackTricks](https://book.hacktricks.xyz/) - Enciclopédia de hacking
+- [Red Team Notes](https://www.ired.team/) - Red team techniques
+- [NetSec Focus](https://netsec.ws/?p=337) - OSCP cheatsheet
+
+---
+
 ## 🔐 Segurança e Privacidade
 
 - Nunca armazene credenciais nos scripts
 - Use ambientes isolados (VMs/containers)
 - Mantenha ferramentas atualizadas
 - Audite regularmente seu ambiente de testes
+
+---
+
+## 🔍 Scripts de Pentest e Reteste
+
+### **ScrpitPentestSH/**
+
+Diretório contendo scripts especializados para testes de penetração e retestes de vulnerabilidades.
+
+#### **Scripts de Reteste Automatizado**
+
+Localizado em `ScrpitPentestSH/retestesh/`, contém 7 scripts bash para validação de correções:
+
+| Script | Alvo | Vulnerabilidades Testadas |
+|--------|------|---------------------------|
+| `reteste_adivisao.sh` | adivisao.com.br | 10 vulns (Tokens, Elasticsearch, CORS) |
+| `reteste_divisaodeelite.sh` | divisaodeelite.com.br | 11 vulns (Plugin malicioso, Bubble.io) |
+| `reteste_acheumveterano.sh` | acheumveterano.com.br | 8 vulns (SSH, WordPress, Logs) |
+| `reteste_idivis.sh` | idivis.ao | 11 vulns (Porta 3000, Backups, SSH) |
+| `reteste_planodechamadas.sh` | planodechamadas.com.br | 9 vulns (Headers, Next.js, TLS) |
+| `reteste_ngrok.sh` | ngrok URL | 5 vulns (Headers de segurança) |
+| `executar_todos_retestes.sh` | **TODOS** | Executa todos sequencialmente ⭐ |
+
+**Uso rápido:**
+```bash
+cd ScrpitPentestSH/retestesh
+chmod +x executar_todos_retestes.sh
+./executar_todos_retestes.sh
+```
+
+**Recursos:**
+- ✅ Relatórios automáticos com timestamp
+- ✅ Códigos de cores (🔴 Crítico, 🟡 Médio, 🟢 OK)
+- ✅ Verificação de HTTP status codes
+- ✅ Testes de headers de segurança
+- ✅ Scan de portas e serviços
+- ✅ Validação TLS/SSL
+
+**Documentação:**
+- `README.md` - Documentação detalhada de cada script
+- `GUIA_RAPIDO.md` - Início rápido e troubleshooting
+- `INDICE_VULNERABILIDADES.md` - Lista consolidada de 54 vulnerabilidades
+
+#### **Scripts de Reteste (Raiz)**
+
+Scripts na raiz de `ScrpitPentestSH/` (versão legacy):
+- `01_RETESTE_ADIVISAO.sh`
+- `02_RETESTE_DIVISAODEELITE.sh`
+- `03_RETESTE_ACHEUMVETERANO.sh`
+- `04_RETESTE_IDIVIS.sh`
+- `05_RETESTE_PLANODECHAMADAS.sh`
+
+**Nota:** Use os scripts em `retestesh/` que estão mais atualizados.
+
+#### **Teste de DDoS Controlado**
+
+- `TESTE_DDOS_CONTROLADO.sh` - Script para testes controlados de stress em servidores autorizados
+
+⚠️ **IMPORTANTE:** Todos os scripts de pentest devem ser usados apenas em ambientes autorizados!
 
 ---
 

@@ -7,10 +7,11 @@ Conjunto de scripts para configuração automatizada de ambiente Windows para Pe
 ### 🎯 Análise do Repositório Windows
 
 **Estatísticas:**
-- **Scripts totais:** 12 arquivos
+- **Scripts totais:** 18 arquivos
 - **Scripts principais:** 4 (atack2.0-optimized.bat, setup-attackbox.ps1, atack2.0.bat, rollback.bat)
-- **Scripts auxiliares:** 4 (verificao.bat, setup-debug.bat, bloqueioAPP.bat, setup_attackbox.bat)
+- **Scripts auxiliares:** 10 (verificação, debug, bloqueios)
 - **Documentação:** 2 (README.md, NOTEBOOK2-GUIDE.md)
+- **Scripts descontinuados:** 2 (SetupAtack.bat, SetupAtack2.bat)
 - **Linguagens:** Batch (.bat), PowerShell (.ps1)
 
 **Novidades (v2.0):**
@@ -44,11 +45,20 @@ Conjunto de scripts para configuração automatizada de ambiente Windows para Pe
 ### **Scripts Auxiliares**
 
 | Script | Descrição |
-|--------|-----------|
+|--------|-----------||
 | `rollback.bat` | **NOVO!** Reverte todas as configurações do setup |
 | `verificao.bat` | Verifica se o setup foi bem-sucedido |
 | `setup-debug.bat` | Modo debug para troubleshooting |
 | `bloqueioAPP.bat` | Bloqueio de aplicativos (para ambientes escolares/corporativos) |
+| `BloqueioGeral.bat` | Bloqueio geral de recursos do sistema |
+| `Bloqueiojogos.bat` | Bloqueio específico de jogos e entretenimento |
+| `DesbloqueioCompleto.bat` | Remove todos os bloqueios aplicados |
+| `DesfazBloqueioAPP.bat` | Remove bloqueio de aplicativos específicos |
+| `DesfazBloqueioAPP.ps1` | Versão PowerShell do desbloqueio |
+| `desfazer_geral.bat` | Remove bloqueio geral do sistema |
+
+**⚠️ Nota sobre Scripts de Bloqueio:**
+Os scripts de bloqueio (`bloqueioAPP.bat`, `BloqueioGeral.bat`, etc.) foram criados para ambientes controlados (escolas, laboratórios) e **NÃO** fazem parte do setup de Attack Box. Use apenas se necessário para controle de acesso.
 
 ### **Scripts Descontinuados**
 
