@@ -542,6 +542,30 @@ Scripts na raiz de `ScrpitPentestSH/` (versão legacy):
 
 ## 🆕 **NOVIDADES - Atualização 28/11/2025** ⭐
 
+### **🚀 PENTEST AUTOMATIZADO COMPLETO** - v3.0 🔥
+✅ **Pentest 100% automatizado** - Do OSINT à exploração  
+✅ **Rotação automática de IP via Tor** - Muda a cada 3 segundos  
+✅ **Integração OPSEC completa** - Checklist pré-engagement  
+✅ **Mascaramento de IP em tempo real** - Impossível rastrear  
+✅ **5 fases automatizadas:** Reconhecimento → Scanning → Enumeração → Exploração → Relatório  
+✅ **+20 ferramentas integradas:** Nmap, Nikto, SQLMap, Hydra, Gobuster, WPScan, etc.  
+✅ **Brute force inteligente:** FTP, SSH, painéis admin (com SecLists)  
+✅ **SQL Injection automática:** Detecção + exploração com SQLMap  
+✅ **Detecção de vulnerabilidades críticas:** MS17-010, BlueKeep, etc.  
+✅ **Relatório final TXT:** Sumário executivo + evidências completas  
+📖 **Script:** `pentest_automatizado.sh`  
+📖 **Guia:** `GUIA_COMPLETO_PENTEST.md` (~1100 linhas)  
+
+**Uso:**
+```bash
+sudo ./pentest_automatizado.sh
+# Escolhe usar Tor ou conexão direta
+# IP rotaciona automaticamente a cada 3s
+# Pentest completo sem intervenção manual
+```
+
+---
+
 ### **🔒 Biblioteca OPSEC** - Segurança Operacional
 ✅ 10 funções de segurança para pentests (VPN check, DNS leak, rate limiting, etc.)  
 📖 Guia completo: `docs/OPSEC_CHECKLIST.md`  
@@ -600,11 +624,14 @@ Scripts na raiz de `ScrpitPentestSH/` (versão legacy):
 📖 Script: `ScrpitPentestSH/retestesh/reteste_with_opsec.sh`
 
 ### **📚 Documentação Profissional**
+✅ **Guia Completo de Penetration Testing** - 1100 linhas, passo a passo completo  
 ✅ **Guia de Upgrade de Hardware** - Prioridades, custos, ROI  
 ✅ **Estratégia 3-2-1 de Backup** - Automação completa  
 ✅ **Checklist OPSEC** - 15 verificações essenciais  
-📁 Tudo em: `docs/`
+📁 Tudo em: `docs/` + raiz do projeto
 
+**👉 Pentest Automatizado:** `pentest_automatizado.sh`  
+**👉 Guia Completo:** `GUIA_COMPLETO_PENTEST.md`  
 **👉 Detalhes completos:** `NOVAS_FUNCIONALIDADES.md`  
 **👉 Começar em 5 min:** `QUICK_START.md`
 
