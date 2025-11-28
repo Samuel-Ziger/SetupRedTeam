@@ -540,4 +540,75 @@ Scripts na raiz de `ScrpitPentestSH/` (versão legacy):
 
 ---
 
-**Última atualização:** Novembro 2025
+## 🆕 **NOVIDADES - Atualização 28/11/2025** ⭐
+
+### **🔒 Biblioteca OPSEC** - Segurança Operacional
+✅ 10 funções de segurança para pentests (VPN check, DNS leak, rate limiting, etc.)  
+📖 Guia completo: `docs/OPSEC_CHECKLIST.md`  
+📖 Script: `lib/opsec.sh`
+
+### **💾 Sistema de Backup Automatizado**
+✅ Backup de ferramentas, VMs, scripts e wordlists  
+✅ Limpeza automática de backups antigos (>30 dias)  
+✅ Verificação de integridade  
+📖 Estratégia completa: `docs/BACKUP_STRATEGY.md`  
+📖 Script: `lib/backup_tools.sh`
+
+### **🖥️ Verificação de Recursos**
+✅ Detecta automaticamente PC1, PC2, NB1, NB2  
+✅ Verifica CPU/RAM/Disco/SWAP antes de operações pesadas  
+✅ Sugestões de otimização personalizadas  
+📖 Script: `lib/resource_check.sh`
+
+### **📄 Gerador de Relatórios Profissionais**
+✅ Markdown → PDF automático (via Pandoc)  
+✅ Templates profissionais incluídos  
+✅ Conversão HTML também disponível  
+📖 Template: `templates/report_template.md`  
+📖 Script: `lib/generate_report.sh`
+
+### **🎯 C2 Frameworks Modernos** (Kali)
+✅ **Sliver** - C2 moderno em Go (substituiu Cobalt Strike)  
+✅ **Havoc** - C2 open-source profissional  
+✅ **Mythic** - Framework modular de C2  
+📖 Instalação automática via `Kali/setup-kali.sh` (atualizado)
+
+### **☁️ Cloud Security Tools** (Kali)
+✅ **Pacu** - AWS exploitation framework  
+✅ **ScoutSuite** - Multi-cloud auditing  
+✅ **Prowler** - AWS/Azure/GCP security assessment  
+✅ **CloudFox** - AWS situational awareness  
+📖 Instalação automática via `Kali/setup-kali.sh` (atualizado)
+
+### **📊 Wazuh SIEM**
+✅ Logging centralizado via Docker  
+✅ Dashboard web profissional  
+✅ Threat detection + Compliance  
+📖 Script: `lib/install_wazuh.sh`
+
+### **🤖 CI/CD GitHub Actions**
+✅ Reteste automatizado semanal  
+✅ Notificações Discord/Slack  
+✅ Upload de relatórios como artifacts  
+📖 Workflow: `.github/workflows/reteste.yml`
+
+### **🛡️ Wrapper OPSEC para Retestes**
+✅ Rate limiting automático  
+✅ User-agent rotation  
+✅ VPN checking  
+✅ Resource validation  
+📖 Script: `ScrpitPentestSH/retestesh/reteste_with_opsec.sh`
+
+### **📚 Documentação Profissional**
+✅ **Guia de Upgrade de Hardware** - Prioridades, custos, ROI  
+✅ **Estratégia 3-2-1 de Backup** - Automação completa  
+✅ **Checklist OPSEC** - 15 verificações essenciais  
+📁 Tudo em: `docs/`
+
+**👉 Detalhes completos:** `NOVAS_FUNCIONALIDADES.md`  
+**👉 Começar em 5 min:** `QUICK_START.md`
+
+---
+
+**Última atualização:** 28 de Novembro de 2025
+

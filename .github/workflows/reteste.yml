@@ -1,0 +1,163 @@
+name: Reteste Automatizado Semanal
+
+on:
+  schedule:
+    # Executar todo domingo às 2h da manhã (UTC)
+    - cron: '0 2 * * 0'
+  
+  # Permitir execução manual
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Alvo específico (ou deixe vazio para todos)'
+        required: false
+        default: ''
+
+jobs:
+  reteste:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v3
+      
+      - name: 🔧 Setup ambiente
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl netcat-openbsd openssl
+      
+      - name: 🔐 Verificar secrets
+        run: |
+          if [ -z "${{ secrets.DISCORD_WEBHOOK }}" ]; then
+            echo "⚠️ DISCORD_WEBHOOK não configurado"
+          fi
+          if [ -z "${{ secrets.SLACK_WEBHOOK }}" ]; then
+            echo "⚠️ SLACK_WEBHOOK não configurado"
+          fi
+      
+      - name: 🎯 Executar retestes
+        id: run_tests
+        run: |
+          cd ScrpitPentestSH/retestesh
+          chmod +x executar_todos_retestes.sh
+          
+          if [ -n "${{ github.event.inputs.target }}" ]; then
+            # Executar apenas target específico
+            ./reteste_${{ github.event.inputs.target }}.sh
+          else
+            # Executar todos
+            ./executar_todos_retestes.sh
+          fi
+          
+          # Salvar nome do relatório
+          REPORT=$(ls -t relatorio_reteste_completo_*.txt | head -1)
+          echo "report_file=$REPORT" >> $GITHUB_OUTPUT
+      
+      - name: 📊 Analisar resultados
+        id: analyze
+        run: |
+          REPORT="${{ steps.run_tests.outputs.report_file }}"
+          
+          # Contar vulnerabilidades por status
+          CRITICAS=$(grep -c "🔴" "$REPORT" || echo "0")
+          MEDIAS=$(grep -c "🟡" "$REPORT" || echo "0")
+          CORRIGIDAS=$(grep -c "🟢" "$REPORT" || echo "0")
+          
+          echo "criticas=$CRITICAS" >> $GITHUB_OUTPUT
+          echo "medias=$MEDIAS" >> $GITHUB_OUTPUT
+          echo "corrigidas=$CORRIGIDAS" >> $GITHUB_OUTPUT
+          
+          # Determinar status geral
+          if [ $CRITICAS -gt 0 ]; then
+            echo "status=🔴 CRÍTICO" >> $GITHUB_OUTPUT
+            echo "color=15158332" >> $GITHUB_OUTPUT  # Vermelho
+          elif [ $MEDIAS -gt 5 ]; then
+            echo "status=🟡 ATENÇÃO" >> $GITHUB_OUTPUT
+            echo "color=16776960" >> $GITHUB_OUTPUT  # Amarelo
+          else
+            echo "status=🟢 OK" >> $GITHUB_OUTPUT
+            echo "color=3066993" >> $GITHUB_OUTPUT   # Verde
+          fi
+      
+      - name: 📤 Upload relatório como artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: relatorio-reteste-${{ github.run_number }}
+          path: ScrpitPentestSH/retestesh/relatorio_*.txt
+          retention-days: 90
+      
+      - name: 🔔 Notificação Discord
+        if: ${{ secrets.DISCORD_WEBHOOK != '' }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"Reteste Automatizado - ${{ steps.analyze.outputs.status }}\",
+                \"description\": \"Resultados do reteste semanal\",
+                \"color\": ${{ steps.analyze.outputs.color }},
+                \"fields\": [
+                  {
+                    \"name\": \"🔴 Críticas\",
+                    \"value\": \"${{ steps.analyze.outputs.criticas }}\",
+                    \"inline\": true
+                  },
+                  {
+                    \"name\": \"🟡 Médias\",
+                    \"value\": \"${{ steps.analyze.outputs.medias }}\",
+                    \"inline\": true
+                  },
+                  {
+                    \"name\": \"🟢 Corrigidas\",
+                    \"value\": \"${{ steps.analyze.outputs.corrigidas }}\",
+                    \"inline\": true
+                  }
+                ],
+                \"footer\": {
+                  \"text\": \"GitHub Actions - $(date)\"
+                }
+              }]
+            }" \
+            ${{ secrets.DISCORD_WEBHOOK }}
+      
+      - name: 🔔 Notificação Slack
+        if: ${{ secrets.SLACK_WEBHOOK != '' }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{
+              \"text\": \"Reteste Automatizado - ${{ steps.analyze.outputs.status }}\",
+              \"attachments\": [{
+                \"color\": \"${{ steps.analyze.outputs.status == '🔴 CRÍTICO' && 'danger' || steps.analyze.outputs.status == '🟡 ATENÇÃO' && 'warning' || 'good' }}\",
+                \"fields\": [
+                  {
+                    \"title\": \"Críticas\",
+                    \"value\": \"${{ steps.analyze.outputs.criticas }}\",
+                    \"short\": true
+                  },
+                  {
+                    \"title\": \"Médias\",
+                    \"value\": \"${{ steps.analyze.outputs.medias }}\",
+                    \"short\": true
+                  },
+                  {
+                    \"title\": \"Corrigidas\",
+                    \"value\": \"${{ steps.analyze.outputs.corrigidas }}\",
+                    \"short\": true
+                  }
+                ]
+              }]
+            }" \
+            ${{ secrets.SLACK_WEBHOOK }}
+      
+      - name: ✅ Resumo
+        run: |
+          echo "## 📊 Resumo do Reteste" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ steps.analyze.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Categoria | Quantidade |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔴 Críticas | ${{ steps.analyze.outputs.criticas }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🟡 Médias | ${{ steps.analyze.outputs.medias }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🟢 Corrigidas | ${{ steps.analyze.outputs.corrigidas }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📥 Relatório completo disponível nos artifacts deste workflow." >> $GITHUB_STEP_SUMMARY

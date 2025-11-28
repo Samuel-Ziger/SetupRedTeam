@@ -83,7 +83,104 @@ echo "[12] Instalando SSH Server..."
 sudo apt install openssh-server -y
 sudo systemctl enable ssh --now
 
+################################################################################
+# NOVAS ADIÇÕES - C2 FRAMEWORKS MODERNOS (2025-11-28)
+################################################################################
+
+echo "[13] Instalando C2 Frameworks modernos..."
+echo "  Sliver, Havoc, Mythic..."
+
+# Sliver C2 (Go-based, moderno, substituiu Cobalt Strike para muitos)
+echo "[13.1] Instalando Sliver C2..."
+if ! command -v sliver-server &> /dev/null; then
+    curl https://sliver.sh/install | sudo bash
+    echo "  ✓ Sliver instalado"
+else
+    echo "  ✓ Sliver já instalado, pulando..."
+fi
+
+# Havoc C2 (C2 moderno open-source)
+echo "[13.2] Instalando Havoc C2..."
+if [ ! -d ~/Tools/Havoc ]; then
+    mkdir -p ~/Tools
+    cd ~/Tools
+    git clone https://github.com/HavocFramework/Havoc.git
+    cd Havoc
+    # Instalação requer compilação manual - ver README
+    echo "  ✓ Havoc clonado (compilar manualmente: cd ~/Tools/Havoc && make)"
+else
+    echo "  ✓ Havoc já existe, pulando..."
+fi
+
+# Instalar dependências para Mythic (via Docker)
+echo "[13.3] Preparando Mythic C2..."
+echo "  Mythic requer Docker (já instalado anteriormente)"
+echo "  Para instalar Mythic: git clone https://github.com/its-a-feature/Mythic && cd Mythic && ./install_docker_ubuntu.sh"
+
+################################################################################
+# CLOUD SECURITY TOOLS (2025-11-28)
+################################################################################
+
+echo "[14] Instalando Cloud Security Tools..."
+
+# Pacu (AWS exploitation framework)
+echo "[14.1] Instalando Pacu (AWS)..."
+if [ ! -d ~/Tools/pacu ]; then
+    mkdir -p ~/Tools
+    cd ~/Tools
+    git clone https://github.com/RhinoSecurityLabs/pacu.git
+    cd pacu
+    pip3 install -r requirements.txt
+    echo "  ✓ Pacu instalado"
+else
+    echo "  ✓ Pacu já instalado, pulando..."
+fi
+
+# ScoutSuite (Multi-cloud auditing)
+echo "[14.2] Instalando ScoutSuite (Multi-cloud)..."
+if ! command -v scout &> /dev/null; then
+    pip3 install scoutsuite
+    echo "  ✓ ScoutSuite instalado"
+else
+    echo "  ✓ ScoutSuite já instalado, pulando..."
+fi
+
+# Prowler (AWS/Azure/GCP security)
+echo "[14.3] Instalando Prowler (AWS/Azure/GCP)..."
+if ! command -v prowler &> /dev/null; then
+    pip3 install prowler-cloud
+    echo "  ✓ Prowler instalado"
+else
+    echo "  ✓ Prowler já instalado, pulando..."
+fi
+
+# CloudFox (AWS situational awareness)
+echo "[14.4] Instalando CloudFox (AWS)..."
+if [ ! -f /usr/local/bin/cloudfox ]; then
+    wget https://github.com/BishopFox/cloudfox/releases/latest/download/cloudfox-linux-amd64 -O /tmp/cloudfox
+    sudo mv /tmp/cloudfox /usr/local/bin/cloudfox
+    sudo chmod +x /usr/local/bin/cloudfox
+    echo "  ✓ CloudFox instalado"
+else
+    echo "  ✓ CloudFox já instalado, pulando..."
+fi
+
 echo "========================================"
 echo "   SETUP FINALIZADO!"
 echo " Reinicie a máquina para aplicar tudo."
+echo "========================================"
+echo ""
+echo "🆕 Novidades instaladas (2025-11-28):"
+echo "  ✓ Sliver C2 (comando: sliver-server)"
+echo "  ✓ Havoc C2 (~/Tools/Havoc - compilar manualmente)"
+echo "  ✓ Pacu (AWS) - cd ~/Tools/pacu && python pacu.py"
+echo "  ✓ ScoutSuite (Multi-cloud) - comando: scout"
+echo "  ✓ Prowler (AWS/Azure/GCP) - comando: prowler"
+echo "  ✓ CloudFox (AWS) - comando: cloudfox"
+echo ""
+echo "📚 Documentação:"
+echo "  Sliver: https://github.com/BishopFox/sliver/wiki"
+echo "  Havoc: https://havocframework.com/docs"
+echo "  Mythic: https://docs.mythic-c2.net"
+echo "  Pacu: https://github.com/RhinoSecurityLabs/pacu"
 echo "========================================"
