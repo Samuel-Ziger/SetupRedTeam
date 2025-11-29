@@ -14,10 +14,12 @@ Conjunto de scripts para configuração automatizada de ambiente Windows para Pe
 - **Scripts descontinuados:** 2 (SetupAtack.bat, SetupAtack2.bat)
 - **Linguagens:** Batch (.bat), PowerShell (.ps1)
 
-**Novidades (v2.0):**
+**Novidades (v3.0):**
+- ✅ **setup-notebook2.ps1** - Script PowerShell completo e avançado para Notebook 2
+- ✅ **NOTEBOOK2_COMPLETO.md** - Guia completo na raiz com explicação detalhada de cada ferramenta
 - ✅ **atack2.0-optimized.bat** - Otimizado para Notebook 2 (i5-3210M, 12GB) focado em AD/Lateral Movement
 - ✅ **rollback.bat** - Reverter todas as configurações de segurança
-- ✅ **NOTEBOOK2-GUIDE.md** - Guia completo de 400+ linhas com workflows práticos
+- ✅ **NOTEBOOK2-GUIDE.md** - Guia rápido de referência local
 - ✅ **Verificação de duplicatas** - Scripts não baixam/clonam ferramentas já existentes
 - ✅ **Melhor tratamento de erros** - Mensagens informativas em português
 
@@ -35,12 +37,16 @@ Conjunto de scripts para configuração automatizada de ambiente Windows para Pe
 
 | Script | Descrição | Hardware Alvo | Uso |
 |--------|-----------|---------------|-----|
-| `atack2.0-optimized.bat` | **Setup Notebook 2** - Attack Box AD/Lateral Movement **(RECOMENDADO)** | i5-3210M / 12GB | Execute como admin |
+| `setup-notebook2.ps1` | **Setup Notebook 2 COMPLETO** - PowerShell avançado com todas as ferramentas **(MAIS RECOMENDADO)** | i5-3210M / 12GB | Execute como admin |
+| `setup-notebook2.bat` | Launcher para setup-notebook2.ps1 | i5-3210M / 12GB | Clique duplo como admin |
+| `atack2.0-optimized.bat` | Setup Notebook 2 - Versão Batch (alternativa) | i5-3210M / 12GB | Execute como admin |
 | `setup-attackbox.ps1` | Setup PowerShell genérico | Qualquer PC | Via `setup_attackbox.bat` |
 | `setup_attackbox.bat` | Launcher para o script PowerShell | Qualquer PC | Clique duplo |
 | `atack2.0.bat` | Setup completo com WSL2 + Kali (versão original) | Qualquer PC | Execute como admin |
 
-**📖 Guia específico do Notebook 2**: Veja [NOTEBOOK2-GUIDE.md](./NOTEBOOK2-GUIDE.md)
+**📖 Guias do Notebook 2:**
+- **Guia Completo (Raiz)**: [NOTEBOOK2_COMPLETO.md](../NOTEBOOK2_COMPLETO.md) - Guia detalhado com todas as ferramentas
+- **Guia Rápido (Local)**: [NOTEBOOK2-GUIDE.md](./NOTEBOOK2-GUIDE.md) - Guia rápido de referência
 
 ### **Scripts Auxiliares**
 
