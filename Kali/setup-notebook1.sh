@@ -65,16 +65,37 @@ chmod 755 "$NB1_HOME"
 chmod 700 "$NB1_PAYLOADS"
 chmod 755 "$NB1_WWW"
 
-# Atualizar sistema
+# Atualizar sistema (opcional - pode ser demorado)
 echo -e "${BLUE}[2/15] Atualizando sistema...${NC}"
-apt update > /dev/null 2>&1
-apt upgrade -y > /dev/null 2>&1
+echo -e "${YELLOW}[i] Esta etapa pode demorar alguns minutos...${NC}"
+echo -e "${YELLOW}[i] Você pode pular se o sistema já estiver atualizado${NC}"
+read -p "Atualizar sistema agora? (S/n): " update_confirm
+if [[ ! "$update_confirm" =~ ^[Nn]$ ]]; then
+    echo -e "${BLUE}[*] Executando apt update...${NC}"
+    timeout 300 apt update 2>&1 | grep -E "(Reading|Fetched|Get:|Hit:|Ign:|Err)" || {
+        echo -e "${YELLOW}[!] apt update demorou muito ou falhou. Continuando...${NC}"
+    }
+    
+    echo -e "${BLUE}[*] Executando apt upgrade (pode demorar)...${NC}"
+    echo -e "${YELLOW}[i] Isso pode levar 10-30 minutos dependendo do sistema${NC}"
+    DEBIAN_FRONTEND=noninteractive timeout 1800 apt upgrade -y 2>&1 | grep -E "(Reading|Setting up|Unpacking|Processing)" || {
+        echo -e "${YELLOW}[!] apt upgrade demorou muito ou foi interrompido. Continuando...${NC}"
+    }
+    echo -e "${GREEN}[✓] Atualização concluída${NC}"
+else
+    echo -e "${YELLOW}[i] Pulando atualização do sistema${NC}"
+fi
 
 # Instalar Kali XFCE minimal (se não estiver instalado)
 echo -e "${BLUE}[3/15] Verificando instalação Kali XFCE...${NC}"
 if ! dpkg -l | grep -q "kali-linux-default"; then
     echo -e "${YELLOW}[i] Instalando Kali XFCE minimal...${NC}"
-    apt install -y kali-linux-default xfce4 xfce4-goodies
+    echo -e "${YELLOW}[i] Isso pode demorar 15-30 minutos...${NC}"
+    DEBIAN_FRONTEND=noninteractive apt install -y kali-linux-default xfce4 xfce4-goodies 2>&1 | grep -E "(Reading|Setting up|Unpacking|Processing)" || {
+        echo -e "${YELLOW}[!] Instalação do Kali XFCE pode ter falhado. Continuando...${NC}"
+    }
+else
+    echo -e "${GREEN}[✓] Kali XFCE já está instalado${NC}"
 fi
 
 # ============================================================================
@@ -84,19 +105,24 @@ fi
 echo -e "${BLUE}[4/15] Instalando servidores HTTP e protocolos...${NC}"
 
 # Servidor HTTP simples (Python)
-apt install -y python3 python3-pip
+echo -e "${BLUE}[*] Instalando Python3...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y python3 python3-pip 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Servidor HTTP leve (lighttpd)
-apt install -y lighttpd
+echo -e "${BLUE}[*] Instalando Lighttpd...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y lighttpd 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # PHP para servidores web
-apt install -y php php-cli php-curl php-mbstring
+echo -e "${BLUE}[*] Instalando PHP...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y php php-cli php-curl php-mbstring 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Servidor FTP
-apt install -y vsftpd
+echo -e "${BLUE}[*] Instalando vsftpd...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y vsftpd 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Servidor SMB
-apt install -y samba samba-common-bin
+echo -e "${BLUE}[*] Instalando Samba...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y samba samba-common-bin 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # ============================================================================
 # REVERSE SHELLS E LISTENERS
@@ -105,16 +131,20 @@ apt install -y samba samba-common-bin
 echo -e "${BLUE}[5/15] Instalando ferramentas de reverse shell...${NC}"
 
 # Netcat (tradicional e OpenBSD)
-apt install -y netcat-traditional netcat-openbsd nc
+echo -e "${BLUE}[*] Instalando Netcat...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y netcat-traditional netcat-openbsd nc 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Socat (socket cat - muito útil para pivoting)
-apt install -y socat
+echo -e "${BLUE}[*] Instalando Socat...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y socat 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Ncat (versão do Nmap)
-apt install -y nmap
+echo -e "${BLUE}[*] Instalando Nmap...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y nmap 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Pwncat (netcat melhorado)
-pip3 install pwncat-cs > /dev/null 2>&1
+echo -e "${BLUE}[*] Instalando Pwncat...${NC}"
+pip3 install --quiet pwncat-cs 2>&1 | grep -v "Requirement already satisfied" || true
 
 # ============================================================================
 # SSH E RDP
@@ -123,14 +153,16 @@ pip3 install pwncat-cs > /dev/null 2>&1
 echo -e "${BLUE}[6/15] Configurando SSH e RDP...${NC}"
 
 # SSH Server
-apt install -y openssh-server
-systemctl enable ssh
-systemctl start ssh
+echo -e "${BLUE}[*] Instalando OpenSSH Server...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y openssh-server 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
+systemctl enable ssh 2>/dev/null || true
+systemctl start ssh 2>/dev/null || true
 
 # RDP Server (xrdp)
-apt install -y xrdp
-systemctl enable xrdp
-systemctl start xrdp
+echo -e "${BLUE}[*] Instalando xrdp...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y xrdp 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
+systemctl enable xrdp 2>/dev/null || true
+systemctl start xrdp 2>/dev/null || true
 
 # Configurar SSH para permitir port forwarding
 sed -i 's/#AllowTcpForwarding yes/AllowTcpForwarding yes/' /etc/ssh/sshd_config
@@ -145,24 +177,39 @@ echo -e "${BLUE}[7/15] Instalando ferramentas de tunneling e pivoting...${NC}"
 # Chisel (tunneling rápido)
 if ! command -v chisel &> /dev/null; then
     echo -e "${YELLOW}[i] Instalando Chisel...${NC}"
-    wget -q https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz -O /tmp/chisel.gz
-    gunzip /tmp/chisel.gz
-    mv /tmp/chisel /usr/local/bin/chisel
-    chmod +x /usr/local/bin/chisel
+    timeout 60 wget --timeout=30 --tries=3 -q https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz -O /tmp/chisel.gz && {
+        gunzip /tmp/chisel.gz 2>/dev/null
+        mv /tmp/chisel /usr/local/bin/chisel 2>/dev/null
+        chmod +x /usr/local/bin/chisel 2>/dev/null
+        echo -e "${GREEN}[✓] Chisel instalado${NC}"
+    } || {
+        echo -e "${YELLOW}[!] Falha ao baixar Chisel. Continuando...${NC}"
+    }
+else
+    echo -e "${GREEN}[✓] Chisel já está instalado${NC}"
 fi
 
 # Plink (PuTTY link - tunneling SSH)
-apt install -y putty-tools
+echo -e "${BLUE}[*] Instalando Putty-tools...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y putty-tools 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # SSHuttle (VPN via SSH)
-apt install -y sshuttle
+echo -e "${BLUE}[*] Instalando SSHuttle...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y sshuttle 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Ngrok (tunneling público)
 if ! command -v ngrok &> /dev/null; then
     echo -e "${YELLOW}[i] Instalando Ngrok...${NC}"
-    wget -q https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -O /tmp/ngrok.tgz
-    tar -xzf /tmp/ngrok.tgz -C /usr/local/bin/
-    chmod +x /usr/local/bin/ngrok
+    timeout 60 wget --timeout=30 --tries=3 -q https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -O /tmp/ngrok.tgz && {
+        tar -xzf /tmp/ngrok.tgz -C /usr/local/bin/ 2>/dev/null
+        chmod +x /usr/local/bin/ngrok 2>/dev/null
+        echo -e "${GREEN}[✓] Ngrok instalado${NC}"
+    } || {
+        echo -e "${YELLOW}[!] Falha ao baixar Ngrok. Continuando...${NC}"
+        echo -e "${YELLOW}[i] Você pode instalar manualmente depois: https://ngrok.com/download${NC}"
+    }
+else
+    echo -e "${GREEN}[✓] Ngrok já está instalado${NC}"
 fi
 
 # Serveo (tunneling via SSH público)
@@ -180,11 +227,17 @@ apt install -y metasploit-framework
 # Payloads All The Things (templates)
 if [ ! -d "/opt/payloadsallthethings" ]; then
     echo -e "${YELLOW}[i] Baixando PayloadsAllTheThings...${NC}"
-    git clone --depth 1 https://github.com/swisskyrepo/PayloadsAllTheThings.git /opt/payloadsallthethings
+    echo -e "${YELLOW}[i] Isso pode demorar alguns minutos...${NC}"
+    timeout 300 git clone --depth 1 https://github.com/swisskyrepo/PayloadsAllTheThings.git /opt/payloadsallthethings 2>&1 | grep -E "(Cloning|Receiving|Resolving)" || {
+        echo -e "${YELLOW}[!] Falha ao baixar PayloadsAllTheThings. Continuando...${NC}"
+    }
+else
+    echo -e "${GREEN}[✓] PayloadsAllTheThings já existe${NC}"
 fi
 
 # Shellter (dynamic shellcode injection)
-apt install -y shellter
+echo -e "${BLUE}[*] Instalando Shellter...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y shellter 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # ============================================================================
 # C2 FRAMEWORKS LEVES
@@ -195,15 +248,29 @@ echo -e "${BLUE}[9/15] Instalando C2 frameworks leves...${NC}"
 # Sliver (C2 moderno e leve)
 if ! command -v sliver-server &> /dev/null; then
     echo -e "${YELLOW}[i] Instalando Sliver C2...${NC}"
-    curl https://sliver.sh/install | bash
+    echo -e "${YELLOW}[i] Isso pode demorar 5-10 minutos...${NC}"
+    timeout 600 bash -c "$(timeout 30 curl -s https://sliver.sh/install)" 2>&1 | grep -E "(Downloading|Installing|sliver)" || {
+        echo -e "${YELLOW}[!] Falha ao instalar Sliver. Continuando...${NC}"
+        echo -e "${YELLOW}[i] Você pode instalar manualmente depois: https://github.com/BishopFox/sliver${NC}"
+    }
+else
+    echo -e "${GREEN}[✓] Sliver já está instalado${NC}"
 fi
 
 # PoshC2 (PowerShell C2)
 if [ ! -d "/opt/PoshC2" ]; then
     echo -e "${YELLOW}[i] Instalando PoshC2...${NC}"
-    git clone --depth 1 https://github.com/nettitude/PoshC2.git /opt/PoshC2
-    cd /opt/PoshC2
-    ./Install.sh > /dev/null 2>&1
+    echo -e "${YELLOW}[i] Isso pode demorar alguns minutos...${NC}"
+    timeout 300 git clone --depth 1 https://github.com/nettitude/PoshC2.git /opt/PoshC2 2>&1 | grep -E "(Cloning|Receiving|Resolving)" && {
+        cd /opt/PoshC2
+        timeout 300 ./Install.sh 2>&1 | grep -E "(Installing|Downloading|pip)" || {
+            echo -e "${YELLOW}[!] Falha na instalação do PoshC2. Continuando...${NC}"
+        }
+    } || {
+        echo -e "${YELLOW}[!] Falha ao baixar PoshC2. Continuando...${NC}"
+    }
+else
+    echo -e "${GREEN}[✓] PoshC2 já existe${NC}"
 fi
 
 # ============================================================================
@@ -219,7 +286,8 @@ echo -e "${BLUE}[10/15] Instalando ferramentas de stealth...${NC}"
 # Usar: nmap -T1 ou -T2
 
 # Masscan (rápido mas configurável)
-apt install -y masscan
+echo -e "${BLUE}[*] Instalando Masscan...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y masscan 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # ============================================================================
 # COLETA PASSIVA E MONITORAMENTO
@@ -228,18 +296,20 @@ apt install -y masscan
 echo -e "${BLUE}[11/15] Instalando ferramentas de coleta passiva...${NC}"
 
 # Tcpdump
-apt install -y tcpdump
+echo -e "${BLUE}[*] Instalando Tcpdump...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y tcpdump 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Wireshark (modo CLI)
-apt install -y tshark wireshark-common
-
-# Tshark (já vem com Wireshark)
+echo -e "${BLUE}[*] Instalando Tshark...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y tshark wireshark-common 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Responder (LLMNR/NBT-NS poisoning)
-apt install -y responder
+echo -e "${BLUE}[*] Instalando Responder...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y responder 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # Bettercap (man-in-the-middle)
-apt install -y bettercap
+echo -e "${BLUE}[*] Instalando Bettercap...${NC}"
+DEBIAN_FRONTEND=noninteractive apt install -y bettercap 2>&1 | grep -E "(Reading|Setting up|Unpacking)" || true
 
 # ============================================================================
 # PHISHING SIMPLES
@@ -250,9 +320,15 @@ echo -e "${BLUE}[12/15] Configurando ferramentas de phishing...${NC}"
 # Gophish (phishing framework)
 if [ ! -d "/opt/gophish" ]; then
     echo -e "${YELLOW}[i] Baixando Gophish...${NC}"
-    wget -q https://github.com/gophish/gophish/releases/download/v0.12.1/gophish-v0.12.1-linux-64bit.zip -O /tmp/gophish.zip
-    unzip -q /tmp/gophish.zip -d /opt/gophish
-    chmod +x /opt/gophish/gophish
+    timeout 120 wget --timeout=30 --tries=3 -q https://github.com/gophish/gophish/releases/download/v0.12.1/gophish-v0.12.1-linux-64bit.zip -O /tmp/gophish.zip && {
+        unzip -q /tmp/gophish.zip -d /opt/gophish 2>/dev/null
+        chmod +x /opt/gophish/gophish 2>/dev/null
+        echo -e "${GREEN}[✓] Gophish instalado${NC}"
+    } || {
+        echo -e "${YELLOW}[!] Falha ao baixar Gophish. Continuando...${NC}"
+    }
+else
+    echo -e "${GREEN}[✓] Gophish já existe${NC}"
 fi
 
 # ============================================================================
