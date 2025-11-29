@@ -50,6 +50,7 @@ Repositório de scripts de automação para configuração rápida de ambientes 
 Scripts-Bat/
 ├── Kali/                    # Scripts para Kali Linux
 │   ├── setup-kali.sh        # Setup completo automatizado
+│   ├── setup-notebook1.sh   # Setup Notebook 1 (Stealth Box) ⭐
 │   ├── ExecutarSetup-Kali.md
 │   ├── README.md            # Documentação Kali
 │   └── Ferramentas/         # 29 ferramentas especializadas (~312MB)
@@ -127,6 +128,8 @@ Scripts-Bat/
 
 ### **Kali Linux**
 
+#### **Setup Completo (PC2 ou Kali Principal)**
+
 ```bash
 # 1. Dar permissão de execução
 chmod +x Kali/setup-kali.sh
@@ -134,6 +137,29 @@ chmod +x Kali/setup-kali.sh
 # 2. Executar como root
 sudo ./Kali/setup-kali.sh
 ```
+
+#### **Notebook 1 - Stealth Box** ⭐
+
+```bash
+# 1. Dar permissão de execução
+chmod +x Kali/setup-notebook1.sh
+
+# 2. Executar como root
+sudo ./Kali/setup-notebook1.sh
+```
+
+**O que será instalado:**
+- Servidores HTTP (Python, Lighttpd, PHP)
+- Reverse shell listeners (Netcat, Socat, Ncat, Pwncat)
+- SSH e RDP servers
+- Ferramentas de tunneling (Chisel, Ngrok, Serveo, SSHuttle)
+- Geradores de payload (MSFVenom, PayloadsAllTheThings)
+- C2 frameworks leves (Sliver, PoshC2)
+- Ferramentas de stealth (scans lentos, coleta passiva)
+- Phishing (Gophish)
+- Scripts auxiliares e aliases
+
+📖 **Guia completo:** [NOTEBOOK1-GUIDE.md](./NOTEBOOK1-GUIDE.md)
 
 **O que será instalado:**
 - Meta-pacotes Kali (kali-linux-large)
@@ -393,6 +419,13 @@ Remove-Item C:\Tools\<pasta> -Recurse -Force
   - Workflows práticos para AD
   - Comandos de lateral movement
   - Exemplos de uso das ferramentas
+
+- **[NOTEBOOK1-GUIDE.md](./NOTEBOOK1-GUIDE.md)** - Guia completo Notebook 1 (Stealth Box)
+  - Configuração de servidores e listeners
+  - Tunneling e pivoting
+  - Payload generation
+  - C2 frameworks leves
+  - Workflows práticos
 
 - **[Kali/README.md](./Kali/README.md)** - Documentação completa Kali Linux
   - Setup automatizado

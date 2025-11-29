@@ -23,9 +23,11 @@ Scripts-Bat/
 ### **Documentação**
 - [Kali/README.md](./Kali/README.md) - Documentação completa
 - [Kali/ExecutarSetup-Kali.md](./Kali/ExecutarSetup-Kali.md) - Guia de execução
+- [NOTEBOOK1-GUIDE.md](./NOTEBOOK1-GUIDE.md) - Guia completo Notebook 1 ⭐
 
 ### **Scripts**
 - `setup-kali.sh` - Setup automatizado completo
+- `setup-notebook1.sh` - Setup Notebook 1 (Stealth Box) ⭐
 
 ### **Ferramentas (29 toolkits)**
 
@@ -175,6 +177,13 @@ Scripts-Bat/
 cd Kali
 chmod +x setup-kali.sh
 sudo ./setup-kali.sh
+```
+
+### **Setup Notebook 1 (Stealth Box)** ⭐
+```bash
+cd Kali
+chmod +x setup-notebook1.sh
+sudo ./setup-notebook1.sh
 ```
 
 ### **Setup Windows Attack Box**
