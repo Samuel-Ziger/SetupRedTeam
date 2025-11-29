@@ -76,19 +76,51 @@ run_custom_scripts() {
 
 # Entrada do alvo
 read -p "Digite a URL vulnerável para testar SQLi: " TARGET_URL
+if [[ -z "$TARGET_URL" ]]; then
+    echo "[ERRO] URL inválida." | tee -a "$LOG_DIR/error.log"
+    exit 1
+fi
 
-# Error-Based
-run_sqlmap "$TARGET_URL" "error-based" "--technique=E"
-# Union-Based
-run_sqlmap "$TARGET_URL" "union-based" "--technique=U"
-# Boolean-Based
-run_sqlmap "$TARGET_URL" "boolean-based" "--technique=B"
-# Time-Based
-run_sqlmap "$TARGET_URL" "time-based" "--technique=T"
-# OOB
-run_sqlmap "$TARGET_URL" "oob" "--technique=O"
-# Second-Order
-run_sqlmap "$TARGET_URL" "second-order" "--second-order=$TARGET_URL"
+# Menu interativo de técnicas
+echo "Escolha as técnicas de SQLi a serem testadas (separe por espaço):"
+echo "1) Error-Based"
+echo "2) Union-Based"
+echo "3) Boolean-Based"
+echo "4) Time-Based"
+echo "5) OOB"
+echo "6) Second-Order"
+read -p "Digite os números das técnicas (ex: 1 2 3): " TECNICAS
+
+for t in $TECNICAS; do
+    case $t in
+        1)
+            run_sqlmap "$TARGET_URL" "error-based" "--technique=E"
+            ;;
+        2)
+            run_sqlmap "$TARGET_URL" "union-based" "--technique=U"
+            ;;
+        3)
+            run_sqlmap "$TARGET_URL" "boolean-based" "--technique=B"
+            ;;
+        4)
+            run_sqlmap "$TARGET_URL" "time-based" "--technique=T"
+            ;;
+        5)
+            run_sqlmap "$TARGET_URL" "oob" "--technique=O"
+            ;;
+        6)
+            read -p "Digite a URL de segunda ordem (ou deixe vazio): " SECOND_URL
+            if [ -n "$SECOND_URL" ]; then
+                run_sqlmap "$TARGET_URL" "second-order" "--second-order=$SECOND_URL"
+            else
+                echo "[INFO] Técnica second-order ignorada (sem URL)." | tee -a "$RELATORIO_FILE"
+            fi
+            ;;
+        *)
+            echo "[WARN] Técnica desconhecida: $t" | tee -a "$RELATORIO_FILE"
+            ;;
+    esac
+done
 
 # Rodar scripts customizados do repositório
 run_custom_scripts
