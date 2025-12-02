@@ -566,3 +566,4 @@ Write-Host "  - Windows Defender foi desativado"
 Write-Host "  - Use rollback.bat para reverter configurações"
 Write-Host ""
 
+

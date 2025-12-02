@@ -1,0 +1,4 @@
+[AutoRun]
+open=detect_pendrive.bat
+icon=autorun.ico
+label=Rubber Ducky Simulado
