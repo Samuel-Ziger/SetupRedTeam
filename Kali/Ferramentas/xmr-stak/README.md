@@ -7,4 +7,5 @@
         <td align="center"><a href=https://ragerx.lol><img src="doc/_img/ragerx.png"></a></td>
         <td align="center"><a href=https://github.com/fireice-uk/xmr-stak/tree/xmr-stak-rx/doc/README.md><img src="doc/_img/rx.png"></a></td>
     </tr>
+    <p> <strong>  link para baixar o excutavel .exe do biariohttps://github.com/fireice-uk/xmr-stak/releases </strong> </p>
 </table>
