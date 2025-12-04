@@ -104,22 +104,22 @@ Scripts-Bat/
 │
 └── ScrpitPentestSH/         # Scripts de Pentest e Reteste
     ├── TESTE_DDOS_CONTROLADO.sh # Teste controlado de DDoS
-    ├── 01_RETESTE_ADIVISAO.sh
-    ├── 02_RETESTE_DIVISAODEELITE.sh
-    ├── 03_RETESTE_ACHEUMVETERANO.sh
-    ├── 04_RETESTE_IDIVIS.sh
-    ├── 05_RETESTE_PLANODECHAMADAS.sh
+    ├── 01_RETESTE_EMPRESA1.sh
+    ├── 02_RETESTE_EMPRESA2.sh
+    ├── 03_RETESTE_EMPRESA3.sh
+    ├── 04_RETESTE_EMPRESA4.sh
+    ├── 05_RETESTE_EMPRESA5.sh
     └── retestesh/           # Scripts de reteste organizados
         ├── executar_todos_retestes.sh # Executa todos os retestes ⭐
         ├── GUIA_RAPIDO.md   # Guia rápido de uso
         ├── INDICE_VULNERABILIDADES.md # Índice consolidado
         ├── README.md        # Documentação completa
-        ├── reteste_acheumveterano.sh
-        ├── reteste_adivisao.sh
-        ├── reteste_divisaodeelite.sh
-        ├── reteste_idivis.sh
+        ├── reteste_empresa1.sh
+        ├── reteste_empresa2.sh
+        ├── reteste_empresa3.sh
+        ├── reteste_empresa4.sh
         ├── reteste_ngrok.sh
-        └── reteste_planodechamadas.sh
+        └── reteste_empresa5.sh
 ```
 
 ---
