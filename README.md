@@ -104,22 +104,22 @@ Scripts-Bat/
 │
 └── ScrpitPentestSH/         # Scripts de Pentest e Reteste
     ├── TESTE_DDOS_CONTROLADO.sh # Teste controlado de DDoS
-    ├── 01_RETESTE_EMPRESA1.sh
-    ├── 02_RETESTE_EMPRESA2.sh
-    ├── 03_RETESTE_EMPRESA3.sh
-    ├── 04_RETESTE_EMPRESA4.sh
-    ├── 05_RETESTE_EMPRESA5.sh
+    ├── 01_RETESTE_EMPRESA1.sh        # Reteste de tokens, enumeração de usuários, CORS, cookies, endpoints internos, CSP, rate limiting, headers sensíveis, upload e portas administrativas.
+    ├── 02_RETESTE_EMPRESA2.sh        # Reteste de tokens, endpoints sem autenticação, plugins inseguros, cookies, scripts de terceiros, service worker, CSP, proxies JS, fingerprinting e portas alternativas.
+    ├── 03_RETESTE_EMPRESA3.sh        # Reteste de SSH, arquivos de log, endpoints WordPress, headers anti-clickjacking, compressão HTTP, TLS/SSL, cookies, diretórios sensíveis e robots.txt.
+    ├── 04_RETESTE_EMPRESA4.sh        # Reteste de portas expostas, arquivos sensíveis, diretórios de backup, SSH, headers de segurança, portas filtradas, endpoints administrativos e fingerprinting.
+    ├── 05_RETESTE_EMPRESA5.sh        # Reteste de exposição de IP, segurança Next.js, headers, HSTS, X-Frame-Options, CSP, TLS/SSL, APIs expostas, CORS e rate limiting.
     └── retestesh/           # Scripts de reteste organizados
         ├── executar_todos_retestes.sh # Executa todos os retestes ⭐
         ├── GUIA_RAPIDO.md   # Guia rápido de uso
         ├── INDICE_VULNERABILIDADES.md # Índice consolidado
         ├── README.md        # Documentação completa
-        ├── reteste_empresa1.sh
-        ├── reteste_empresa2.sh
-        ├── reteste_empresa3.sh
-        ├── reteste_empresa4.sh
-        ├── reteste_ngrok.sh
-        └── reteste_empresa5.sh
+        ├── reteste_empresa1.sh       # Reteste de tokens, enumeração de usuários, CORS, cookies, endpoints internos, CSP, rate limiting, headers sensíveis, upload e portas administrativas.
+        ├── reteste_empresa2.sh       # Reteste de tokens, endpoints sem autenticação, plugins inseguros, cookies, scripts de terceiros, service worker, CSP, proxies JS, fingerprinting e portas alternativas.
+        ├── reteste_empresa3.sh       # Reteste de SSH, arquivos de log, endpoints WordPress, headers anti-clickjacking, compressão HTTP, TLS/SSL, cookies, diretórios sensíveis e robots.txt.
+        ├── reteste_empresa4.sh       # Reteste de portas expostas, arquivos sensíveis, diretórios de backup, SSH, headers de segurança, portas filtradas, endpoints administrativos e fingerprinting.
+        ├── reteste_ngrok.sh          # Reteste de headers de segurança, enumeração de diretórios, APIs expostas, CORS, cookies e arquivos sensíveis.
+        └── reteste_empresa5.sh       # Reteste de exposição de IP, segurança Next.js, headers, HSTS, X-Frame-Options, CSP, TLS/SSL, APIs expostas, CORS e rate limiting.
 ```
 
 ---
