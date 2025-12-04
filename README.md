@@ -513,17 +513,9 @@ Diretório contendo scripts especializados para testes de penetração e reteste
 
 #### **Scripts de Reteste Automatizado**
 
-Localizado em `ScrpitPentestSH/retestesh/`, contém 7 scripts bash para validação de correções:
+Localizado em `ScrpitPentestSH/retestesh/`, contém scripts bash para validação de correções de vulnerabilidades de forma genérica e segura.
 
-| Script | Alvo | Vulnerabilidades Testadas |
-|--------|------|---------------------------|
-| `reteste_adivisao.sh` | adivisao.com.br | 10 vulns (Tokens, Elasticsearch, CORS) |
-| `reteste_divisaodeelite.sh` | divisaodeelite.com.br | 11 vulns (Plugin malicioso, Bubble.io) |
-| `reteste_acheumveterano.sh` | acheumveterano.com.br | 8 vulns (SSH, WordPress, Logs) |
-| `reteste_idivis.sh` | idivis.ao | 11 vulns (Porta 3000, Backups, SSH) |
-| `reteste_planodechamadas.sh` | planodechamadas.com.br | 9 vulns (Headers, Next.js, TLS) |
-| `reteste_ngrok.sh` | ngrok URL | 5 vulns (Headers de segurança) |
-| `executar_todos_retestes.sh` | **TODOS** | Executa todos sequencialmente ⭐ |
+Scripts de reteste automatizado possuem nomes genéricos e realizam validações de segurança em ambientes autorizados.
 
 **Uso rápido:**
 ```bash
@@ -534,7 +526,7 @@ chmod +x executar_todos_retestes.sh
 
 **Recursos:**
 - ✅ Relatórios automáticos com timestamp
-- ✅ Códigos de cores (🔴 Crítico, 🟡 Médio, 🟢 OK)
+- ✅ Códigos de cores para status
 - ✅ Verificação de HTTP status codes
 - ✅ Testes de headers de segurança
 - ✅ Scan de portas e serviços
