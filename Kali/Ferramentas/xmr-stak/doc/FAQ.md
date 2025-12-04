@@ -25,3 +25,4 @@ Set the value `currency` in `pools.txt` to `monero`.
 If your coin you want to mine is not listed please check the documentation of the coin and try to find out if `cryptonight` or `cryptonight-lite` is the used algorithm.
 Select one of these generic coin algorithms.
 
+alteraçaõ 
