@@ -3,7 +3,7 @@
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Scripts](https://img.shields.io/badge/scripts-31-green)
 ![Ferramentas](https://img.shields.io/badge/ferramentas-29-orange)
-![Vulnerabilidades](https://img.shields.io/badge/vulnerabilidades_rastreadas-54-red)
+<!-- Badge removido para evitar exposição de dados sensíveis -->
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Kali%20Linux-lightgrey)
 ![License](https://img.shields.io/badge/license-Educational-yellow)
 
@@ -22,7 +22,7 @@ Repositório de scripts de automação para configuração rápida de ambientes 
 - **Scripts Kali:** 1 setup principal
 - **Scripts Pentest:** 13 scripts (1 DDoS + 5 legacy + 7 retestesh)
 - **Ferramentas Kali:** 29 toolkits completos (~312MB)
-- **Vulnerabilidades rastreadas:** 54 (6 alvos monitorados)
+<!-- Informação removida para evitar exposição de dados sensíveis -->
 - **Linguagens:** Batch, PowerShell, Bash, Python, Ruby, Go
 - **Última atualização:** Novembro 2025
 
@@ -104,22 +104,13 @@ Scripts-Bat/
 │
 └── ScrpitPentestSH/         # Scripts para pentest e reteste automatizado
   ├── TESTE_DDOS_CONTROLADO.sh # Teste controlado de DDoS
-  ├── 01_RETESTE_EMPRESA1.sh        # Reteste automatizado de vulnerabilidades web
-  ├── 02_RETESTE_EMPRESA2.sh        # Reteste automatizado de vulnerabilidades web
-  ├── 03_RETESTE_EMPRESA3.sh        # Reteste automatizado de vulnerabilidades web
-  ├── 04_RETESTE_EMPRESA4.sh        # Reteste automatizado de vulnerabilidades web
-  ├── 05_RETESTE_EMPRESA5.sh        # Reteste automatizado de vulnerabilidades web
+  ├── Scripts de reteste automatizado (nomes genéricos)
   └── retestesh/           # Scripts de reteste organizados
     ├── executar_todos_retestes.sh # Executa todos os retestes
     ├── GUIA_RAPIDO.md   # Guia rápido de uso
     ├── INDICE_VULNERABILIDADES.md # Índice consolidado
     ├── README.md        # Documentação completa
-    ├── reteste_empresa1.sh       # Reteste automatizado de vulnerabilidades web
-    ├── reteste_empresa2.sh       # Reteste automatizado de vulnerabilidades web
-    ├── reteste_empresa3.sh       # Reteste automatizado de vulnerabilidades web
-    ├── reteste_empresa4.sh       # Reteste automatizado de vulnerabilidades web
-    ├── reteste_ngrok.sh          # Reteste de headers de segurança, diretórios e APIs
-    └── reteste_empresa5.sh       # Reteste automatizado de vulnerabilidades web
+    ├── Scripts de reteste automatizado (nomes genéricos)
 ```
 
 ---
@@ -152,7 +143,7 @@ sudo ./Kali/setup-notebook1.sh
 - Servidores HTTP (Python, Lighttpd, PHP)
 - Reverse shell listeners (Netcat, Socat, Ncat, Pwncat)
 - SSH e RDP servers
-- Ferramentas de tunneling (Chisel, Ngrok, Serveo, SSHuttle)
+Ferramentas de tunneling (Chisel, Serveo, SSHuttle)
 - Geradores de payload (MSFVenom, PayloadsAllTheThings)
 - C2 frameworks leves (Sliver, PoshC2)
 - Ferramentas de stealth (scans lentos, coleta passiva)
@@ -434,19 +425,19 @@ Remove-Item C:\Tools\<pasta> -Recurse -Force
   
 - **[Kali/ExecutarSetup-Kali.md](./Kali/ExecutarSetup-Kali.md)** - Guia rápido de execução
 
-- **[ScrpitPentestSH/README.md](./ScrpitPentestSH/README.md)** - Overview dos scripts de pentest
+<!-- Referência removida para evitar exposição de dados sensíveis -->
   - Estrutura dos scripts
   - Alvos monitorados
   - Fluxo de trabalho
 
-- **[ScrpitPentestSH/retestesh/README.md](./ScrpitPentestSH/retestesh/README.md)** - Documentação detalhada de retestes
+<!-- Referência removida para evitar exposição de dados sensíveis -->
   - Cada script explicado
-  - Vulnerabilidades testadas
+  <!-- Informação removida para evitar exposição de dados sensíveis -->
   - Interpretação de resultados
 
-- **[ScrpitPentestSH/retestesh/GUIA_RAPIDO.md](./ScrpitPentestSH/retestesh/GUIA_RAPIDO.md)** - Início rápido para retestes
+<!-- Referência removida para evitar exposição de dados sensíveis -->
 
-- **[ScrpitPentestSH/retestesh/INDICE_VULNERABILIDADES.md](./ScrpitPentestSH/retestesh/INDICE_VULNERABILIDADES.md)** - Índice de 54 vulnerabilidades
+<!-- Referência removida para evitar exposição de dados sensíveis -->
 
 ---
 
