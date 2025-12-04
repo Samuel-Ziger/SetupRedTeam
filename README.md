@@ -102,24 +102,24 @@ Scripts-Bat/
 │   ├── README.md            # Documentação Windows
 │   └── NOTEBOOK2-GUIDE.md   # Guia específico Notebook 2 (i5-3210M) ⭐
 │
-└── ScrpitPentestSH/         # Scripts de Pentest e Reteste
-    ├── TESTE_DDOS_CONTROLADO.sh # Teste controlado de DDoS
-    ├── 01_RETESTE_EMPRESA1.sh        # Reteste de tokens, enumeração de usuários, CORS, cookies, endpoints internos, CSP, rate limiting, headers sensíveis, upload e portas administrativas.
-    ├── 02_RETESTE_EMPRESA2.sh        # Reteste de tokens, endpoints sem autenticação, plugins inseguros, cookies, scripts de terceiros, service worker, CSP, proxies JS, fingerprinting e portas alternativas.
-    ├── 03_RETESTE_EMPRESA3.sh        # Reteste de SSH, arquivos de log, endpoints WordPress, headers anti-clickjacking, compressão HTTP, TLS/SSL, cookies, diretórios sensíveis e robots.txt.
-    ├── 04_RETESTE_EMPRESA4.sh        # Reteste de portas expostas, arquivos sensíveis, diretórios de backup, SSH, headers de segurança, portas filtradas, endpoints administrativos e fingerprinting.
-    ├── 05_RETESTE_EMPRESA5.sh        # Reteste de exposição de IP, segurança Next.js, headers, HSTS, X-Frame-Options, CSP, TLS/SSL, APIs expostas, CORS e rate limiting.
-    └── retestesh/           # Scripts de reteste organizados
-        ├── executar_todos_retestes.sh # Executa todos os retestes ⭐
-        ├── GUIA_RAPIDO.md   # Guia rápido de uso
-        ├── INDICE_VULNERABILIDADES.md # Índice consolidado
-        ├── README.md        # Documentação completa
-        ├── reteste_empresa1.sh       # Reteste de tokens, enumeração de usuários, CORS, cookies, endpoints internos, CSP, rate limiting, headers sensíveis, upload e portas administrativas.
-        ├── reteste_empresa2.sh       # Reteste de tokens, endpoints sem autenticação, plugins inseguros, cookies, scripts de terceiros, service worker, CSP, proxies JS, fingerprinting e portas alternativas.
-        ├── reteste_empresa3.sh       # Reteste de SSH, arquivos de log, endpoints WordPress, headers anti-clickjacking, compressão HTTP, TLS/SSL, cookies, diretórios sensíveis e robots.txt.
-        ├── reteste_empresa4.sh       # Reteste de portas expostas, arquivos sensíveis, diretórios de backup, SSH, headers de segurança, portas filtradas, endpoints administrativos e fingerprinting.
-        ├── reteste_ngrok.sh          # Reteste de headers de segurança, enumeração de diretórios, APIs expostas, CORS, cookies e arquivos sensíveis.
-        └── reteste_empresa5.sh       # Reteste de exposição de IP, segurança Next.js, headers, HSTS, X-Frame-Options, CSP, TLS/SSL, APIs expostas, CORS e rate limiting.
+└── ScrpitPentestSH/         # Scripts para pentest e reteste automatizado
+  ├── TESTE_DDOS_CONTROLADO.sh # Teste controlado de DDoS
+  ├── 01_RETESTE_EMPRESA1.sh        # Reteste automatizado de vulnerabilidades web
+  ├── 02_RETESTE_EMPRESA2.sh        # Reteste automatizado de vulnerabilidades web
+  ├── 03_RETESTE_EMPRESA3.sh        # Reteste automatizado de vulnerabilidades web
+  ├── 04_RETESTE_EMPRESA4.sh        # Reteste automatizado de vulnerabilidades web
+  ├── 05_RETESTE_EMPRESA5.sh        # Reteste automatizado de vulnerabilidades web
+  └── retestesh/           # Scripts de reteste organizados
+    ├── executar_todos_retestes.sh # Executa todos os retestes
+    ├── GUIA_RAPIDO.md   # Guia rápido de uso
+    ├── INDICE_VULNERABILIDADES.md # Índice consolidado
+    ├── README.md        # Documentação completa
+    ├── reteste_empresa1.sh       # Reteste automatizado de vulnerabilidades web
+    ├── reteste_empresa2.sh       # Reteste automatizado de vulnerabilidades web
+    ├── reteste_empresa3.sh       # Reteste automatizado de vulnerabilidades web
+    ├── reteste_empresa4.sh       # Reteste automatizado de vulnerabilidades web
+    ├── reteste_ngrok.sh          # Reteste de headers de segurança, diretórios e APIs
+    └── reteste_empresa5.sh       # Reteste automatizado de vulnerabilidades web
 ```
 
 ---
