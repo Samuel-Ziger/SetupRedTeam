@@ -34,6 +34,9 @@ set allowed=chat.openai.com ^
  cursor.sh ^
  nodejs.org ^
  npmjs.com
+chatgpt.com ^
+google.com ^
+adobe.com ^
 
 for %%s in (%allowed%) do (
     echo Permitido: %%s
