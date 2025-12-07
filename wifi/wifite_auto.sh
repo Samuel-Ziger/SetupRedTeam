@@ -228,53 +228,124 @@ find_all_wordlists() {
     echo -e "${CYAN}[*] SCRIPT_DIR: $SCRIPT_DIR${NC}"
     echo -e "${CYAN}[*] WORDLIST_DIR configurado: $WORDLIST_DIR${NC}"
     
-    # Verificar se diretório existe teste
-    
-    if [[ ! -d "$WORDLIST_DIR" ]]; then
+    # Verificar se diretório existe
+    if [[ -d "$WORDLIST_DIR" ]]; then
+        echo -e "${GREEN}[+] Diretório encontrado no caminho configurado${NC}"
+    else
         echo -e "${YELLOW}[!] Diretório não encontrado no caminho configurado${NC}"
         echo -e "${YELLOW}[*] Verificando caminhos alternativos...${NC}"
         
         # Tentar caminhos alternativos
+        echo -e "${YELLOW}[*] Testando caminhos alternativos...${NC}"
+        
         local alt_paths=(
             "${SCRIPT_DIR}/passwords"
             "$(dirname "$SCRIPT_DIR")/wifi/passwords"
             "${SCRIPT_DIR}/../wifi/passwords"
             "${SCRIPT_DIR}/../Kali/Ferramentas/wordlists/wordlists/passwords"
             "./passwords"
+            "$(pwd)/passwords"
             "$(pwd)/wifi/passwords"
         )
         
         for alt_path in "${alt_paths[@]}"; do
-            # Resolver caminho absoluto
-            local resolved_path=$(cd "$alt_path" 2>/dev/null && pwd)
-            if [[ -n "$resolved_path" && -d "$resolved_path" ]]; then
-                echo -e "${GREEN}[+] Diretório encontrado em: $resolved_path${NC}"
-                WORDLIST_DIR="$resolved_path"
-                break
-            fi
+            # Tentar com e sem aspas para lidar com espaços
+            local test_paths=("$alt_path" "$(echo "$alt_path" | sed 's/ /\\ /g')")
+            
+            for test_path in "${test_paths[@]}"; do
+                # Verificar se existe
+                if [[ -d "$test_path" ]]; then
+                    # Resolver caminho absoluto
+                    local resolved_path=$(cd "$test_path" 2>/dev/null && pwd)
+                    if [[ -n "$resolved_path" && -d "$resolved_path" ]]; then
+                        echo -e "${GREEN}[+] Diretório encontrado em: $resolved_path${NC}"
+                        WORDLIST_DIR="$resolved_path"
+                        break 2
+                    fi
+                fi
+            done
         done
         
         # Se ainda não encontrou, tentar buscar recursivamente
         if [[ ! -d "$WORDLIST_DIR" ]]; then
             echo -e "${YELLOW}[*] Buscando pasta 'passwords' recursivamente...${NC}"
-            local found_dir=$(find "$(dirname "$SCRIPT_DIR")" -type d -name "passwords" 2>/dev/null | grep -i "wifi.*passwords\|passwords" | head -1)
+            # Buscar a partir do diretório pai do script
+            local search_root=$(dirname "$SCRIPT_DIR")
+            local found_dir=$(find "$search_root" -type d -name "passwords" 2>/dev/null | head -1)
+            
             if [[ -n "$found_dir" && -d "$found_dir" ]]; then
-                echo -e "${GREEN}[+] Diretório encontrado em: $found_dir${NC}"
-                WORDLIST_DIR="$found_dir"
+                # Verificar se tem arquivos .txt
+                local txt_count=$(ls -1 "$found_dir"/*.txt 2>/dev/null | wc -l)
+                if [[ $txt_count -gt 0 ]]; then
+                    echo -e "${GREEN}[+] Diretório encontrado em: $found_dir${NC}"
+                    echo -e "${CYAN}[*] Contém $txt_count arquivos .txt${NC}"
+                    WORDLIST_DIR="$found_dir"
+                fi
             fi
         fi
         
-        # Se ainda não encontrou, sair
+        # Última tentativa: verificar se existe na mesma pasta do script
+        if [[ ! -d "$WORDLIST_DIR" ]]; then
+            local same_dir_passwords="${SCRIPT_DIR}/passwords"
+            if [[ -d "$same_dir_passwords" ]]; then
+                local resolved=$(cd "$same_dir_passwords" 2>/dev/null && pwd)
+                if [[ -n "$resolved" ]]; then
+                    echo -e "${GREEN}[+] Diretório encontrado na mesma pasta do script: $resolved${NC}"
+                    WORDLIST_DIR="$resolved"
+                fi
+            fi
+        fi
+        
+        # Se ainda não encontrou, mostrar informações e sair
         if [[ ! -d "$WORDLIST_DIR" ]]; then
             echo -e "${RED}[!] Nenhum diretório de wordlists encontrado${NC}"
-            echo -e "${YELLOW}[*] Caminhos testados:${NC}"
-            for alt_path in "${alt_paths[@]}"; do
-                local resolved=$(cd "$alt_path" 2>/dev/null && pwd || echo "NÃO ENCONTRADO")
-                echo -e "${YELLOW}    - $alt_path -> $resolved${NC}"
-            done
-            echo -e "${YELLOW}[*] Diretório atual: $(pwd)${NC}"
-            echo -e "${YELLOW}[*] Tente criar a pasta 'passwords' na mesma pasta do script${NC}"
-            exit 1
+            echo ""
+            echo -e "${YELLOW}[*] Informações de debug:${NC}"
+            echo -e "${CYAN}    SCRIPT_DIR: $SCRIPT_DIR${NC}"
+            echo -e "${CYAN}    Diretório atual: $(pwd)${NC}"
+            echo -e "${CYAN}    Caminho esperado: ${SCRIPT_DIR}/passwords${NC}"
+            echo ""
+            echo -e "${YELLOW}[*] Verificando se pasta existe:${NC}"
+            if [[ -e "${SCRIPT_DIR}/passwords" ]]; then
+                if [[ -f "${SCRIPT_DIR}/passwords" ]]; then
+                    echo -e "${RED}    ${SCRIPT_DIR}/passwords existe mas é um ARQUIVO, não uma pasta!${NC}"
+                elif [[ -d "${SCRIPT_DIR}/passwords" ]]; then
+                    echo -e "${GREEN}    ${SCRIPT_DIR}/passwords existe e é uma pasta!${NC}"
+                    echo -e "${YELLOW}[*] Tentando usar mesmo assim...${NC}"
+                    WORDLIST_DIR="${SCRIPT_DIR}/passwords"
+                fi
+            else
+                echo -e "${RED}    ${SCRIPT_DIR}/passwords NÃO existe${NC}"
+                echo ""
+                echo -e "${YELLOW}[*] Listando conteúdo da pasta do script:${NC}"
+                ls -la "$SCRIPT_DIR" 2>/dev/null | head -10 || echo "Não foi possível listar"
+                echo ""
+                echo -e "${YELLOW}[*] Para resolver:${NC}"
+                echo -e "${CYAN}    1. Crie a pasta: mkdir -p \"${SCRIPT_DIR}/passwords\"${NC}"
+                echo -e "${CYAN}    2. Copie as wordlists para essa pasta${NC}"
+                echo ""
+                echo -ne "${YELLOW}[?] Deseja criar a pasta 'passwords' agora? [s/N]: ${NC}"
+                read create_choice
+                if [[ "$create_choice" =~ ^[Ss] ]]; then
+                    if mkdir -p "${SCRIPT_DIR}/passwords" 2>/dev/null; then
+                        echo -e "${GREEN}[+] Pasta criada: ${SCRIPT_DIR}/passwords${NC}"
+                        echo -e "${YELLOW}[*] IMPORTANTE: Copie as wordlists (.txt) para essa pasta${NC}"
+                        echo -e "${CYAN}[*] Exemplo: cp /caminho/para/wordlists/*.txt \"${SCRIPT_DIR}/passwords/\"${NC}"
+                        WORDLIST_DIR="${SCRIPT_DIR}/passwords"
+                    else
+                        echo -e "${RED}[!] Erro ao criar pasta. Tente manualmente:${NC}"
+                        echo -e "${CYAN}    mkdir -p \"${SCRIPT_DIR}/passwords\"${NC}"
+                        exit 1
+                    fi
+                else
+                    exit 1
+                fi
+            fi
+            
+            # Última verificação antes de sair
+            if [[ ! -d "$WORDLIST_DIR" ]]; then
+                exit 1
+            fi
         fi
     fi
     
