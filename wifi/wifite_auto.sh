@@ -33,7 +33,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 OUTPUT_DIR="${SCRIPT_DIR}/capturas"
 RESULTS_DIR="${SCRIPT_DIR}/resultados"
-WORDLIST_DIR="${SCRIPT_DIR}/../wifi/passwords"
+WORDLIST_DIR="${SCRIPT_DIR}/passwords"
 
 # Variáveis globais
 INTERFACE=""
@@ -223,11 +223,40 @@ enable_monitor_mode() {
 # Encontrar todas as wordlists de passwords e ordenar por tamanho
 find_all_wordlists() {
     echo -e "${BLUE}[*] Procurando todas as wordlists de passwords...${NC}"
+    echo -e "${CYAN}[*] Diretório: $WORDLIST_DIR${NC}"
     
+    # Verificar se diretório existe
     if [[ ! -d "$WORDLIST_DIR" ]]; then
         echo -e "${RED}[!] Diretório de wordlists não encontrado: $WORDLIST_DIR${NC}"
-        exit 1
+        echo -e "${YELLOW}[*] Verificando caminhos alternativos...${NC}"
+        
+        # Tentar caminhos alternativos
+        local alt_paths=(
+            "${SCRIPT_DIR}/passwords"
+            "${SCRIPT_DIR}/../wifi/passwords"
+            "${SCRIPT_DIR}/../Kali/Ferramentas/wordlists/wordlists/passwords"
+        )
+        
+        for alt_path in "${alt_paths[@]}"; do
+            if [[ -d "$alt_path" ]]; then
+                echo -e "${GREEN}[+] Diretório encontrado em: $alt_path${NC}"
+                WORDLIST_DIR="$alt_path"
+                break
+            fi
+        done
+        
+        # Se ainda não encontrou, sair
+        if [[ ! -d "$WORDLIST_DIR" ]]; then
+            echo -e "${RED}[!] Nenhum diretório de wordlists encontrado${NC}"
+            echo -e "${YELLOW}[*] Caminhos testados:${NC}"
+            for alt_path in "${alt_paths[@]}"; do
+                echo -e "${YELLOW}    - $alt_path${NC}"
+            done
+            exit 1
+        fi
     fi
+    
+    echo -e "${GREEN}[+] Usando diretório: $WORDLIST_DIR${NC}"
     
     local wordlist_array=()
     local temp_file="/tmp/wordlists_sorted_$$.txt"
