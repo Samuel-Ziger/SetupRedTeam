@@ -33,7 +33,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 OUTPUT_DIR="${SCRIPT_DIR}/capturas"
 RESULTS_DIR="${SCRIPT_DIR}/resultados"
-WORDLIST_DIR="${SCRIPT_DIR}/../Kali/Ferramentas/wordlists/wordlists/passwords"
+WORDLIST_DIR="${SCRIPT_DIR}/../Kali/Ferramentas/wordlists/wordlists/passwords/xato_net_passwords.txt"
 
 # Variáveis globais
 INTERFACE=""
