@@ -223,45 +223,81 @@ enable_monitor_mode() {
 # Encontrar todas as wordlists de passwords e ordenar por tamanho
 find_all_wordlists() {
     echo -e "${BLUE}[*] Procurando todas as wordlists de passwords...${NC}"
-    echo -e "${CYAN}[*] Diretório: $WORDLIST_DIR${NC}"
+    
+    # Debug: mostrar caminhos
+    echo -e "${CYAN}[*] SCRIPT_DIR: $SCRIPT_DIR${NC}"
+    echo -e "${CYAN}[*] WORDLIST_DIR configurado: $WORDLIST_DIR${NC}"
     
     # Verificar se diretório existe
     if [[ ! -d "$WORDLIST_DIR" ]]; then
-        echo -e "${RED}[!] Diretório de wordlists não encontrado: $WORDLIST_DIR${NC}"
+        echo -e "${YELLOW}[!] Diretório não encontrado no caminho configurado${NC}"
         echo -e "${YELLOW}[*] Verificando caminhos alternativos...${NC}"
         
         # Tentar caminhos alternativos
         local alt_paths=(
             "${SCRIPT_DIR}/passwords"
+            "$(dirname "$SCRIPT_DIR")/wifi/passwords"
             "${SCRIPT_DIR}/../wifi/passwords"
             "${SCRIPT_DIR}/../Kali/Ferramentas/wordlists/wordlists/passwords"
+            "./passwords"
+            "$(pwd)/wifi/passwords"
         )
         
         for alt_path in "${alt_paths[@]}"; do
-            if [[ -d "$alt_path" ]]; then
-                echo -e "${GREEN}[+] Diretório encontrado em: $alt_path${NC}"
-                WORDLIST_DIR="$alt_path"
+            # Resolver caminho absoluto
+            local resolved_path=$(cd "$alt_path" 2>/dev/null && pwd)
+            if [[ -n "$resolved_path" && -d "$resolved_path" ]]; then
+                echo -e "${GREEN}[+] Diretório encontrado em: $resolved_path${NC}"
+                WORDLIST_DIR="$resolved_path"
                 break
             fi
         done
+        
+        # Se ainda não encontrou, tentar buscar recursivamente
+        if [[ ! -d "$WORDLIST_DIR" ]]; then
+            echo -e "${YELLOW}[*] Buscando pasta 'passwords' recursivamente...${NC}"
+            local found_dir=$(find "$(dirname "$SCRIPT_DIR")" -type d -name "passwords" 2>/dev/null | grep -i "wifi.*passwords\|passwords" | head -1)
+            if [[ -n "$found_dir" && -d "$found_dir" ]]; then
+                echo -e "${GREEN}[+] Diretório encontrado em: $found_dir${NC}"
+                WORDLIST_DIR="$found_dir"
+            fi
+        fi
         
         # Se ainda não encontrou, sair
         if [[ ! -d "$WORDLIST_DIR" ]]; then
             echo -e "${RED}[!] Nenhum diretório de wordlists encontrado${NC}"
             echo -e "${YELLOW}[*] Caminhos testados:${NC}"
             for alt_path in "${alt_paths[@]}"; do
-                echo -e "${YELLOW}    - $alt_path${NC}"
+                local resolved=$(cd "$alt_path" 2>/dev/null && pwd || echo "NÃO ENCONTRADO")
+                echo -e "${YELLOW}    - $alt_path -> $resolved${NC}"
             done
+            echo -e "${YELLOW}[*] Diretório atual: $(pwd)${NC}"
+            echo -e "${YELLOW}[*] Tente criar a pasta 'passwords' na mesma pasta do script${NC}"
             exit 1
         fi
     fi
     
+    # Resolver caminho absoluto
+    WORDLIST_DIR=$(cd "$WORDLIST_DIR" && pwd)
     echo -e "${GREEN}[+] Usando diretório: $WORDLIST_DIR${NC}"
+    
+    # Verificar se há arquivos .txt no diretório
+    local file_count=$(ls -1 "$WORDLIST_DIR"/*.txt 2>/dev/null | wc -l)
+    echo -e "${CYAN}[*] Arquivos .txt encontrados: $file_count${NC}"
+    
+    if [[ $file_count -eq 0 ]]; then
+        echo -e "${RED}[!] Nenhum arquivo .txt encontrado em: $WORDLIST_DIR${NC}"
+        echo -e "${YELLOW}[*] Listando conteúdo do diretório:${NC}"
+        ls -la "$WORDLIST_DIR" 2>/dev/null | head -10
+        exit 1
+    fi
     
     local wordlist_array=()
     local temp_file="/tmp/wordlists_sorted_$$.txt"
     
-    # Encontrar todos os arquivos .txt e criar lista com tamanhos
+    # Método 1: Usar find
+    echo -e "${CYAN}[*] Buscando wordlists com 'find'...${NC}"
+    local find_count=0
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
         
@@ -274,13 +310,38 @@ find_all_wordlists() {
         
         if [[ -n "$size" && $size -gt 0 ]]; then
             echo "$size|$file" >> "$temp_file"
+            ((find_count++))
         fi
-    done < <(find "$WORDLIST_DIR" -type f -name "*.txt" 2>/dev/null)
+    done < <(find "$WORDLIST_DIR" -maxdepth 1 -type f -name "*.txt" 2>/dev/null)
+    
+    # Método 2: Se find não encontrou nada, usar ls
+    if [[ $find_count -eq 0 ]]; then
+        echo -e "${YELLOW}[*] 'find' não encontrou arquivos, tentando com 'ls'...${NC}"
+        for file in "$WORDLIST_DIR"/*.txt; do
+            [[ ! -f "$file" ]] && continue
+            
+            local size=0
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                size=$(stat -f%z "$file" 2>/dev/null)
+            else
+                size=$(stat -c%s "$file" 2>/dev/null)
+            fi
+            
+            if [[ -n "$size" && $size -gt 0 ]]; then
+                echo "$size|$file" >> "$temp_file"
+                ((find_count++))
+            fi
+        done
+    fi
     
     if [[ ! -f "$temp_file" ]] || [[ ! -s "$temp_file" ]]; then
         echo -e "${RED}[!] Nenhuma wordlist encontrada em: $WORDLIST_DIR${NC}"
+        echo -e "${YELLOW}[*] Verificando permissões...${NC}"
+        ls -la "$WORDLIST_DIR" | head -5
         exit 1
     fi
+    
+    echo -e "${GREEN}[+] Encontradas $find_count wordlists${NC}"
     
     # Ordenar por tamanho (menores primeiro) e extrair caminhos
     # Usar mapfile para popular array corretamente
