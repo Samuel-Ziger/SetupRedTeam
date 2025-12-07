@@ -133,9 +133,97 @@ detect_interface() {
     fi
 }
 
+# Detectar interface monitor criada
+detect_monitor_interface() {
+    local base_interface="$1"
+    local monitor_iface=""
+    
+    # Aguardar um pouco para a interface ser criada
+    sleep 3
+    
+    # Método 1: Verificar saída do airmon-ng
+    local airmon_output=$(airmon-ng 2>/dev/null | grep -i "monitor mode" | awk '{print $2}')
+    if [[ -n "$airmon_output" ]]; then
+        for iface in $airmon_output; do
+            if iwconfig "$iface" 2>/dev/null | grep -q "Mode:Monitor"; then
+                monitor_iface="$iface"
+                break
+            fi
+        done
+    fi
+    
+    # Método 2: Verificar todas as interfaces em modo monitor
+    if [[ -z "$monitor_iface" ]]; then
+        local all_interfaces=$(iwconfig 2>/dev/null | grep -o '^[^ ]*' | grep -v '^$')
+        for iface in $all_interfaces; do
+            if iwconfig "$iface" 2>/dev/null | grep -q "Mode:Monitor"; then
+                # Verificar se está relacionada à interface base
+                if [[ "$iface" == *"$base_interface"* ]] || [[ "$iface" == "mon"* ]]; then
+                    monitor_iface="$iface"
+                    break
+                fi
+            fi
+        done
+    fi
+    
+    # Método 3: Tentar variações comuns
+    if [[ -z "$monitor_iface" ]]; then
+        local variations=(
+            "${base_interface}mon"
+            "${base_interface}mon0"
+            "${base_interface}mon1"
+            "mon0"
+            "mon1"
+            "wlan0mon"
+            "wlan1mon"
+        )
+        
+        for iface in "${variations[@]}"; do
+            if iwconfig "$iface" 2>/dev/null | grep -q "Mode:Monitor"; then
+                monitor_iface="$iface"
+                break
+            fi
+        done
+    fi
+    
+    # Método 4: Listar todas as interfaces e pedir ao usuário
+    if [[ -z "$monitor_iface" ]]; then
+        echo -e "${YELLOW}[!] Não foi possível detectar automaticamente a interface monitor${NC}"
+        echo -e "${BLUE}[*] Interfaces disponíveis:${NC}"
+        
+        local count=1
+        local if_array=()
+        local all_ifaces=$(iwconfig 2>/dev/null | grep -o '^[^ ]*' | grep -v '^$' | grep -v 'lo')
+        
+        for iface in $all_ifaces; do
+            local mode=$(iwconfig "$iface" 2>/dev/null | grep -oP 'Mode:\K\w+' || echo "Unknown")
+            echo -e "${CYAN}  [$count] $iface (Mode: $mode)${NC}"
+            if_array+=("$iface")
+            ((count++))
+        done
+        
+        if [[ ${#if_array[@]} -gt 0 ]]; then
+            echo -ne "${YELLOW}[?] Escolha a interface monitor (1-${#if_array[@]}): ${NC}"
+            read choice
+            if [[ $choice -ge 1 && $choice -le ${#if_array[@]} ]]; then
+                monitor_iface="${if_array[$((choice-1))]}"
+            fi
+        fi
+    fi
+    
+    echo "$monitor_iface"
+}
+
 # Colocar interface em modo monitor
 enable_monitor_mode() {
     echo -e "${BLUE}[*] Colocando interface em modo monitor...${NC}"
+    
+    # Verificar se já está em modo monitor
+    if iwconfig "$INTERFACE" 2>/dev/null | grep -q "Mode:Monitor"; then
+        echo -e "${GREEN}[+] Interface já está em modo monitor${NC}"
+        MONITOR_INTERFACE="$INTERFACE"
+        return 0
+    fi
     
     # Matar processos que podem interferir
     echo -e "${YELLOW}[*] Matando processos que podem interferir...${NC}"
@@ -145,31 +233,40 @@ enable_monitor_mode() {
     
     # Iniciar modo monitor
     echo -e "${YELLOW}[*] Iniciando modo monitor em $INTERFACE...${NC}"
-    airmon-ng start $INTERFACE &> /dev/null
+    local airmon_result=$(airmon-ng start "$INTERFACE" 2>&1)
+    
+    # Mostrar saída do airmon-ng para debug
+    if echo "$airmon_result" | grep -qi "error\|failed\|not found"; then
+        echo -e "${RED}[!] Erro ao iniciar modo monitor:${NC}"
+        echo "$airmon_result"
+    fi
     
     sleep 2
     
-    # Detectar interface monitor
-    MONITOR_INTERFACE="${INTERFACE}mon"
+    # Detectar interface monitor criada
+    MONITOR_INTERFACE=$(detect_monitor_interface "$INTERFACE")
     
-    # Verificar se a interface monitor existe
-    if ! iwconfig $MONITOR_INTERFACE &> /dev/null; then
-        # Tentar outras variações comuns
-        for suffix in "mon" "mon0" "mon1"; do
-            if iwconfig ${INTERFACE}${suffix} &> /dev/null 2>&1; then
-                MONITOR_INTERFACE="${INTERFACE}${suffix}"
-                break
-            fi
-        done
-    fi
-    
-    if iwconfig $MONITOR_INTERFACE &> /dev/null; then
-        echo -e "${GREEN}[+] Modo monitor ativado: $MONITOR_INTERFACE${NC}"
-        iwconfig $MONITOR_INTERFACE | grep -i mode
-    else
-        echo -e "${RED}[!] Falha ao ativar modo monitor${NC}"
+    if [[ -z "$MONITOR_INTERFACE" ]]; then
+        echo -e "${RED}[!] Falha ao detectar interface monitor${NC}"
+        echo -e "${YELLOW}[*] Tentando listar todas as interfaces...${NC}"
+        iwconfig 2>/dev/null | grep -E "^[a-z]|Mode:"
         exit 1
     fi
+    
+    # Verificar se a interface realmente existe e está em modo monitor
+    if ! iwconfig "$MONITOR_INTERFACE" &> /dev/null; then
+        echo -e "${RED}[!] Interface monitor não existe: $MONITOR_INTERFACE${NC}"
+        exit 1
+    fi
+    
+    if ! iwconfig "$MONITOR_INTERFACE" 2>/dev/null | grep -q "Mode:Monitor"; then
+        echo -e "${RED}[!] Interface $MONITOR_INTERFACE não está em modo monitor${NC}"
+        exit 1
+    fi
+    
+    echo -e "${GREEN}[+] Modo monitor ativado: $MONITOR_INTERFACE${NC}"
+    iwconfig "$MONITOR_INTERFACE" | grep -i mode
+    echo -e "${CYAN}[*] Interface monitor confirmada e pronta para uso${NC}"
 }
 
 # Escanear redes Wi-Fi
@@ -273,7 +370,29 @@ execute_deauth() {
         return 1
     fi
     
+    # Verificar se interface monitor ainda existe e está ativa
+    if [[ -z "$MONITOR_INTERFACE" ]] || ! iwconfig "$MONITOR_INTERFACE" &> /dev/null; then
+        echo -e "${YELLOW}[!] Interface monitor não encontrada, tentando detectar...${NC}"
+        MONITOR_INTERFACE=$(detect_monitor_interface "$INTERFACE")
+        
+        if [[ -z "$MONITOR_INTERFACE" ]] || ! iwconfig "$MONITOR_INTERFACE" &> /dev/null; then
+            echo -e "${RED}[!] Não foi possível encontrar interface monitor${NC}"
+            echo -e "${YELLOW}[*] Interfaces disponíveis:${NC}"
+            iwconfig 2>/dev/null | grep -E "^[a-z]|Mode:"
+            return 1
+        fi
+    fi
+    
+    # Verificar se está em modo monitor
+    if ! iwconfig "$MONITOR_INTERFACE" 2>/dev/null | grep -q "Mode:Monitor"; then
+        echo -e "${RED}[!] Interface $MONITOR_INTERFACE não está em modo monitor${NC}"
+        echo -e "${YELLOW}[*] Tentando reativar modo monitor...${NC}"
+        enable_monitor_mode
+    fi
+    
     echo -e "${BLUE}[*] Executando ataque deauth...${NC}"
+    echo -e "${CYAN}[*] Interface monitor: $MONITOR_INTERFACE${NC}"
+    echo -e "${CYAN}[*] BSSID: $BSSID${NC}"
     
     local deauth_count=10
     echo -ne "${YELLOW}[?] Número de pacotes deauth [10]: ${NC}"
