@@ -28,8 +28,13 @@ wsl.tmp
 # Credenciais e configurações sensíveis
 *.credentials
 *.config
-*password*
+*password*.txt
+*password*.log
+*password*.key
 *secret*
+# Permitir pasta passwords com wordlists (não são credenciais reais)
+!wifi/passwords/
+!**/passwords/*.txt
 
 # Node modules (caso use ferramentas JS)
 node_modules/
