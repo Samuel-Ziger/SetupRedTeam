@@ -228,7 +228,8 @@ find_all_wordlists() {
     echo -e "${CYAN}[*] SCRIPT_DIR: $SCRIPT_DIR${NC}"
     echo -e "${CYAN}[*] WORDLIST_DIR configurado: $WORDLIST_DIR${NC}"
     
-    # Verificar se diretório existe
+    # Verificar se diretório existe teste
+    
     if [[ ! -d "$WORDLIST_DIR" ]]; then
         echo -e "${YELLOW}[!] Diretório não encontrado no caminho configurado${NC}"
         echo -e "${YELLOW}[*] Verificando caminhos alternativos...${NC}"
