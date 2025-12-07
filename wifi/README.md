@@ -4,9 +4,10 @@ Scripts automatizados para captura e quebra de handshake WPA/WPA2.
 
 ## 📦 Scripts Disponíveis
 
-1. **`capturar_handshake.sh`** - Captura de handshake WPA/WPA2
-2. **`bruteforce_wifi.sh`** - Brute force automático testando múltiplas wordlists
-3. **`deauth_rapido.sh`** - Ataque deauth rápido (script auxiliar)
+1. **`wifite_auto.sh`** - ⭐ **NOVO!** Script automatizado estilo wifite (recomendado)
+2. **`capturar_handshake.sh`** - Captura de handshake WPA/WPA2
+3. **`bruteforce_wifi.sh`** - Brute force automático testando múltiplas wordlists
+4. **`deauth_rapido.sh`** - Ataque deauth rápido (script auxiliar)
 
 ## ⚠️ AVISO LEGAL
 
@@ -334,6 +335,170 @@ O script procura SecLists em:
 3. **Paciência**: Quebrar senhas pode levar muito tempo
 4. **GPU**: Para senhas complexas, considere usar hashcat com GPU
 5. **Handshake**: Certifique-se de ter capturado um handshake válido
+
+---
+
+# 🚀 WIFITE AUTO - Script Automatizado Estilo Wifite
+
+Script completamente automatizado que funciona como o wifite do Kali Linux. Escaneia redes, captura handshakes automaticamente e quebra senhas usando a maior wordlist disponível.
+
+## ✨ Características
+
+- ✅ **Totalmente automatizado** - Funciona como wifite
+- ✅ **Escaneamento automático** de redes WiFi
+- ✅ **Captura automática de handshake** com deauth
+- ✅ **Quebra de senha automática** usando maior wordlist
+- ✅ **Detecção automática** de interface monitor
+- ✅ **Usa wordlists da pasta** `Kali/Ferramentas/wordlists/wordlists/passwords`
+- ✅ **Seleciona automaticamente** a maior wordlist disponível
+
+## 🚀 Como Usar
+
+### Instalação
+
+```bash
+# Dar permissão de execução
+chmod +x wifite_auto.sh
+
+# Executar como root
+sudo ./wifite_auto.sh
+```
+
+### Fluxo Automatizado
+
+1. **O script detecta automaticamente** sua interface WiFi
+2. **Ativa modo monitor** automaticamente
+3. **Encontra a maior wordlist** de passwords disponível
+4. **Escaneia redes WiFi** por 15 segundos
+5. **Mostra lista de redes WPA/WPA2** encontradas
+6. **Você escolhe a rede** para atacar
+7. **Script captura handshake automaticamente** (com deauth)
+8. **Script quebra senha automaticamente** usando a maior wordlist
+9. **Mostra resultado** se senha for encontrada
+
+### Exemplo de Uso
+
+```bash
+sudo ./wifite_auto.sh
+
+# O script irá:
+# 1. Detectar interface WiFi
+# 2. Ativar modo monitor
+# 3. Encontrar maior wordlist (ex: 000webhost.txt com 720k senhas)
+# 4. Escanear redes
+# 5. Mostrar lista:
+#    Num | BSSID              | Canal | PWR  | ESSID
+#    ----+--------------------+-------+------+----------------------
+#      1 | AA:BB:CC:DD:EE:FF  |     6 |  -45 | MinhaRede
+#      2 | 11:22:33:44:55:66  |    11 |  -67 | OutraRede
+#
+# 6. Você escolhe: 1
+# 7. Script captura handshake automaticamente
+# 8. Script quebra senha automaticamente
+# 9. Se encontrar: 🎉 SENHA ENCONTRADA! 🎉
+```
+
+## 📋 Requisitos
+
+- Sistema operacional: Linux (Kali Linux recomendado)
+- Permissões: Root (sudo)
+- Hardware: Placa Wi-Fi compatível com modo monitor
+- Dependências: `aircrack-ng` (instalado automaticamente se necessário)
+- Wordlists: Pasta `Kali/Ferramentas/wordlists/wordlists/passwords` deve existir
+
+## 🔧 Funcionalidades Detalhadas
+
+### Detecção Automática de Interface
+
+- Detecta automaticamente interfaces WiFi disponíveis
+- Se múltiplas interfaces, permite escolher
+- Valida interface antes de usar
+
+### Modo Monitor Automático
+
+- Ativa modo monitor automaticamente
+- Detecta nome correto da interface monitor (wlan0mon, mon0, etc.)
+- Mata processos que podem interferir
+- Restaura interface ao sair
+
+### Escaneamento Inteligente
+
+- Escaneia por 15 segundos
+- Mostra apenas redes WPA/WPA2
+- Exibe: BSSID, Canal, Potência, ESSID
+- Permite reescanear se necessário
+
+### Captura Automática de Handshake
+
+- Executa deauth automaticamente (5 tentativas)
+- Verifica se handshake foi capturado
+- Continua mesmo se não capturar (pode funcionar)
+
+### Quebra Automática de Senha
+
+- Usa a maior wordlist disponível automaticamente
+- Mostra progresso
+- Extrai senha se encontrada
+- Salva resultado em arquivo
+
+## 📁 Estrutura de Arquivos
+
+```
+wifi/
+├── wifite_auto.sh              # Script principal (NOVO!)
+├── capturas/                   # Handshakes capturados
+│   └── captura_NomeRede_TIMESTAMP-01.cap
+└── resultados/                 # Senhas encontradas
+    └── resultado_NomeRede_TIMESTAMP.txt
+```
+
+## 🔍 Troubleshooting
+
+### Interface não encontrada
+
+```bash
+# Verificar interfaces disponíveis
+iwconfig
+
+# Verificar se está em modo monitor
+iwconfig | grep -i monitor
+```
+
+### Wordlist não encontrada
+
+```bash
+# Verificar se pasta existe
+ls -la Kali/Ferramentas/wordlists/wordlists/passwords/
+
+# Verificar maior arquivo
+ls -lhS Kali/Ferramentas/wordlists/wordlists/passwords/*.txt | head -1
+```
+
+### Handshake não capturado
+
+- O script tenta 5 vezes automaticamente
+- Se não capturar, ainda tenta quebrar (pode funcionar)
+- Certifique-se de que há clientes conectados à rede
+
+### Senha não encontrada
+
+- A senha pode não estar na wordlist
+- Wordlists maiores levam mais tempo
+- Senhas fortes podem levar horas/dias
+
+## ⚡ Dicas
+
+1. **Melhor horário**: Use quando há clientes conectados (mais fácil capturar handshake)
+2. **Wordlists**: O script usa automaticamente a maior disponível
+3. **Paciência**: Quebrar senhas pode levar muito tempo
+4. **Múltiplas tentativas**: Se não encontrar, tente outra rede
+
+## 📝 Notas
+
+- O script restaura automaticamente a interface ao sair
+- Arquivos são salvos em `capturas/` e `resultados/`
+- Pode ser interrompido com `Ctrl+C` a qualquer momento
+- Use apenas em redes próprias ou com autorização!
 
 ---
 
