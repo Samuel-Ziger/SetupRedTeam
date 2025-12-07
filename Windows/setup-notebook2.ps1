@@ -567,3 +567,11 @@ Write-Host "  - Use rollback.bat para reverter configurações"
 Write-Host ""
 
 
+
+
+
+
+
+
+
+
