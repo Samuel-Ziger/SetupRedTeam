@@ -1,0 +1,26 @@
+# Lista de Alvos dos Relatórios de Pentest
+# Este arquivo contém todos os alvos identificados nos relatórios anteriores
+
+# Domínios Principais
+planodechamadas.com.br
+adivisao.com.br
+acheumveterano.com.br
+divisaodeelite.com.br
+idivis.ao
+
+# Subdomínios
+lp.planodechamadas.com.br
+app.acheumveterano.com.br
+
+# IPs Diretos
+31.97.27.219
+31.97.168.34
+72.60.255.201
+
+# Notas:
+# - planodechamadas.com.br resolve para 31.97.27.219
+# - idivis.ao resolve para 31.97.27.219
+# - lp.planodechamadas.com.br resolve para 31.97.168.34
+# - acheumveterano.com.br resolve para 72.60.255.201
+# - 5bf265a139bengrokfre.app (ngrok) pode não estar mais ativo
+
