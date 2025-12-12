@@ -24,7 +24,7 @@ echo.
 :: ============================================
 :: 1. RESTAURAR ARQUIVO HOSTS
 :: ============================================
-echo [1/8] Restaurando arquivo hosts...
+echo [1/11] Restaurando arquivo hosts...
 
 set "HOSTS_FILE=%SystemRoot%\System32\drivers\etc\hosts"
 set "HOSTS_BACKUP=%SystemRoot%\System32\drivers\etc\hosts.backup"
@@ -38,7 +38,7 @@ if exist "%HOSTS_BACKUP%" (
     echo    Backup nao encontrado. Removendo entradas manualmente...
     
     :: Criar arquivo temporário sem as linhas bloqueadas
-    findstr /V /C:"poki.com" /C:"crazygames.com" /C:"friv.com" /C:"friv2.com" /C:"frivplus.com" /C:"y8.com" /C:"miniclip.com" /C:"kizi.com" /C:"armorgames.com" /C:"notdoppler.com" /C:"agame.com" /C:"games2girls.com" /C:"gameforge.com" /C:"kongregate.com" /C:"addictinggames.com" /C:"roblox.com" /C:"steamcommunity.com" /C:"steampowered.com" /C:"steam-chat.com" /C:"steamstatic.com" /C:"epicgames.com" /C:"chess.com" /C:"lichess.org" /C:"chess24.com" /C:"playchess.com" "%HOSTS_FILE%" > "%HOSTS_FILE%.tmp" 2>nul
+    findstr /V /C:"poki.com" /C:"crazygames.com" /C:"friv.com" /C:"friv2.com" /C:"frivplus.com" /C:"y8.com" /C:"miniclip.com" /C:"kizi.com" /C:"armorgames.com" /C:"notdoppler.com" /C:"agame.com" /C:"games2girls.com" /C:"gameforge.com" /C:"kongregate.com" /C:"addictinggames.com" /C:"roblox.com" /C:"steamcommunity.com" /C:"steampowered.com" /C:"steam-chat.com" /C:"steamstatic.com" /C:"steamcdn-a.akamaihd.net" /C:"steamcontent.com" /C:"steamusercontent.com" /C:"steamdb.info" /C:"steam-api.com" /C:"epicgames.com" /C:"chess.com" /C:"lichess.org" /C:"chess24.com" /C:"playchess.com" /C:"playgama.com" /C:"firv.com" /C:"coolmathgames.com" /C:"unblockedgames.com" /C:"gamepix.com" /C:"gameflare.com" /C:"gamezhero.com" /C:"gamesgames.com" /C:"newgrounds.com" /C:"itch.io" /C:"gamejolt.com" "%HOSTS_FILE%" > "%HOSTS_FILE%.tmp" 2>nul
     move /Y "%HOSTS_FILE%.tmp" "%HOSTS_FILE%" >nul 2>&1
     echo    Entradas de jogos removidas do arquivo hosts!
 )
@@ -46,7 +46,7 @@ if exist "%HOSTS_BACKUP%" (
 :: ============================================
 :: 2. REMOVER RESTRICOES DE INSTALACAO
 :: ============================================
-echo [2/8] Removendo restricoes de instalacao...
+echo [2/11] Removendo restricoes de instalacao...
 
 :: Remover restrições do Windows Installer
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v DisableMSI /f >nul 2>&1
@@ -57,6 +57,10 @@ reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverInstall\Restrictions"
 
 :: Remover restrições de execução de arquivos
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Safer\CodeIdentifiers" /v DefaultLevel /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Safer\CodeIdentifiers\0\Paths" /v "C:\Users" /f >nul 2>&1
+
+:: Remover bloqueio de instaladores portáteis
+reg delete "HKLM\Software\Policies\Microsoft\Windows\Attachment Manager" /v SaveZoneInformation /f >nul 2>&1
 
 :: Remover restrições de Appx
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Appx" /v AllowAllTrustedApps /f >nul 2>&1
@@ -73,7 +77,7 @@ echo    Restricoes de instalacao removidas!
 :: ============================================
 :: 3. DESBLOQUEAR PLATAFORMAS DE JOGOS
 :: ============================================
-echo [3/8] Desbloqueando plataformas de jogos...
+echo [3/11] Desbloqueando plataformas de jogos...
 
 :: Remover bloqueios de execução do Steam
 reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\steam.exe" /v Debugger /f >nul 2>&1
@@ -93,23 +97,54 @@ reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Executi
 reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\Uplay.exe" /v Debugger /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\GOG Galaxy.exe" /v Debugger /f >nul 2>&1
 
+:: Remover bloqueios de navegadores
+reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\opera.exe" /v Debugger /f >nul 2>&1
+reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\brave.exe" /v Debugger /f >nul 2>&1
+reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\chromium.exe" /v Debugger /f >nul 2>&1
+reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\firefox.exe" /v Debugger /f >nul 2>&1
+
 echo    Plataformas de jogos desbloqueadas!
+echo    Navegadores desbloqueados!
 
 :: ============================================
 :: 4. REMOVER POLITICAS DE NAVEGADORES
 :: ============================================
-echo [4/8] Removendo politicas de navegadores...
+echo [4/11] Removendo politicas de navegadores...
 
 :: Remover políticas do Chrome
 reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v ExtensionInstallBlocklist /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v SafeBrowsingEnabled /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v DownloadRestrictions /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v BlockFileDownloads /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v BlockThirdPartyCookies /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v DefaultPluginsSetting /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v AllowDeletingBrowserHistory /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v IncognitoModeAvailability /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v ForceGoogleSafeSearch /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v ForceYouTubeRestrict /f >nul 2>&1
+
+:: Remover URLBlocklist do Chrome
+for /L %%i in (1,1,24) do (
+    reg delete "HKLM\SOFTWARE\Policies\Google\Chrome\URLBlocklist" /v %%i /f >nul 2>&1
+)
+reg delete "HKLM\SOFTWARE\Policies\Google\Chrome\URLBlocklist" /f >nul 2>&1
 
 :: Remover políticas do Edge
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v ExtensionInstallBlocklist /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v SafeBrowsingEnabled /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v DownloadRestrictions /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v BlockThirdPartyCookies /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v DefaultPluginsSetting /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v AllowDeletingBrowserHistory /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v InPrivateModeAvailability /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v ForceGoogleSafeSearch /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v ForceYouTubeRestrict /f >nul 2>&1
+
+:: Remover URLBlocklist do Edge
+for /L %%i in (1,1,24) do (
+    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge\URLBlocklist" /v %%i /f >nul 2>&1
+)
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge\URLBlocklist" /f >nul 2>&1
 
 :: Remover políticas do Firefox
 set "FIREFOX_DIR=%ProgramFiles%\Mozilla Firefox"
@@ -123,7 +158,7 @@ echo    Politicas de navegadores removidas!
 :: ============================================
 :: 5. REMOVER REGRAS DE FIREWALL
 :: ============================================
-echo [5/8] Removendo regras de firewall...
+echo [5/11] Removendo regras de firewall...
 
 :: Remover regras de bloqueio de jogos
 netsh advfirewall firewall delete rule name="Bloquear Jogos Online - Steam" >nul 2>&1
@@ -136,7 +171,7 @@ echo    Regras de firewall removidas!
 :: ============================================
 :: 6. RESTAURAR CONFIGURACOES DE UAC
 :: ============================================
-echo [6/8] Restaurando configuracoes de UAC...
+echo [6/11] Restaurando configuracoes de UAC...
 
 :: Restaurar UAC para configurações padrão (nível médio)
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 1 /f >nul 2>&1
@@ -151,7 +186,7 @@ echo    UAC restaurado para configuracoes padrao!
 :: ============================================
 :: 7. REMOVER BLOQUEIOS DE EXECUCAO
 :: ============================================
-echo [7/8] Removendo bloqueios de execucao...
+echo [7/11] Removendo bloqueios de execucao...
 
 :: Remover lista de bloqueios de execução
 reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v DisallowRun /f >nul 2>&1
@@ -162,9 +197,51 @@ reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Dis
 echo    Bloqueios de execucao removidos!
 
 :: ============================================
-:: 8. REABILITAR SERVICOS DE JOGOS
+:: 8. REMOVER BLOQUEIOS DE VPN
 :: ============================================
-echo [8/8] Reabilitando servicos de jogos...
+echo [8/11] Removendo bloqueios de VPN...
+
+:: Remover restrição de VPN
+reg delete "HKLM\System\CurrentControlSet\Services\PolicyAgent" /v AssumeUDPEncapsulationContextOnSendRule /f >nul 2>&1
+
+:: Remover bloqueios de executáveis de VPN
+reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\protonvpn.exe" /v Debugger /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\openvpn.exe" /v Debugger /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\windscribe.exe" /v Debugger /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\NordVPN.exe" /v Debugger /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\ExpressVPN.exe" /v Debugger /f >nul 2>&1
+
+echo    Bloqueios de VPN removidos!
+
+:: ============================================
+:: 9. REABILITAR MUDANCAS DE DNS
+:: ============================================
+echo [9/11] Reabilitando mudancas de DNS...
+
+reg delete "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v AddrConfigControl /f >nul 2>&1
+reg delete "HKLM\Software\Policies\Microsoft\Windows NT\DNSClient" /v DisableDNSOverHTTPS /f >nul 2>&1
+
+echo    Mudancas de DNS reabilitadas!
+
+:: ============================================
+:: 10. REMOVER PROTECAO DO ARQUIVO HOSTS
+:: ============================================
+echo [10/11] Removendo protecao do arquivo hosts...
+
+:: Remover permissões restritivas do arquivo hosts
+icacls %SystemRoot%\System32\drivers\etc\hosts /remove:d "Users" >nul 2>&1
+icacls %SystemRoot%\System32\drivers\etc\hosts /remove:d "Everyone" >nul 2>&1
+icacls %SystemRoot%\System32\drivers\etc\hosts /reset >nul 2>&1
+
+:: Remover atributos de proteção
+attrib -r -s -h %SystemRoot%\System32\drivers\etc\hosts >nul 2>&1
+
+echo    Protecao do arquivo hosts removida!
+
+:: ============================================
+:: 11. REABILITAR SERVICOS DE JOGOS
+:: ============================================
+echo [11/11] Reabilitando servicos de jogos...
 
 :: Reabilitar serviços do Xbox
 sc config "XblAuthManager" start= demand >nul 2>&1
@@ -191,8 +268,14 @@ reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Safer\CodeIdentifiers" /f >
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Appx" /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\WindowsStore" /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Google\Chrome\URLBlocklist" /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge\URLBlocklist" /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /f >nul 2>&1
+reg delete "HKLM\System\CurrentControlSet\Services\PolicyAgent" /v AssumeUDPEncapsulationContextOnSendRule /f >nul 2>&1
+reg delete "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v AddrConfigControl /f >nul 2>&1
+reg delete "HKLM\Software\Policies\Microsoft\Windows NT\DNSClient" /f >nul 2>&1
+reg delete "HKLM\Software\Policies\Microsoft\Windows\Attachment Manager" /v SaveZoneInformation /f >nul 2>&1
 
 echo    Limpeza concluida!
 
@@ -205,14 +288,18 @@ echo  DESBLOQUEIO CONCLUIDO COM SUCESSO!
 echo ============================================
 echo.
 echo Alteracoes revertidas:
-echo  - Arquivo hosts restaurado
+echo  - Arquivo hosts restaurado (todos os sites de jogos)
+echo  - Protecao do arquivo hosts removida
 echo  - Restricoes de instalacao removidas
 echo  - Microsoft Store reabilitado
 echo  - Plataformas de jogos desbloqueadas
-echo  - Sites de jogos desbloqueados
-echo  - Politicas de navegadores removidas
+echo  - Navegadores desbloqueados (Opera, Brave, Firefox, Chromium)
+echo  - Sites de jogos desbloqueados (incluindo novos sites)
+echo  - Politicas de navegadores removidas (URLBlocklist e outras)
 echo  - Regras de firewall removidas
 echo  - UAC restaurado para padrao
+echo  - Bloqueios de VPN removidos
+echo  - Mudancas de DNS reabilitadas
 echo  - Servicos de jogos reabilitados
 echo.
 echo IMPORTANTE: 
@@ -224,6 +311,10 @@ echo  - Reinicie o computador para aplicar todas as mudancas
 echo.
 echo ============================================
 pause
+
+
+
+
 
 
 
