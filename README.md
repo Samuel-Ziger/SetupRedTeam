@@ -18,25 +18,70 @@ Repositório de scripts de automação para configuração rápida de ambientes 
 
 - **Total de arquivos:** 6,900+
 - **Tamanho total:** ~312 MB
-- **Scripts Windows:** 18 arquivos (Attack Box, bloqueios, verificação)
-- **Scripts Kali:** 1 setup principal
+- **Scripts Windows:** 18 arquivos
+  - 4 scripts principais (setup-attackbox.ps1, atack2.0-optimized.bat, atack2.0.bat, setup-notebook2.ps1)
+  - 10 scripts auxiliares (verificação, debug, bloqueios, desbloqueios)
+  - 2 scripts descontinuados (SetupAtack.bat, SetupAtack2.bat)
+  - 2 documentações (README.md, NOTEBOOK2-GUIDE.md)
+- **Scripts Kali:** 2 scripts de setup
+  - `setup-kali.sh` - Setup completo automatizado
+  - `setup-notebook1.sh` - Setup Notebook 1 (Stealth Box)
 - **Scripts Pentest:** 
   - `pentest/pentest_completo.sh` - v4.0 (2145 linhas)
   - `pentest_automatizado.sh` - v3.0 (raiz)
   - `reteste/pentest_automation.py` - Script Python completo
   - `reteste/pentest_all_targets.py` - Múltiplos alvos
-- **Scripts SQL Injection:** 1 script profissional (`SQL/sql_injection_automatizado.sh`)
+  - `reteste/pentest_all_targets.sh` - Versão Shell
+  - `reteste/run_pentest.sh` - Executor de pentest
+- **Scripts SQL Injection:** 1 script profissional + 3 bibliotecas auxiliares
+  - `SQL/sql_injection_automatizado.sh` - Script principal
+  - `SQL/lib/log.sh`, `SQL/lib/opsec.sh`, `SQL/lib/sqlmap.sh` - Bibliotecas
+  - `SQL/modules/dump.sh` - Módulo de dump
 - **Scripts Wi-Fi:** 4 scripts automatizados (`wifi/`)
-- **Análise de Malware:** 3 scripts Python de análise (`BotNet/scripts/`)
-- **Pentest Autônomo:** 12 scripts de exploração autônoma (`Kali/PentestAutonomo2.0/`)
-- **Scripts Reteste:** 7 scripts organizados (`ScrpitPentestSH/retestesh/`) + 5 legacy
+  - `wifite_auto.sh` - Script automatizado estilo wifite
+  - `capturar_handshake.sh` - Captura de handshake
+  - `bruteforce_wifi.sh` - Brute force automático
+  - `deauth_rapido.sh` - Ataque deauth rápido
+- **Análise de Malware:** 3 scripts Python (`BotNet/scripts/`)
+  - `analisar_config.py` - Análise de configurações
+  - `gerar_iocs.py` - Geração de IOCs
+  - `analisar_comportamento.py` - Análise de comportamento
+- **Pentest Autônomo:** 12 scripts de exploração (`Kali/PentestAutonomo2.0/`)
+  - 7 scripts exploit_*.sh (mysql, ssh, ftp, joomla, email, dns, all)
+  - 5 scripts ataque_*.sh (geral, mysql, ssh, smtp, joomla)
+- **Scripts Reteste:** 7 scripts organizados + 1 script mestre (`ScrpitPentestSH/retestesh/`)
+  - `executar_todos_retestes.sh` - Script mestre que executa todos
+  - `reteste_empresa1.sh` até `reteste_empresa5.sh` - Scripts individuais
+  - `reteste_ngrok.sh` - Reteste específico ngrok
+  - `reteste_with_opsec.sh` - Wrapper com OPSEC
+  - 5 scripts legacy na raiz (`01_RETESTE_*.sh` até `05_RETESTE_*.sh`)
+  - `TESTE_DDOS_CONTROLADO.sh` - Teste de DDoS controlado
 - **Bibliotecas:** 5 bibliotecas reutilizáveis (`lib/`)
+  - `opsec.sh` - Segurança operacional (10 funções)
+  - `backup_tools.sh` - Sistema de backup automatizado
+  - `generate_report.sh` - Gerador de relatórios (Markdown→PDF)
+  - `install_wazuh.sh` - Instalador Wazuh SIEM
+  - `resource_check.sh` - Verificação de recursos do sistema
 - **Ferramentas Kali:** 29 toolkits completos (~312MB)
-- **Documentação:** 15+ arquivos Markdown profissionais
-- **Templates:** 1 template de relatório profissional
-<!-- Informação removida para evitar exposição de dados sensíveis -->
-- **Linguagens:** Batch, PowerShell, Bash, Python, Ruby, Go
-- **Última atualização:** Novembro 2025
+  - Social Engineering & Phishing (5): zphisher, EchoPhish, whatsappsess, whatsintruder, zportal
+  - C2/RATs (2): pupy, Ares
+  - Reconnaissance (4): reconftw, SecLists, webdiscover, Scavenger
+  - Credentials (2): pwndb, LeakLooker
+  - Web Exploitation (8): buster, injector, rce-scanner, HTThief, CSRF-to-RCE, XSS-Polyglot, WP-exploit, Chrome-extensions
+  - Malware/Crypto (2): Crypter, xmr-stak
+  - DDoS (1): DDos (Slowloris Pro)
+  - Privacy/Anonymity (5): Auto_Tor_IP_changer, Anon-Check, Proton-VPN-Helper, VPN-Chain, Give-me-privacy-Google
+- **Documentação:** 20+ arquivos Markdown profissionais
+  - Guias principais: README.md, INDEX.md, CHANGELOG.md, QUICK_START.md, GUIA_COMPLETO_PENTEST.md
+  - Análises: ANALISE_CODIGO.md, ANALISE_PROJETO_COMPLETA.md, IMPLEMENTACAO_COMPLETA.md
+  - Documentação por módulo: Windows/README.md, Kali/README.md, pentest/README.md, etc.
+- **Templates:** 1 template de relatório profissional (`templates/report_template.md`)
+- **Rubber Ducky:** 3 arquivos (`Rubber ducky/`)
+  - `autorun.inf` - Autoexecução
+  - `detect_pendrive.bat` - Detecção de pendrive
+  - `payload.bat` - Payload principal
+- **Linguagens:** Batch (.bat), PowerShell (.ps1), Bash (.sh), Python (.py), Ruby, Go, C/C++
+- **Última atualização:** Dezembro 2025
 
 ## ⚠️ AVISO LEGAL
 
@@ -110,22 +155,33 @@ Scripts/
 │       ├── Exploit-XSS-Polyglot-on-Moodle-3.9.2/ # Moodle XSS
 │       └── Exploiting-WP-Database-Backup-WordPress-Plugin/ # WordPress exploit
 │
-├── Windows/                 # Scripts para Windows
-│   ├── atack2.0-optimized.bat  # Setup Notebook 2 (AD/Lateral Movement) ⭐
-│   ├── setup-attackbox.ps1  # Setup PowerShell (RECOMENDADO)
-│   ├── setup_attackbox.bat  # Launcher do setup
+├── Windows/                 # Scripts para Windows (18 arquivos)
+│   ├── setup-notebook2.ps1  # Setup Notebook 2 COMPLETO PowerShell (MAIS RECOMENDADO) ⭐
+│   ├── setup-notebook2.bat  # Launcher para setup-notebook2.ps1
+│   ├── atack2.0-optimized.bat  # Setup Notebook 2 Batch (AD/Lateral Movement) ⭐
+│   ├── setup-attackbox.ps1  # Setup PowerShell genérico (RECOMENDADO)
+│   ├── setup_attackbox.bat  # Launcher do setup PowerShell
 │   ├── atack2.0.bat         # Setup completo com WSL2
-│   ├── bloqueioAPP.bat      # Bloqueio de aplicativos (ambientes controlados)
 │   ├── rollback.bat         # Reverter configurações ⭐
 │   ├── verificao.bat        # Verificação pós-instalação
 │   ├── setup-debug.bat      # Modo debug para troubleshooting
-│   ├── DesbloqueioCompleto.bat # Desfaz bloqueios aplicados
+│   ├── bloqueioAPP.bat      # Bloqueio de aplicativos (ambientes controlados)
 │   ├── BloqueioGeral.bat    # Bloqueio geral de recursos
 │   ├── Bloqueiojogos.bat    # Bloqueio específico de jogos
+│   ├── bloqueio_escola.bat  # Bloqueio específico para ambientes escolares
+│   ├── DesbloqueioCompleto.bat # Desfaz todos os bloqueios aplicados
 │   ├── DesfazBloqueioAPP.bat # Desfaz bloqueios de aplicativos
 │   ├── DesfazBloqueioAPP.ps1 # PowerShell version
 │   ├── desfazer_geral.bat   # Desfaz bloqueio geral
-│   ├── README.md            # Documentação Windows
+│   ├── desfazer_bloqueio_escola.bat # Desfaz bloqueio escolar
+│   ├── bloqueio/            # Scripts de bloqueio organizados
+│   │   ├── bloqueio_escola.bat
+│   │   ├── desfazer_bloqueio_escola.bat
+│   │   ├── restringir_instalacao.bat
+│   │   └── desfazer_restringir_instalacao.bat
+│   ├── SetupAtack.bat       # ⚠️ DESCONTINUADO (use atack2.0.bat)
+│   ├── SetupAtack2.bat      # ⚠️ DESCONTINUADO (use atack2.0.bat)
+│   ├── README.md            # Documentação completa Windows
 │   └── NOTEBOOK2-GUIDE.md   # Guia específico Notebook 2 (i5-3210M) ⭐
 │
 ├── pentest/                 # Scripts de Pentest Profissional ⭐ NOVO!
@@ -198,20 +254,44 @@ Scripts/
 │
 ├── ScrpitPentestSH/          # Scripts de reteste automatizado
 │   ├── TESTE_DDOS_CONTROLADO.sh # Teste controlado de DDoS
-│   ├── 01_RETESTE_*.sh      # Scripts legacy (raiz)
-│   └── retestesh/           # Scripts de reteste organizados
-│       ├── executar_todos_retestes.sh # Executa todos os retestes
-│       ├── reteste_empresa*.sh # Scripts individuais
-│       ├── reteste_ngrok.sh # Reteste específico
+│   ├── README.md            # Overview dos scripts de pentest
+│   ├── 01_RETESTE_ADIVISAO.sh # Script legacy (raiz)
+│   ├── 01_RETESTE_EMPRESA1.sh # Script legacy (raiz)
+│   ├── 02_RETESTE_EMPRESA2.sh # Script legacy (raiz)
+│   ├── 03_RETESTE_.sh       # Script legacy (raiz)
+│   ├── 03_RETESTE_EMPRESA3.sh # Script legacy (raiz)
+│   ├── 04_RETESTE_EMPRESA4.sh # Script legacy (raiz)
+│   ├── 04_RETESTE_IDIVIS.sh # Script legacy (raiz)
+│   ├── 05_RETESTE_EMPRESA5.sh # Script legacy (raiz)
+│   └── retestesh/           # Scripts de reteste organizados ⭐ RECOMENDADO
+│       ├── executar_todos_retestes.sh # Script mestre - executa todos ⭐
+│       ├── reteste_empresa1.sh # Reteste adivisao.com.br (10 vulns)
+│       ├── reteste_empresa2.sh # Reteste divisaodeelite.com.br (11 vulns)
+│       ├── reteste_empresa3.sh # Reteste acheumveterano.com.br (8 vulns)
+│       ├── reteste_empresa4.sh # Reteste idivis.ao (11 vulns)
+│       ├── reteste_empresa5.sh # Reteste planodechamadas.com.br (9 vulns)
+│       ├── reteste_ngrok.sh # Reteste ngrok URL (5 vulns)
 │       ├── reteste_with_opsec.sh # Wrapper com OPSEC
-│       ├── README.md        # Documentação completa
+│       ├── README.md        # Documentação completa (405 linhas)
 │       ├── GUIA_RAPIDO.md   # Guia rápido de uso
 │       └── INDICE_VULNERABILIDADES.md # Índice de 54 vulnerabilidades
 │
+├── Rubber ducky/            # Scripts Rubber Ducky ⭐
+│   ├── autorun.inf          # Autoexecução
+│   ├── detect_pendrive.bat  # Detecção de pendrive
+│   └── payload.bat          # Payload principal
+│
 ├── pentest_automatizado.sh  # Pentest automatizado v3.0 (raiz) ⭐
+├── INDEX.md                 # Índice completo de navegação
+├── CHANGELOG.md             # Histórico de atualizações
 ├── GUIA_COMPLETO_PENTEST.md # Guia completo (~1100 linhas)
 ├── QUICK_START.md           # Início rápido
 ├── NOVAS_FUNCIONALIDADES.md # Changelog detalhado
+├── NOTEBOOK2_COMPLETO.md    # Guia completo Notebook 2 (raiz)
+├── ANALISE_CODIGO.md        # Análise de código
+├── ANALISE_PROJETO_COMPLETA.md # Análise completa do projeto
+├── IMPLEMENTACAO_COMPLETA.md # Implementação completa
+├── git_push_update.bat      # Script de atualização Git
 └── README.md                # Este arquivo
 ```
 
@@ -241,20 +321,20 @@ chmod +x Kali/setup-notebook1.sh
 sudo ./Kali/setup-notebook1.sh
 ```
 
-**O que será instalado:**
+**O que será instalado (Notebook 1 - Stealth Box):**
 - Servidores HTTP (Python, Lighttpd, PHP)
 - Reverse shell listeners (Netcat, Socat, Ncat, Pwncat)
 - SSH e RDP servers
-Ferramentas de tunneling (Chisel, Serveo, SSHuttle)
+- Ferramentas de tunneling (Chisel, Serveo, SSHuttle)
 - Geradores de payload (MSFVenom, PayloadsAllTheThings)
 - C2 frameworks leves (Sliver, PoshC2)
 - Ferramentas de stealth (scans lentos, coleta passiva)
 - Phishing (Gophish)
 - Scripts auxiliares e aliases
 
-📖 **Guia completo:** [NOTEBOOK1-GUIDE.md](./NOTEBOOK1-GUIDE.md)
+📖 **Guia completo:** [NOTEBOOK1-GUIDE.md](./NOTEBOOK1-GUIDE.md) (verificar se existe)
 
-**O que será instalado:**
+**O que será instalado (Setup Completo - PC2/Kali Principal):**
 - Meta-pacotes Kali (kali-linux-large)
 - Ferramentas de brute-force (Hydra, Medusa, Ncrack)
 - Enumeração (Gobuster, BloodHound, SecLists)
@@ -270,7 +350,16 @@ Ferramentas de tunneling (Chisel, Serveo, SSHuttle)
 
 **Focado em Active Directory, Lateral Movement e Post-Exploitation**
 
+**Recomendado - PowerShell:**
 ```powershell
+# Executar como Administrador
+.\Windows\setup-notebook2.ps1
+# ou via launcher
+.\Windows\setup-notebook2.bat
+```
+
+**Alternativa - Batch:**
+```cmd
 # Executar como Administrador
 .\Windows\atack2.0-optimized.bat
 ```
@@ -284,7 +373,9 @@ Ferramentas de tunneling (Chisel, Serveo, SSHuttle)
 - Impacket + Responder
 - WSL2 + Kali com CrackMapExec
 
-📖 **Guia completo**: [Windows/NOTEBOOK2-GUIDE.md](./Windows/NOTEBOOK2-GUIDE.md)
+📖 **Guias completos:**
+- [NOTEBOOK2_COMPLETO.md](./NOTEBOOK2_COMPLETO.md) - Guia completo na raiz (detalhado)
+- [Windows/NOTEBOOK2-GUIDE.md](./Windows/NOTEBOOK2-GUIDE.md) - Guia rápido local
 
 ---
 
@@ -306,7 +397,24 @@ Ferramentas de tunneling (Chisel, Serveo, SSHuttle)
 - SSH Server
 - Estrutura de diretórios em `C:\Tools\`
 
-#### **Opção 2: Debug Mode**
+#### **Opção 3: Setup Notebook 2 PowerShell Completo** ⭐ **MAIS RECOMENDADO**
+
+```powershell
+# Executar como Administrador
+.\Windows\setup-notebook2.ps1
+# ou via launcher
+.\Windows\setup-notebook2.bat
+```
+
+**O que será instalado:**
+- Todas as ferramentas do Notebook 2 otimizado
+- Instalação mais robusta e com melhor tratamento de erros
+- Verificação de duplicatas (não baixa ferramentas já existentes)
+- Mensagens informativas em português
+
+📖 **Guia completo:** [NOTEBOOK2_COMPLETO.md](./NOTEBOOK2_COMPLETO.md) (raiz) ou [Windows/NOTEBOOK2-GUIDE.md](./Windows/NOTEBOOK2-GUIDE.md)
+
+#### **Opção 4: Debug Mode**
 
 Se o setup travar ou apresentar erros:
 
@@ -314,7 +422,7 @@ Se o setup travar ou apresentar erros:
 .\Windows\setup-debug.bat
 ```
 
-#### **Opção 3: Verificação Pós-Instalação**
+#### **Opção 5: Verificação Pós-Instalação**
 
 ```cmd
 .\Windows\verificao.bat
@@ -514,12 +622,18 @@ Remove-Item C:\Tools\<pasta> -Recurse -Force
   - Comandos de lateral movement
   - Exemplos de uso das ferramentas
 
-- **[NOTEBOOK1-GUIDE.md](./NOTEBOOK1-GUIDE.md)** - Guia completo Notebook 1 (Stealth Box)
+- **[NOTEBOOK1-GUIDE.md](./NOTEBOOK1-GUIDE.md)** - Guia completo Notebook 1 (Stealth Box) ⚠️ Verificar se existe
   - Configuração de servidores e listeners
   - Tunneling e pivoting
   - Payload generation
   - C2 frameworks leves
   - Workflows práticos
+
+- **[NOTEBOOK2_COMPLETO.md](./NOTEBOOK2_COMPLETO.md)** - Guia completo Notebook 2 (raiz)
+  - Explicação detalhada de cada ferramenta
+  - Workflows práticos para AD
+  - Comandos de lateral movement
+  - Exemplos de uso das ferramentas
 
 - **[Kali/README.md](./Kali/README.md)** - Documentação completa Kali Linux
   - Setup automatizado
@@ -963,9 +1077,21 @@ generate_report templates/report_template.md relatorio_final.pdf
 
 Diretório contendo scripts especializados para testes de penetração e retestes de vulnerabilidades.
 
-#### **Scripts de Reteste Automatizado**
+#### **Scripts de Reteste Automatizado** ⭐ **RECOMENDADO**
 
 Localizado em `ScrpitPentestSH/retestesh/`, contém scripts bash para validação de correções de vulnerabilidades de forma genérica e segura.
+
+**Scripts disponíveis (7 scripts + 1 mestre):**
+- ✅ **executar_todos_retestes.sh** - Script mestre que executa todos os retestes sequencialmente ⭐
+- ✅ **reteste_empresa1.sh** - adivisao.com.br (10 vulnerabilidades)
+- ✅ **reteste_empresa2.sh** - divisaodeelite.com.br (11 vulnerabilidades)
+- ✅ **reteste_empresa3.sh** - acheumveterano.com.br (8 vulnerabilidades)
+- ✅ **reteste_empresa4.sh** - idivis.ao / 31.97.27.219 (11 vulnerabilidades)
+- ✅ **reteste_empresa5.sh** - planodechamadas.com.br (9 vulnerabilidades)
+- ✅ **reteste_ngrok.sh** - ngrok URL (5 vulnerabilidades)
+- ✅ **reteste_with_opsec.sh** - Wrapper com OPSEC
+
+**Total:** 54 vulnerabilidades rastreadas em 6 alvos
 
 **Uso rápido:**
 ```bash
@@ -976,28 +1102,28 @@ chmod +x executar_todos_retestes.sh
 
 **Recursos:**
 - ✅ Relatórios automáticos com timestamp
-- ✅ Códigos de cores para status
+- ✅ Códigos de cores para status (🔴 Crítico, 🟡 Médio, 🟢 OK)
 - ✅ Verificação de HTTP status codes
 - ✅ Testes de headers de segurança
 - ✅ Scan de portas e serviços
 - ✅ Validação TLS/SSL
-- ✅ Índice de 54 vulnerabilidades
+- ✅ Índice completo de 54 vulnerabilidades
 
 **Documentação:**
-- `README.md` - Documentação detalhada de cada script
+- `README.md` - Documentação detalhada de cada script (405 linhas)
 - `GUIA_RAPIDO.md` - Início rápido e troubleshooting
 - `INDICE_VULNERABILIDADES.md` - Lista consolidada de 54 vulnerabilidades
 
-#### **Scripts de Reteste (Raiz)**
+#### **Scripts de Reteste (Raiz)** - Legacy
 
-Scripts na raiz de `ScrpitPentestSH/` (versão legacy):
-- `01_RETESTE_ADIVISAO.sh`
-- `02_RETESTE_DIVISAODEELITE.sh`
-- `03_RETESTE_ACHEUMVETERANO.sh`
-- `04_RETESTE_IDIVIS.sh`
-- `05_RETESTE_PLANODECHAMADAS.sh`
+Scripts na raiz de `ScrpitPentestSH/` (versão legacy - não recomendado):
+- `01_RETESTE_ADIVISAO.sh` / `01_RETESTE_EMPRESA1.sh`
+- `02_RETESTE_EMPRESA2.sh`
+- `03_RETESTE_.sh` / `03_RETESTE_EMPRESA3.sh`
+- `04_RETESTE_EMPRESA4.sh` / `04_RETESTE_IDIVIS.sh`
+- `05_RETESTE_EMPRESA5.sh`
 
-**Nota:** Use os scripts em `retestesh/` que estão mais atualizados.
+**Nota:** Use sempre os scripts em `retestesh/` que estão mais atualizados e organizados.
 
 #### **Teste de DDoS Controlado**
 
@@ -1157,5 +1283,27 @@ python3 pentest_all_targets.py
 
 ---
 
-**Última atualização:** 28 de Novembro de 2025
+---
+
+## 🦆 Rubber Ducky Scripts
+
+Scripts para uso com dispositivos USB Rubber Ducky ou similares.
+
+**⚠️ AVISO LEGAL:** Use apenas em sistemas próprios ou com autorização explícita!
+
+**Arquivos disponíveis:**
+- ✅ **autorun.inf** - Configuração de autoexecução
+- ✅ **detect_pendrive.bat** - Script de detecção de pendrive
+- ✅ **payload.bat** - Payload principal
+
+**Uso:**
+1. Copie os arquivos para o dispositivo USB
+2. Configure o `autorun.inf` conforme necessário
+3. Execute apenas em ambientes autorizados
+
+**⚠️ IMPORTANTE:** Estes scripts são para fins educacionais e testes autorizados apenas!
+
+---
+
+**Última atualização:** 18 de Dezembro de 2025
 
