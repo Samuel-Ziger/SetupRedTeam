@@ -28,6 +28,7 @@ Repositório de scripts de automação para configuração rápida de ambientes 
 - **Scripts SQL Injection:** 1 script profissional (`SQL/sql_injection_automatizado.sh`)
 - **Scripts Wi-Fi:** 4 scripts automatizados (`wifi/`)
 - **Análise de Malware:** 3 scripts Python de análise (`BotNet/scripts/`)
+- **Pentest Autônomo:** 12 scripts de exploração autônoma (`Kali/PentestAutonomo2.0/`)
 - **Scripts Reteste:** 7 scripts organizados (`ScrpitPentestSH/retestesh/`) + 5 legacy
 - **Bibliotecas:** 5 bibliotecas reutilizáveis (`lib/`)
 - **Ferramentas Kali:** 29 toolkits completos (~312MB)
@@ -64,6 +65,20 @@ Scripts/
 │   ├── setup-notebook1.sh   # Setup Notebook 1 (Stealth Box) ⭐
 │   ├── ExecutarSetup-Kali.md
 │   ├── README.md            # Documentação Kali
+│   ├── PentestAutonomo2.0/  # Scripts de Exploração Autônoma ⭐ NOVO!
+│   │   ├── exploit_all.sh  # Executa todos os scripts de exploração
+│   │   ├── exploit_mysql.sh # Exploração MySQL
+│   │   ├── exploit_ssh.sh  # Exploração SSH
+│   │   ├── exploit_ftp.sh  # Exploração FTP
+│   │   ├── exploit_joomla.sh # Exploração Joomla CMS
+│   │   ├── exploit_email.sh # Exploração de serviços de email
+│   │   ├── exploit_dns.sh  # Exploração DNS
+│   │   ├── ataque_geral.sh  # Ataque geral
+│   │   ├── ataque_mysql.sh # Ataque MySQL
+│   │   ├── ataque_ssh.sh   # Ataque SSH
+│   │   ├── ataque_smtp.sh  # Ataque SMTP
+│   │   ├── ataque_joomla.sh # Ataque Joomla
+│   │   └── README.md        # Documentação completa
 │   └── Ferramentas/         # 29 ferramentas especializadas (~312MB)
 │       ├── zphisher/        # Phishing framework (30+ templates)
 │       ├── EchoPhish/       # Instagram phishing com 2FA ⭐
@@ -581,6 +596,13 @@ Remove-Item C:\Tools\<pasta> -Recurse -Force
   - Comportamento e técnicas
   - Recomendações de mitigação
 
+#### **Pentest Autônomo:**
+- **[Kali/PentestAutonomo2.0/README.md](./Kali/PentestAutonomo2.0/README.md)** - Scripts de Exploração Autônoma
+  - 12 scripts de exploração autônoma
+  - Múltiplas áreas de ataque (MySQL, SSH, FTP, Joomla, Email, DNS)
+  - Execução autônoma completa
+  - Logging e relatórios consolidados
+
 #### **Bibliotecas e Utilitários:**
 - **[docs/OPSEC_CHECKLIST.md](./docs/OPSEC_CHECKLIST.md)** - Checklist OPSEC
   - 15 verificações essenciais
@@ -826,6 +848,60 @@ python scripts/analisar_comportamento.py
 
 ---
 
+### **Kali/PentestAutonomo2.0/** - Scripts de Exploração Autônoma ⭐
+
+Scripts autônomos e agressivos de exploração de segurança para testes de penetração autorizados.
+
+**⚠️ AVISO LEGAL:** Estes scripts são para uso **APENAS** em ambientes autorizados e para fins de teste de penetração legal. O uso não autorizado é ilegal e pode resultar em consequências criminais.
+
+**Recursos:**
+- ✅ **Execução autônoma completa** - Verificam e instalam ferramentas automaticamente
+- ✅ **Múltiplas áreas de ataque** - MySQL, SSH, FTP, Joomla, Email, DNS, Web
+- ✅ **Agressividade configurável** - Múltiplas threads para brute force
+- ✅ **Pós-exploração automática** - Tentativas automáticas de pós-exploração
+- ✅ **Logging detalhado** - Logs completos de todas as fases
+- ✅ **Relatórios consolidados** - Relatório final com todos os resultados
+
+**Scripts disponíveis:**
+- ✅ **exploit_all.sh** - Executa todos os scripts de exploração sequencialmente
+- ✅ **exploit_mysql.sh** - Exploração MySQL (brute force, CVE-2012-2122, extração de dados)
+- ✅ **exploit_ssh.sh** - Exploração SSH (brute force, enumeração, backdoors)
+- ✅ **exploit_ftp.sh** - Exploração FTP (brute force, login anônimo, enumeração)
+- ✅ **exploit_joomla.sh** - Exploração Joomla CMS (brute force admin, SQLi, LFI/RFI)
+- ✅ **exploit_email.sh** - Exploração de serviços de email (POP3, IMAP, SMTP)
+- ✅ **exploit_dns.sh** - Exploração DNS (enumeração, zone transfer, recursão)
+- ✅ **ataque_geral.sh** - Ataque geral multi-serviço
+- ✅ **ataque_mysql.sh** - Ataque específico MySQL
+- ✅ **ataque_ssh.sh** - Ataque específico SSH
+- ✅ **ataque_smtp.sh** - Ataque específico SMTP
+- ✅ **ataque_joomla.sh** - Ataque específico Joomla
+
+**Uso:**
+```bash
+cd Kali/PentestAutonomo2.0
+
+# Executar todos os ataques
+sudo ./exploit_all.sh exemplo.com.br 192.168.1.100
+
+# Executar ataque específico
+sudo ./exploit_mysql.sh exemplo.com.br 192.168.1.100
+sudo ./exploit_ssh.sh exemplo.com.br 192.168.1.100
+sudo ./exploit_dns.sh exemplo.com.br
+```
+
+**Ferramentas utilizadas:**
+- Nmap, Hydra, SQLMap, Nikto, Gobuster, Dirb, Metasploit, DNSenum, DNSrecon, Joomscan
+
+**Estrutura de saída:**
+- `logs/` - Logs detalhados de cada fase
+- `results/` - Credenciais, vulnerabilidades, arquivos extraídos
+- `results/consolidated_report.txt` - Relatório consolidado final
+
+**Documentação:**
+- `README.md` - Documentação completa (223 linhas)
+
+---
+
 ### **lib/** - Bibliotecas Reutilizáveis ⭐
 
 Bibliotecas de funções para uso em scripts de pentest e automação.
@@ -1001,6 +1077,20 @@ python3 pentest_all_targets.py
 📖 **Documentação:** `BotNet/README_ANALISE.md`, `BotNet/ANALISE_TECNICA.md`  
 
 ⚠️ **USO EDUCACIONAL APENAS!** Destinado exclusivamente para pesquisa e desenvolvimento de defesas.
+
+---
+
+### **⚡ PENTEST AUTÔNOMO 2.0** - Exploração Autônoma ⭐
+✅ **12 scripts de exploração autônoma** - Execução completamente autônoma  
+✅ **Múltiplas áreas de ataque** - MySQL, SSH, FTP, Joomla, Email, DNS, Web  
+✅ **Execução agressiva** - Múltiplas threads, brute force intensivo  
+✅ **Pós-exploração automática** - Tentativas automáticas de pós-exploração  
+✅ **Logging detalhado** - Logs completos de todas as fases  
+✅ **Relatórios consolidados** - Relatório final com todos os resultados  
+📖 **Scripts:** `Kali/PentestAutonomo2.0/`  
+📖 **Documentação:** `Kali/PentestAutonomo2.0/README.md` (223 linhas)  
+
+⚠️ **USO APENAS EM AMBIENTES AUTORIZADOS!** O uso não autorizado é ilegal.
 
 ---
 
