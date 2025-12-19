@@ -27,6 +27,7 @@ Repositório de scripts de automação para configuração rápida de ambientes 
   - `reteste/pentest_all_targets.py` - Múltiplos alvos
 - **Scripts SQL Injection:** 1 script profissional (`SQL/sql_injection_automatizado.sh`)
 - **Scripts Wi-Fi:** 4 scripts automatizados (`wifi/`)
+- **Análise de Malware:** 3 scripts Python de análise (`BotNet/scripts/`)
 - **Scripts Reteste:** 7 scripts organizados (`ScrpitPentestSH/retestesh/`) + 5 legacy
 - **Bibliotecas:** 5 bibliotecas reutilizáveis (`lib/`)
 - **Ferramentas Kali:** 29 toolkits completos (~312MB)
@@ -152,6 +153,18 @@ Scripts/
 │   ├── deauth_rapido.sh     # Ataque deauth rápido
 │   ├── README.md            # Documentação completa
 │   └── passwords/            # Wordlists de senhas
+│
+├── BotNet/                   # Análise de Malware ⭐ NOVO!
+│   ├── darkddoser/          # Malware DarkDDoSer (educacional)
+│   │   └── DarkDDoSer/      # Executável e configurações
+│   ├── scripts/             # Scripts de análise Python
+│   │   ├── analisar_config.py # Análise de configurações INI
+│   │   ├── gerar_iocs.py    # Geração de IOCs (YARA, Sigma)
+│   │   └── analisar_comportamento.py # Análise de comportamento
+│   ├── ANALISE_TECNICA.md   # Análise técnica detalhada
+│   ├── README_ANALISE.md    # Documentação de análise
+│   ├── README.md            # Visão geral
+│   └── requirements.txt     # Dependências Python
 │
 ├── lib/                      # Bibliotecas Reutilizáveis ⭐ NOVO!
 │   ├── opsec.sh             # Biblioteca OPSEC (10 funções)
@@ -556,6 +569,18 @@ Remove-Item C:\Tools\<pasta> -Recurse -Force
   - Brute force automático
   - Scripts auxiliares
 
+#### **Análise de Malware:**
+- **[BotNet/README_ANALISE.md](./BotNet/README_ANALISE.md)** - Kit de Análise DarkDDoSer
+  - Scripts Python de análise
+  - Geração de IOCs (YARA, Sigma)
+  - Análise de configurações e comportamento
+  - Guia completo de uso
+
+- **[BotNet/ANALISE_TECNICA.md](./BotNet/ANALISE_TECNICA.md)** - Análise Técnica Detalhada
+  - Análise profunda do malware
+  - Comportamento e técnicas
+  - Recomendações de mitigação
+
 #### **Bibliotecas e Utilitários:**
 - **[docs/OPSEC_CHECKLIST.md](./docs/OPSEC_CHECKLIST.md)** - Checklist OPSEC
   - 15 verificações essenciais
@@ -755,6 +780,52 @@ sudo ./capturar_handshake.sh
 
 ---
 
+### **BotNet/** - Análise de Malware ⭐
+
+Kit de análise educacional para o malware **DarkDDoSer** - DDoS botnet.
+
+**⚠️ AVISO:** Este projeto é destinado **EXCLUSIVAMENTE** para pesquisa em segurança cibernética, educação em análise de malware e desenvolvimento de defesas. O uso não autorizado de malware é ILEGAL.
+
+**Recursos:**
+- ✅ **Análise de configurações** - Extrai e analisa arquivos INI do malware
+- ✅ **Geração de IOCs** - Gera regras YARA, Sigma e lista de IOCs
+- ✅ **Análise de comportamento** - Analisa comportamento esperado do malware
+- ✅ **Documentação técnica** - Análise técnica detalhada do malware
+
+**Scripts Python disponíveis:**
+- ✅ **analisar_config.py** - Analisa arquivos de configuração (login.ini, settings.ini)
+- ✅ **gerar_iocs.py** - Gera IOCs em múltiplos formatos (YARA, Sigma, JSON)
+- ✅ **analisar_comportamento.py** - Analisa comportamento de rede, sistema de arquivos e processos
+
+**Uso:**
+```bash
+cd BotNet
+# Instalar dependências
+pip install -r requirements.txt
+
+# Analisar configurações
+python scripts/analisar_config.py
+
+# Gerar IOCs
+python scripts/gerar_iocs.py
+
+# Analisar comportamento
+python scripts/analisar_comportamento.py
+```
+
+**Saídas geradas:**
+- `analise_config.json` - Relatório de configurações
+- `iocs/darkddoser.yara` - Regra YARA para detecção
+- `iocs/darkddoser.yml` - Regra Sigma para SIEM
+- `iocs/iocs.json` - Lista completa de IOCs
+- `analise_comportamento.json` - Relatório de comportamentos
+
+**Documentação:**
+- `README_ANALISE.md` - Guia completo de análise
+- `ANALISE_TECNICA.md` - Análise técnica detalhada do malware
+
+---
+
 ### **lib/** - Bibliotecas Reutilizáveis ⭐
 
 Bibliotecas de funções para uso em scripts de pentest e automação.
@@ -918,6 +989,18 @@ python3 pentest_all_targets.py
 ✅ **bruteforce_wifi.sh** - Brute force automático com múltiplas wordlists  
 ✅ **deauth_rapido.sh** - Ataque deauth rápido  
 📖 **Documentação:** `wifi/README.md` (507 linhas)  
+
+---
+
+### **🛡️ ANÁLISE DE MALWARE - DarkDDoSer** ⭐
+✅ **Kit de análise educacional** - Análise completa do malware DarkDDoSer  
+✅ **3 scripts Python** - Análise de configurações, geração de IOCs, análise de comportamento  
+✅ **Geração de IOCs** - YARA, Sigma e JSON  
+✅ **Análise técnica detalhada** - Documentação completa do malware  
+📖 **Scripts:** `BotNet/scripts/`  
+📖 **Documentação:** `BotNet/README_ANALISE.md`, `BotNet/ANALISE_TECNICA.md`  
+
+⚠️ **USO EDUCACIONAL APENAS!** Destinado exclusivamente para pesquisa e desenvolvimento de defesas.
 
 ---
 
