@@ -20,8 +20,18 @@ Repositório de scripts de automação para configuração rápida de ambientes 
 - **Tamanho total:** ~312 MB
 - **Scripts Windows:** 18 arquivos (Attack Box, bloqueios, verificação)
 - **Scripts Kali:** 1 setup principal
-- **Scripts Pentest:** 13 scripts (1 DDoS + 5 legacy + 7 retestesh)
+- **Scripts Pentest:** 
+  - `pentest/pentest_completo.sh` - v4.0 (2145 linhas)
+  - `pentest_automatizado.sh` - v3.0 (raiz)
+  - `reteste/pentest_automation.py` - Script Python completo
+  - `reteste/pentest_all_targets.py` - Múltiplos alvos
+- **Scripts SQL Injection:** 1 script profissional (`SQL/sql_injection_automatizado.sh`)
+- **Scripts Wi-Fi:** 4 scripts automatizados (`wifi/`)
+- **Scripts Reteste:** 7 scripts organizados (`ScrpitPentestSH/retestesh/`) + 5 legacy
+- **Bibliotecas:** 5 bibliotecas reutilizáveis (`lib/`)
 - **Ferramentas Kali:** 29 toolkits completos (~312MB)
+- **Documentação:** 15+ arquivos Markdown profissionais
+- **Templates:** 1 template de relatório profissional
 <!-- Informação removida para evitar exposição de dados sensíveis -->
 - **Linguagens:** Batch, PowerShell, Bash, Python, Ruby, Go
 - **Última atualização:** Novembro 2025
@@ -47,7 +57,7 @@ Repositório de scripts de automação para configuração rápida de ambientes 
 ## 📁 Estrutura do Repositório
 
 ```
-Scripts-Bat/
+Scripts/
 ├── Kali/                    # Scripts para Kali Linux
 │   ├── setup-kali.sh        # Setup completo automatizado
 │   ├── setup-notebook1.sh   # Setup Notebook 1 (Stealth Box) ⭐
@@ -102,15 +112,79 @@ Scripts-Bat/
 │   ├── README.md            # Documentação Windows
 │   └── NOTEBOOK2-GUIDE.md   # Guia específico Notebook 2 (i5-3210M) ⭐
 │
-└── ScrpitPentestSH/         # Scripts para pentest e reteste automatizado
-  ├── TESTE_DDOS_CONTROLADO.sh # Teste controlado de DDoS
-  ├── Scripts de reteste automatizado (nomes genéricos)
-  └── retestesh/           # Scripts de reteste organizados
-    ├── executar_todos_retestes.sh # Executa todos os retestes
-    ├── GUIA_RAPIDO.md   # Guia rápido de uso
-    ├── INDICE_VULNERABILIDADES.md # Índice consolidado
-    ├── README.md        # Documentação completa
-    ├── Scripts de reteste automatizado (nomes genéricos)
+├── pentest/                 # Scripts de Pentest Profissional ⭐ NOVO!
+│   ├── pentest_completo.sh  # Pentest completo v4.0 (2145 linhas)
+│   ├── executar_pentest.sh  # Launcher do pentest
+│   ├── README.md            # Documentação completa
+│   ├── CHECKLIST_PENTEST.md # Checklist profissional
+│   └── GUIA_RAPIDO.md       # Guia rápido de uso
+│
+├── reteste/                 # Scripts de Pentest Automatizado ⭐ NOVO!
+│   ├── pentest_automation.py # Script Python completo
+│   ├── pentest_all_targets.py # Pentest em múltiplos alvos
+│   ├── pentest_all_targets.sh # Versão Shell
+│   ├── run_pentest.sh       # Executor de pentest
+│   ├── targets_list.txt     # Lista de alvos
+│   ├── README_PENTEST.md    # Documentação do script principal
+│   ├── README_TODOS_ALVOS.md # Guia para múltiplos alvos
+│   ├── INICIO_RAPIDO.md     # Início rápido
+│   ├── EXEMPLO_USO.md       # Exemplos de uso
+│   └── RESUMO_IMPLEMENTACAO.md # Resumo técnico
+│
+├── SQL/                     # SQL Injection Automatizado ⭐ NOVO!
+│   ├── sql_injection_automatizado.sh # Script profissional
+│   ├── README_SQL_INJECTION_AUTOMATIZADO.md # Documentação
+│   ├── lib/                  # Bibliotecas auxiliares
+│   │   ├── log.sh           # Sistema de logs
+│   │   ├── opsec.sh         # Funções OPSEC
+│   │   └── sqlmap.sh        # Wrapper SQLMap
+│   ├── modules/              # Módulos extras
+│   │   └── dump.sh          # Módulo de dump
+│   └── result/               # Resultados
+│       ├── logs/             # Logs detalhados
+│       ├── relatorio/        # Relatórios finais
+│       └── dumps/            # Dumps de bancos
+│
+├── wifi/                     # Scripts Wi-Fi ⭐ NOVO!
+│   ├── wifite_auto.sh       # Script automatizado estilo wifite
+│   ├── capturar_handshake.sh # Captura de handshake WPA/WPA2
+│   ├── bruteforce_wifi.sh   # Brute force automático
+│   ├── deauth_rapido.sh     # Ataque deauth rápido
+│   ├── README.md            # Documentação completa
+│   └── passwords/            # Wordlists de senhas
+│
+├── lib/                      # Bibliotecas Reutilizáveis ⭐ NOVO!
+│   ├── opsec.sh             # Biblioteca OPSEC (10 funções)
+│   ├── backup_tools.sh      # Sistema de backup automatizado
+│   ├── generate_report.sh   # Gerador de relatórios (Markdown→PDF)
+│   ├── install_wazuh.sh     # Instalador Wazuh SIEM
+│   └── resource_check.sh    # Verificação de recursos do sistema
+│
+├── docs/                     # Documentação Profissional ⭐ NOVO!
+│   ├── OPSEC_CHECKLIST.md   # Checklist de segurança operacional
+│   ├── BACKUP_STRATEGY.md   # Estratégia 3-2-1 de backup
+│   └── UPGRADE_GUIDE.md     # Guia de upgrade de hardware
+│
+├── templates/                # Templates de Relatórios ⭐ NOVO!
+│   └── report_template.md   # Template profissional Markdown
+│
+├── ScrpitPentestSH/          # Scripts de reteste automatizado
+│   ├── TESTE_DDOS_CONTROLADO.sh # Teste controlado de DDoS
+│   ├── 01_RETESTE_*.sh      # Scripts legacy (raiz)
+│   └── retestesh/           # Scripts de reteste organizados
+│       ├── executar_todos_retestes.sh # Executa todos os retestes
+│       ├── reteste_empresa*.sh # Scripts individuais
+│       ├── reteste_ngrok.sh # Reteste específico
+│       ├── reteste_with_opsec.sh # Wrapper com OPSEC
+│       ├── README.md        # Documentação completa
+│       ├── GUIA_RAPIDO.md   # Guia rápido de uso
+│       └── INDICE_VULNERABILIDADES.md # Índice de 54 vulnerabilidades
+│
+├── pentest_automatizado.sh  # Pentest automatizado v3.0 (raiz) ⭐
+├── GUIA_COMPLETO_PENTEST.md # Guia completo (~1100 linhas)
+├── QUICK_START.md           # Início rápido
+├── NOVAS_FUNCIONALIDADES.md # Changelog detalhado
+└── README.md                # Este arquivo
 ```
 
 ---
@@ -401,6 +475,7 @@ Remove-Item C:\Tools\<pasta> -Recurse -Force
 
 ### **Por Categoria:**
 
+#### **Setup e Configuração:**
 - **[Windows/README.md](./Windows/README.md)** - Documentação completa dos scripts Windows
   - Setup Attack Box
   - Scripts de bloqueio/desbloqueio
@@ -425,19 +500,93 @@ Remove-Item C:\Tools\<pasta> -Recurse -Force
   
 - **[Kali/ExecutarSetup-Kali.md](./Kali/ExecutarSetup-Kali.md)** - Guia rápido de execução
 
-<!-- Referência removida para evitar exposição de dados sensíveis -->
-  - Estrutura dos scripts
-  - Alvos monitorados
+#### **Pentest e Exploração:**
+- **[pentest/README.md](./pentest/README.md)** - Pentest Profissional Completo v4.0
+  - 5 fases automatizadas
+  - Integração OPSEC
+  - Classificação de vulnerabilidades
+  - Relatórios profissionais
+
+- **[pentest/CHECKLIST_PENTEST.md](./pentest/CHECKLIST_PENTEST.md)** - Checklist profissional completo
+  - Pré-pentest
+  - Fases de reconhecimento
+  - Exploração e pós-exploração
+
+- **[pentest/GUIA_RAPIDO.md](./pentest/GUIA_RAPIDO.md)** - Guia rápido de uso
+
+- **[reteste/README_PENTEST.md](./reteste/README_PENTEST.md)** - Pentest Automatizado em Múltiplos Alvos
+  - Script Python completo
+  - 4 fases automatizadas
+  - Exemplos de uso
+
+- **[reteste/README_TODOS_ALVOS.md](./reteste/README_TODOS_ALVOS.md)** - Guia para múltiplos alvos
+  - Processamento em lote
+  - Configuração de alvos
+  - Relatórios consolidados
+
+- **[SQL/README_SQL_INJECTION_AUTOMATIZADO.md](./SQL/README_SQL_INJECTION_AUTOMATIZADO.md)** - SQL Injection Automatizado
+  - Auditoria e compliance
+  - Detecção de WAF
+  - Integração Metasploit
+
+#### **Reteste e Validação:**
+- **[ScrpitPentestSH/README.md](./ScrpitPentestSH/README.md)** - Scripts de Reteste
+  - Visão geral dos scripts
+  - Estrutura de diretórios
   - Fluxo de trabalho
 
-<!-- Referência removida para evitar exposição de dados sensíveis -->
-  - Cada script explicado
-  <!-- Informação removida para evitar exposição de dados sensíveis -->
-  - Interpretação de resultados
+- **[ScrpitPentestSH/retestesh/README.md](./ScrpitPentestSH/retestesh/README.md)** - Retestes Organizados
+  - Documentação detalhada de cada script
+  - Descrição de vulnerabilidades
+  - Exemplos de uso
 
-<!-- Referência removida para evitar exposição de dados sensíveis -->
+- **[ScrpitPentestSH/retestesh/GUIA_RAPIDO.md](./ScrpitPentestSH/retestesh/GUIA_RAPIDO.md)** - Guia rápido
+  - Comandos essenciais
+  - Tabela de referência
+  - Troubleshooting
 
-<!-- Referência removida para evitar exposição de dados sensíveis -->
+- **[ScrpitPentestSH/retestesh/INDICE_VULNERABILIDADES.md](./ScrpitPentestSH/retestesh/INDICE_VULNERABILIDADES.md)** - Índice de Vulnerabilidades
+  - Lista consolidada de 54 vulnerabilidades
+  - Organizado por alvo
+  - Níveis de criticidade
+
+#### **Wi-Fi:**
+- **[wifi/README.md](./wifi/README.md)** - Scripts Wi-Fi Automatizados
+  - Captura de handshake
+  - Brute force automático
+  - Scripts auxiliares
+
+#### **Bibliotecas e Utilitários:**
+- **[docs/OPSEC_CHECKLIST.md](./docs/OPSEC_CHECKLIST.md)** - Checklist OPSEC
+  - 15 verificações essenciais
+  - Pré-engagement
+  - Segurança operacional
+
+- **[docs/BACKUP_STRATEGY.md](./docs/BACKUP_STRATEGY.md)** - Estratégia de Backup
+  - Regra 3-2-1
+  - Automação completa
+  - Prioridades e métodos
+
+- **[docs/UPGRADE_GUIDE.md](./docs/UPGRADE_GUIDE.md)** - Guia de Upgrade
+  - Prioridades de hardware
+  - Custos e ROI
+  - Recomendações
+
+#### **Guias Gerais:**
+- **[GUIA_COMPLETO_PENTEST.md](./GUIA_COMPLETO_PENTEST.md)** - Guia Completo de Pentest (~1100 linhas)
+  - Metodologia completa
+  - Ferramentas e técnicas
+  - Workflows práticos
+
+- **[QUICK_START.md](./QUICK_START.md)** - Início Rápido
+  - Começar em 5 minutos
+  - Comandos essenciais
+  - Primeiros passos
+
+- **[NOVAS_FUNCIONALIDADES.md](./NOVAS_FUNCIONALIDADES.md)** - Changelog Detalhado
+  - Todas as novas funcionalidades
+  - Histórico de atualizações
+  - Melhorias implementadas
 
 ---
 
@@ -507,15 +656,169 @@ Este projeto é fornecido "como está", sem garantias. Use por sua conta e risco
 
 ## 🔍 Scripts de Pentest e Reteste
 
-### **ScrpitPentestSH/**
+### **pentest/** - Pentest Profissional Completo v4.0 ⭐
+
+Script profissional de penetration testing que executa todas as etapas de um pentest completo de forma automatizada.
+
+**Recursos:**
+- ✅ **5 fases automatizadas:** Reconhecimento → Scanning → Enumeração → Exploração → Relatório
+- ✅ **Integração OPSEC:** Verificação pré-engagement automática
+- ✅ **Rotação Tor:** Suporte a rotação automática de IP via Tor
+- ✅ **+20 ferramentas integradas:** Nmap, Nikto, SQLMap, Hydra, Gobuster, WPScan, etc.
+- ✅ **Classificação de vulnerabilidades:** Crítica, Alta, Média, Baixa, Info
+- ✅ **Relatório completo:** Markdown com estatísticas e evidências
+
+**Uso:**
+```bash
+cd pentest
+sudo ./pentest_completo.sh -t target.com
+sudo ./pentest_completo.sh -t target.com --tor --intensity max
+```
+
+**Documentação:**
+- `README.md` - Documentação completa (449 linhas)
+- `CHECKLIST_PENTEST.md` - Checklist profissional
+- `GUIA_RAPIDO.md` - Guia rápido de uso
+
+---
+
+### **reteste/** - Pentest Automatizado em Múltiplos Alvos ⭐
+
+Scripts Python e Shell para executar pentest automatizado em múltiplos alvos sequencialmente.
+
+**Recursos:**
+- ✅ **Pentest em múltiplos alvos:** Processa lista de alvos automaticamente
+- ✅ **4 fases:** OSINT → Infraestrutura → Detecção → Exploração (opcional)
+- ✅ **Ferramentas integradas:** WHOIS, DNS, Sublist3r, Amass, TheHarvester, Nmap, Nikto, Gobuster, FFuF, SSLyze
+- ✅ **Relatórios por fase:** Relatórios separados para cada fase
+- ✅ **Modo não-invasivo:** Opção de pular fase de exploração
+
+**Uso:**
+```bash
+cd reteste
+python3 pentest_all_targets.py
+# ou
+./pentest_all_targets.sh
+```
+
+**Documentação:**
+- `README_PENTEST.md` - Documentação do script principal
+- `README_TODOS_ALVOS.md` - Guia para múltiplos alvos
+- `INICIO_RAPIDO.md` - Início rápido
+- `EXEMPLO_USO.md` - Exemplos práticos
+
+---
+
+### **SQL/** - SQL Injection Automatizado Profissional ⭐
+
+Script profissional para testes automatizados de SQL Injection com auditoria, OPSEC e logs corporativos.
+
+**Recursos:**
+- ✅ **Auditoria completa:** Exige arquivo digital de autorização
+- ✅ **Múltiplos alvos:** Suporte a arquivo de escopo com múltiplas URLs
+- ✅ **Detecção de WAF:** Detecção e bypass automático
+- ✅ **Integração Metasploit:** Pós-exploração opcional
+- ✅ **Logs corporativos:** JSONL, CSV, logs detalhados
+- ✅ **Dumps automáticos:** Exportação de bancos e credenciais
+
+**Uso:**
+```bash
+cd SQL
+sudo ./sql_injection_automatizado.sh
+```
+
+**Documentação:**
+- `README_SQL_INJECTION_AUTOMATIZADO.md` - Guia completo
+
+---
+
+### **wifi/** - Scripts Wi-Fi Automatizados ⭐
+
+Scripts automatizados para captura e quebra de handshake WPA/WPA2.
+
+**Scripts disponíveis:**
+- ✅ **wifite_auto.sh** - Script completamente automatizado estilo wifite
+- ✅ **capturar_handshake.sh** - Captura de handshake WPA/WPA2
+- ✅ **bruteforce_wifi.sh** - Brute force automático testando múltiplas wordlists
+- ✅ **deauth_rapido.sh** - Ataque deauth rápido
+
+**Uso:**
+```bash
+cd wifi
+sudo ./wifite_auto.sh
+# ou
+sudo ./capturar_handshake.sh
+```
+
+**Documentação:**
+- `README.md` - Documentação completa com exemplos
+
+---
+
+### **lib/** - Bibliotecas Reutilizáveis ⭐
+
+Bibliotecas de funções para uso em scripts de pentest e automação.
+
+**Bibliotecas disponíveis:**
+- ✅ **opsec.sh** - 10 funções de segurança operacional (VPN check, DNS leak, rate limiting, etc.)
+- ✅ **backup_tools.sh** - Sistema de backup automatizado (estratégia 3-2-1)
+- ✅ **generate_report.sh** - Gerador de relatórios profissionais (Markdown→PDF)
+- ✅ **install_wazuh.sh** - Instalador Wazuh SIEM via Docker
+- ✅ **resource_check.sh** - Verificação de recursos do sistema (CPU, RAM, Disco)
+
+**Uso:**
+```bash
+# Importar biblioteca OPSEC
+source lib/opsec.sh
+check_vpn
+check_dns_leak
+
+# Verificar recursos
+source lib/resource_check.sh
+check_cpu
+check_ram
+```
+
+**Documentação:**
+- `docs/OPSEC_CHECKLIST.md` - Checklist completo de OPSEC
+- `docs/BACKUP_STRATEGY.md` - Estratégia de backup detalhada
+
+---
+
+### **docs/** - Documentação Profissional ⭐
+
+Documentação completa para operações profissionais de pentest.
+
+**Documentos disponíveis:**
+- ✅ **OPSEC_CHECKLIST.md** - Checklist pré-engagement (15 verificações essenciais)
+- ✅ **BACKUP_STRATEGY.md** - Estratégia 3-2-1 de backup com automação
+- ✅ **UPGRADE_GUIDE.md** - Guia de upgrade de hardware
+
+---
+
+### **templates/** - Templates de Relatórios ⭐
+
+Templates profissionais para geração de relatórios.
+
+**Templates disponíveis:**
+- ✅ **report_template.md** - Template Markdown profissional para relatórios de pentest
+
+**Uso:**
+```bash
+# Gerar relatório PDF
+source lib/generate_report.sh
+generate_report templates/report_template.md relatorio_final.pdf
+```
+
+---
+
+### **ScrpitPentestSH/** - Scripts de Reteste Automatizado
 
 Diretório contendo scripts especializados para testes de penetração e retestes de vulnerabilidades.
 
 #### **Scripts de Reteste Automatizado**
 
 Localizado em `ScrpitPentestSH/retestesh/`, contém scripts bash para validação de correções de vulnerabilidades de forma genérica e segura.
-
-Scripts de reteste automatizado possuem nomes genéricos e realizam validações de segurança em ambientes autorizados.
 
 **Uso rápido:**
 ```bash
@@ -531,6 +834,7 @@ chmod +x executar_todos_retestes.sh
 - ✅ Testes de headers de segurança
 - ✅ Scan de portas e serviços
 - ✅ Validação TLS/SSL
+- ✅ Índice de 54 vulnerabilidades
 
 **Documentação:**
 - `README.md` - Documentação detalhada de cada script
@@ -558,98 +862,125 @@ Scripts na raiz de `ScrpitPentestSH/` (versão legacy):
 
 ## 🆕 **NOVIDADES - Atualização 28/11/2025** ⭐
 
-### **🚀 PENTEST AUTOMATIZADO COMPLETO** - v3.0 🔥
-✅ **Pentest 100% automatizado** - Do OSINT à exploração  
-✅ **Rotação automática de IP via Tor** - Muda a cada 3 segundos  
-✅ **Integração OPSEC completa** - Checklist pré-engagement  
-✅ **Mascaramento de IP em tempo real** - Impossível rastrear  
+### **🚀 PENTEST PROFISSIONAL COMPLETO v4.0** - Enterprise Level 🔥
+✅ **Pentest completo automatizado** - 2145 linhas de código profissional  
 ✅ **5 fases automatizadas:** Reconhecimento → Scanning → Enumeração → Exploração → Relatório  
+✅ **Rotação automática de IP via Tor** - Suporte completo a anonimato  
+✅ **Integração OPSEC completa** - Checklist pré-engagement automático  
 ✅ **+20 ferramentas integradas:** Nmap, Nikto, SQLMap, Hydra, Gobuster, WPScan, etc.  
-✅ **Brute force inteligente:** FTP, SSH, painéis admin (com SecLists)  
-✅ **SQL Injection automática:** Detecção + exploração com SQLMap  
-✅ **Detecção de vulnerabilidades críticas:** MS17-010, BlueKeep, etc.  
-✅ **Relatório final TXT:** Sumário executivo + evidências completas  
-📖 **Script:** `pentest_automatizado.sh`  
-📖 **Guia:** `GUIA_COMPLETO_PENTEST.md` (~1100 linhas)  
+✅ **Classificação de vulnerabilidades:** Crítica, Alta, Média, Baixa, Info  
+✅ **Relatório completo Markdown:** Sumário executivo + evidências detalhadas  
+📖 **Script:** `pentest/pentest_completo.sh`  
+📖 **Documentação:** `pentest/README.md` (449 linhas)  
+📖 **Checklist:** `pentest/CHECKLIST_PENTEST.md`  
 
 **Uso:**
 ```bash
-sudo ./pentest_automatizado.sh
-# Escolhe usar Tor ou conexão direta
-# IP rotaciona automaticamente a cada 3s
-# Pentest completo sem intervenção manual
+cd pentest
+sudo ./pentest_completo.sh -t target.com
+sudo ./pentest_completo.sh -t target.com --tor --intensity max
 ```
 
 ---
 
+### **🚀 PENTEST AUTOMATIZADO v3.0** - Múltiplos Alvos 🔥
+✅ **Pentest em múltiplos alvos** - Processa lista de alvos automaticamente  
+✅ **4 fases:** OSINT → Infraestrutura → Detecção → Exploração (opcional)  
+✅ **Ferramentas integradas:** WHOIS, DNS, Sublist3r, Amass, TheHarvester, Nmap, Nikto, Gobuster, FFuF, SSLyze  
+✅ **Relatórios por fase:** Relatórios separados para cada fase  
+✅ **Modo não-invasivo:** Opção de pular fase de exploração  
+📖 **Scripts:** `reteste/pentest_automation.py`, `reteste/pentest_all_targets.py`  
+📖 **Documentação:** `reteste/README_PENTEST.md`  
+
+**Uso:**
+```bash
+cd reteste
+python3 pentest_all_targets.py
+```
+
+---
+
+### **💉 SQL INJECTION AUTOMATIZADO** - Profissional ⭐
+✅ **Auditoria completa** - Exige arquivo digital de autorização  
+✅ **Múltiplos alvos** - Suporte a arquivo de escopo  
+✅ **Detecção de WAF** - Detecção e bypass automático  
+✅ **Integração Metasploit** - Pós-exploração opcional  
+✅ **Logs corporativos** - JSONL, CSV, logs detalhados  
+✅ **Dumps automáticos** - Exportação de bancos e credenciais  
+📖 **Script:** `SQL/sql_injection_automatizado.sh`  
+📖 **Documentação:** `SQL/README_SQL_INJECTION_AUTOMATIZADO.md`  
+
+---
+
+### **📡 SCRIPTS WI-FI AUTOMATIZADOS** ⭐
+✅ **wifite_auto.sh** - Script completamente automatizado estilo wifite  
+✅ **capturar_handshake.sh** - Captura de handshake WPA/WPA2  
+✅ **bruteforce_wifi.sh** - Brute force automático com múltiplas wordlists  
+✅ **deauth_rapido.sh** - Ataque deauth rápido  
+📖 **Documentação:** `wifi/README.md` (507 linhas)  
+
+---
+
 ### **🔒 Biblioteca OPSEC** - Segurança Operacional
-✅ 10 funções de segurança para pentests (VPN check, DNS leak, rate limiting, etc.)  
-📖 Guia completo: `docs/OPSEC_CHECKLIST.md`  
-📖 Script: `lib/opsec.sh`
+✅ **10 funções de segurança** para pentests (VPN check, DNS leak, rate limiting, etc.)  
+✅ **Checklist pré-engagement** - 15 verificações essenciais  
+📖 **Guia completo:** `docs/OPSEC_CHECKLIST.md`  
+📖 **Script:** `lib/opsec.sh`  
+
+---
 
 ### **💾 Sistema de Backup Automatizado**
-✅ Backup de ferramentas, VMs, scripts e wordlists  
-✅ Limpeza automática de backups antigos (>30 dias)  
-✅ Verificação de integridade  
-📖 Estratégia completa: `docs/BACKUP_STRATEGY.md`  
-📖 Script: `lib/backup_tools.sh`
+✅ **Estratégia 3-2-1** - 3 cópias, 2 mídias, 1 offsite  
+✅ **Backup de ferramentas, VMs, scripts e wordlists**  
+✅ **Limpeza automática** de backups antigos (>30 dias)  
+✅ **Verificação de integridade**  
+📖 **Estratégia completa:** `docs/BACKUP_STRATEGY.md`  
+📖 **Script:** `lib/backup_tools.sh`  
+
+---
 
 ### **🖥️ Verificação de Recursos**
-✅ Detecta automaticamente PC1, PC2, NB1, NB2  
-✅ Verifica CPU/RAM/Disco/SWAP antes de operações pesadas  
-✅ Sugestões de otimização personalizadas  
-📖 Script: `lib/resource_check.sh`
+✅ **Detecção automática** de PC1, PC2, NB1, NB2  
+✅ **Verifica CPU/RAM/Disco/SWAP** antes de operações pesadas  
+✅ **Sugestões de otimização** personalizadas  
+📖 **Script:** `lib/resource_check.sh`  
+
+---
 
 ### **📄 Gerador de Relatórios Profissionais**
-✅ Markdown → PDF automático (via Pandoc)  
-✅ Templates profissionais incluídos  
-✅ Conversão HTML também disponível  
-📖 Template: `templates/report_template.md`  
-📖 Script: `lib/generate_report.sh`
+✅ **Markdown → PDF automático** (via Pandoc)  
+✅ **Templates profissionais** incluídos  
+✅ **Conversão HTML** também disponível  
+📖 **Template:** `templates/report_template.md`  
+📖 **Script:** `lib/generate_report.sh`  
 
-### **🎯 C2 Frameworks Modernos** (Kali)
-✅ **Sliver** - C2 moderno em Go (substituiu Cobalt Strike)  
-✅ **Havoc** - C2 open-source profissional  
-✅ **Mythic** - Framework modular de C2  
-📖 Instalação automática via `Kali/setup-kali.sh` (atualizado)
-
-### **☁️ Cloud Security Tools** (Kali)
-✅ **Pacu** - AWS exploitation framework  
-✅ **ScoutSuite** - Multi-cloud auditing  
-✅ **Prowler** - AWS/Azure/GCP security assessment  
-✅ **CloudFox** - AWS situational awareness  
-📖 Instalação automática via `Kali/setup-kali.sh` (atualizado)
+---
 
 ### **📊 Wazuh SIEM**
-✅ Logging centralizado via Docker  
-✅ Dashboard web profissional  
-✅ Threat detection + Compliance  
-📖 Script: `lib/install_wazuh.sh`
+✅ **Logging centralizado** via Docker  
+✅ **Dashboard web profissional**  
+✅ **Threat detection + Compliance**  
+📖 **Script:** `lib/install_wazuh.sh`  
 
-### **🤖 CI/CD GitHub Actions**
-✅ Reteste automatizado semanal  
-✅ Notificações Discord/Slack  
-✅ Upload de relatórios como artifacts  
-📖 Workflow: `.github/workflows/reteste.yml`
-
-### **🛡️ Wrapper OPSEC para Retestes**
-✅ Rate limiting automático  
-✅ User-agent rotation  
-✅ VPN checking  
-✅ Resource validation  
-📖 Script: `ScrpitPentestSH/retestesh/reteste_with_opsec.sh`
+---
 
 ### **📚 Documentação Profissional**
-✅ **Guia Completo de Penetration Testing** - 1100 linhas, passo a passo completo  
+✅ **Guia Completo de Penetration Testing** - ~1100 linhas, passo a passo completo  
 ✅ **Guia de Upgrade de Hardware** - Prioridades, custos, ROI  
 ✅ **Estratégia 3-2-1 de Backup** - Automação completa  
 ✅ **Checklist OPSEC** - 15 verificações essenciais  
-📁 Tudo em: `docs/` + raiz do projeto
+📁 **Tudo em:** `docs/` + raiz do projeto  
 
-**👉 Pentest Automatizado:** `pentest_automatizado.sh`  
+---
+
+**👉 Pentest Completo v4.0:** `pentest/pentest_completo.sh`  
+**👉 Pentest Automatizado v3.0:** `pentest_automatizado.sh`  
+**👉 Pentest Múltiplos Alvos:** `reteste/pentest_all_targets.py`  
+**👉 SQL Injection:** `SQL/sql_injection_automatizado.sh`  
+**👉 Wi-Fi:** `wifi/wifite_auto.sh`  
 **👉 Guia Completo:** `GUIA_COMPLETO_PENTEST.md`  
 **👉 Detalhes completos:** `NOVAS_FUNCIONALIDADES.md`  
-**👉 Começar em 5 min:** `QUICK_START.md`
+**👉 Começar em 5 min:** `QUICK_START.md`  
 
 ---
 
