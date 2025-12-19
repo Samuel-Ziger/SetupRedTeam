@@ -1,0 +1,14 @@
+# Requisitos para scripts de análise do DarkDDoSer
+# 
+# Instalar com: pip install -r requirements.txt
+
+# Análise de configurações (incluído no Python padrão)
+# configparser - já incluído
+
+# Para geração de regras Sigma (opcional)
+PyYAML>=6.0
+
+# Para análise de binários (opcional, para melhorias futuras)
+# pefile>=2023.2.7
+# yara-python>=4.3.1
+
