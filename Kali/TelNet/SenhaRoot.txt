@@ -1,0 +1,2 @@
+senha localizada pelo brute force entre a 4250 a 4260e a public da acesso "CLI>"
+senha adcionada ao a defalut

@@ -10,15 +10,12 @@ from telnet_bruteforce import TelnetBruteforce
 
 # Lista de senhas padrão comuns para roteadores ZTE
 DEFAULT_PASSWORDS = [
-    # CVE-2015-7251: Credenciais hard-coded em roteadores ZTE ZXHN H108N
-    # Username: root, Password: root (vulnerabilidade conhecida)
-    "root",
-    
     # Senhas mais comuns
     "admin",
     "password",
     "123456",
     "12345678",
+    "root",
     "zte",
     "ZTE",
     "Zte",
@@ -31,6 +28,7 @@ DEFAULT_PASSWORDS = [
     "zte1234",
     "zte@zte",
     "Zte@zte",
+    "public",
     
     # Senhas vazias ou simples
     "",
@@ -155,5 +153,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n[!] Erro: {e}")
         sys.exit(1)
-
 

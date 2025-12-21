@@ -1,7 +1,8 @@
 # Dependências para TelNet Analyzer & Bruteforcer
 # Python 3.6+
 
-# Bibliotecas padrão do Python (não requer instalação):
+# Não há dependências externas necessárias
+# Os scripts usam apenas bibliotecas padrão do Python:
 # - socket
 # - threading
 # - queue
@@ -10,10 +11,6 @@
 # - time
 # - signal
 
-# Dependências externas (instalar com: pip install -r requirements.txt):
-requests>=2.25.0  # Necessário para test_exploit.py (testes de vulnerabilidades web)
-
 # Para melhor desempenho, você pode instalar opcionalmente:
 # colorama>=0.4.4  # Para cores no terminal (opcional)
-
 

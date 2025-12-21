@@ -24,6 +24,8 @@ Se as senhas padrão não funcionarem:
 
 ```bash
 python telnet_main.py --bruteforce 192.168.1.1 xato_net_passwords.txt
+# Uso básico (usa root/public automaticamente)
+python telnet_enable_bruteforce.py 192.168.1.1 xato_net_passwords.txt   
 ```
 
 ### 4. Análise Completa (Tudo Junto)
@@ -107,5 +109,4 @@ O script mostra:
 - Taxa de sucesso
 - Senha encontrada (se houver)
 - Tempo decorrido
-
 

@@ -1,0 +1,31 @@
+# Configuração de line endings
+# Scripts Unix/Linux devem manter LF
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Scripts PowerShell e batch do Windows devem usar CRLF
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Arquivos de texto genéricos
+*.txt text
+*.md text
+*.py text
+*.json text
+*.xml text
+*.yml text
+*.yaml text
+
+# Arquivos binários
+*.exe binary
+*.dll binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.tar.gz binary
+*.rar binary
+
