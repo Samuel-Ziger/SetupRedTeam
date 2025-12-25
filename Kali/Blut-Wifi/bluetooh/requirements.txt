@@ -1,0 +1,4 @@
+pybluez==0.23
+bleak==0.21.1
+scapy==2.5.0
+
