@@ -1,0 +1,16 @@
+# Dependências para TelNet Analyzer & Bruteforcer
+# Python 3.6+
+
+# Não há dependências externas necessárias
+# Os scripts usam apenas bibliotecas padrão do Python:
+# - socket
+# - threading
+# - queue
+# - argparse
+# - re
+# - time
+# - signal
+
+# Para melhor desempenho, você pode instalar opcionalmente:
+# colorama>=0.4.4  # Para cores no terminal (opcional)
+
