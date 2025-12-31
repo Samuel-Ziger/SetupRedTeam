@@ -1,5 +1,7 @@
 # Setup Red Team - Repositório Profissional de Pentest
 
+![Setup Red Team](./setup.png)
+
 ![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Kali%20Linux-lightgrey)
 ![License](https://img.shields.io/badge/license-Educational-yellow)
@@ -219,7 +221,7 @@ Este projeto é fornecido "como está", sem garantias. Use por sua conta e risco
 - [Índice Completo](./INDEX.md)
 - [Changelog](./CHANGELOG.md)
 - [Roadmap](./ROADMAP.md)
-- [Reorganização Profissional](./REORGANIZACAO_PROFISSIONAL.md)
+- [Estrutura Final](./ESTRUTURA_FINAL.md)
 
 ---
 
