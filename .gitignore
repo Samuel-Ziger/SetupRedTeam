@@ -70,3 +70,6 @@ results/
 loot/
 enum/
 recon/
+
+# Output padronizado
+output/
