@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Ziger Was Here</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background: radial-gradient(circle at top, #0f2027, #000);
+            color: #e5e5e5;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.6);
+            box-shadow: 0 0 40px rgba(0,255,255,0.15);
+            border-radius: 12px;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            letter-spacing: 3px;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(0,255,255,0.6);
+        }
+
+        p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            margin-bottom: 35px;
+        }
+
+        .links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .links a {
+            text-decoration: none;
+            padding: 14px 28px;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .links a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(0,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .links a:hover::before {
+            left: 100%;
+        }
+
+        .links a:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0,255,255,0.7);
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>ZIGER PASSOU AQUI</h1>
+        <p>Não foi erro. Não foi acaso.<br>Foi presença.</p>
+
+        <div class="links">
+            <a href="https://www.tiktok.com/@zonadesegurancadigital" target="_blank">TikTok</a>
+            <a href="https://github.com/Samuel-Ziger" target="_blank">GitHub</a>
+        </div>
+
+        <footer>
+            © Ziger • Digital Security
+        </footer>
+    </div>
+</body>
+</html>

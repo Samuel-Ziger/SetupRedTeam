@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SR FULANO HACKEOU O BANCO DA COREIA DO NORTE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 50%, #0a0a0a 100%);
+            color: #00ff00;
+            font-family: 'Orbitron', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Efeito de glitch no fundo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 0, 0.03) 0px,
+                transparent 1px,
+                transparent 2px,
+                rgba(0, 255, 0, 0.03) 3px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            text-shadow: 
+                0 0 10px #00ff00,
+                0 0 20px #00ff00,
+                0 0 30px #00ff00,
+                0 0 40px #00ff00;
+            animation: glitch 3s infinite;
+            color: #ff0000;
+        }
+        
+        @keyframes glitch {
+            0%, 100% {
+                transform: translate(0);
+                text-shadow: 
+                    0 0 10px #00ff00,
+                    0 0 20px #00ff00,
+                    0 0 30px #00ff00;
+            }
+            20% {
+                transform: translate(-2px, 2px);
+                text-shadow: 
+                    -2px 0 #ff0000,
+                    2px 2px #00ff00;
+            }
+            40% {
+                transform: translate(-2px, -2px);
+                text-shadow: 
+                    2px -2px #ff0000,
+                    -2px 2px #00ff00;
+            }
+            60% {
+                transform: translate(2px, 2px);
+                text-shadow: 
+                    -2px -2px #ff0000,
+                    2px 2px #00ff00;
+            }
+            80% {
+                transform: translate(2px, -2px);
+                text-shadow: 
+                    -2px 2px #ff0000,
+                    2px -2px #00ff00;
+            }
+        }
+        
+        .hacker-text {
+            font-size: 1.2rem;
+            color: #00ff00;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px #00ff00;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .image-container {
+            margin: 40px 0;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 3px solid #00ff00;
+            box-shadow: 
+                0 0 20px #00ff00,
+                0 0 40px #00ff00,
+                0 0 60px #00ff00;
+            border-radius: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 
+                    0 0 20px #00ff00,
+                    0 0 40px #00ff00,
+                    0 0 60px #00ff00;
+            }
+            50% {
+                box-shadow: 
+                    0 0 30px #00ff00,
+                    0 0 60px #00ff00,
+                    0 0 90px #00ff00;
+            }
+        }
+        
+        .matrix-text {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.1;
+            font-family: monospace;
+            font-size: 14px;
+            color: #00ff00;
+            overflow: hidden;
+        }
+        
+        .links {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .link {
+            display: inline-block;
+            padding: 15px 30px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .link::before {
+            content: '>';
+            margin-right: 10px;
+            animation: blink 1s infinite;
+        }
+        
+        .link:hover {
+            background: rgba(0, 255, 0, 0.3);
+            box-shadow: 
+                0 0 20px #00ff00,
+                inset 0 0 20px rgba(0, 255, 0, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .warning {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed #ff0000;
+            color: #ff0000;
+            font-size: 0.9rem;
+            text-shadow: 0 0 5px #ff0000;
+            animation: blink 2s infinite;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .link {
+                font-size: 0.9rem;
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix-text" id="matrix"></div>
+    
+    <div class="container">
+        <h1>SR FULANO HACKEOU O BANCO DA COREIA DO NORTE</h1>
+        
+        <div class="hacker-text">
+            [SYSTEM BREACH DETECTED]
+            <br>
+            [ACCESS GRANTED]
+            <br>
+            [DATA EXFILTRATION IN PROGRESS...]
+        </div>
+        
+        <div class="image-container">
+            <img src="https://recreio.com.br/wp-content/uploads/2025/11/Vecna-Stranger-Things.jpg" alt="Vecna - Stranger Things">
+        </div>
+        
+        <div class="links">
+            <a href="https://github.com/Samuel-Ziger" target="_blank" class="link">GitHub</a>
+            <a href="https://www.tiktok.com/@zonadesegurancadigital" target="_blank" class="link">TikTok</a>
+        </div>
+        
+        <div class="warning">
+            ⚠️ AVISO: Esta é uma página de zoeira. Nenhum banco foi hackeado. SR FULANO não se responsabiliza por qualquer interpretação errônea desta página. ⚠️
+        </div>
+    </div>
+    
+    <script>
+        // Efeito Matrix no fundo
+        const matrix = document.getElementById('matrix');
+        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        const fontSize = 14;
+        const columns = Math.floor(window.innerWidth / fontSize);
+        const drops = Array(columns).fill(1);
+        
+        function drawMatrix() {
+            const ctx = document.createElement('canvas');
+            ctx.width = window.innerWidth;
+            ctx.height = window.innerHeight;
+            matrix.appendChild(ctx);
+            const context = ctx.getContext('2d');
+            context.font = fontSize + 'px monospace';
+            
+            function draw() {
+                context.fillStyle = 'rgba(10, 10, 10, 0.05)';
+                context.fillRect(0, 0, ctx.width, ctx.height);
+                
+                context.fillStyle = '#00ff00';
+                for (let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    context.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > ctx.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(draw, 50);
+        }
+        
+        drawMatrix();
+        
+        // Efeito de digitação no texto hacker
+        const hackerText = document.querySelector('.hacker-text');
+        const originalText = hackerText.innerHTML;
+        hackerText.innerHTML = '';
+        let i = 0;
+        
+        function typeWriter() {
+            if (i < originalText.length) {
+                hackerText.innerHTML += originalText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        
+        setTimeout(typeWriter, 1000);
+    </script>
+</body>
+</html>
+

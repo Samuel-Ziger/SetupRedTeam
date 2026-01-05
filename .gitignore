@@ -15,7 +15,7 @@ defender.tmp
 wsl.tmp
 
 # Diretórios de ferramentas baixadas (muito grandes para git)
-**/Tools/
+
 **/AttackBox/
 
 # Arquivos compilados

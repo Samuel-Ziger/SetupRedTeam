@@ -1,0 +1,7 @@
+=== COMANDOS EXECUTADOS - ANÁLISE DE SEGURANÇA ===
+Alvo: http://44.223.110.126/index.php?page=user-info.php
+Data: [Será atualizado durante a execução]
+Regra: Sem DOS (Denial of Service)
+
+=== COMANDOS ===
+
