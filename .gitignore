@@ -18,6 +18,9 @@ wsl.tmp
 
 **/AttackBox/
 
+# Ignorar arquivos muito grandes em pentest/tools/ (excedem limite do GitHub 100MB)
+pentest/tools/Solyd-One/baconCN/rockyou.txt
+
 # Arquivos compilados
 *.exe
 *.dll
