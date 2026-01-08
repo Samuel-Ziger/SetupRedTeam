@@ -1,0 +1,84 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                    AVISO LEGAL IMPORTANTE                            ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+ESTE SOFTWARE É APENAS PARA FINS EDUCACIONAIS E DEMONSTRAÇÃO
+
+⚠️  USO PROIBIDO PARA ATIVIDADES MALICIOSAS OU ILEGAIS ⚠️
+
+Este código foi desenvolvido exclusivamente para:
+- Demonstrações educacionais em palestras sobre segurança
+- Aprendizado sobre conceitos de segurança de rede
+- Pesquisa acadêmica em ambientes controlados
+
+RESTRIÇÕES DE USO:
+
+❌ NÃO use este software para:
+   - Atacar sistemas sem autorização expressa
+   - Criar botnets reais
+   - Realizar ataques DDoS contra sistemas reais
+   - Qualquer atividade ilegal ou maliciosa
+   - Comprometer sistemas de terceiros
+
+✅ USE este software apenas para:
+   - Demonstrações educacionais em ambientes controlados
+   - Aprendizado sobre segurança de rede
+   - Pesquisa acadêmica com supervisão apropriada
+   - Testes em sistemas próprios ou com autorização escrita
+
+RESPONSABILIDADE:
+
+O desenvolvedor deste software não se responsabiliza por:
+- Uso indevido deste código
+- Danos causados pelo uso deste software
+- Consequências legais do uso indevido
+- Qualquer violação de leis locais ou internacionais
+
+CONSIDERAÇÕES LEGAIS:
+
+Em muitos países, as seguintes atividades são ILEGAIS:
+- Criar ou operar botnets
+- Realizar ataques DDoS
+- Acessar sistemas sem autorização
+- Interferir com serviços de computador
+
+Penalidades podem incluir:
+- Multas significativas
+- Prisão
+- Responsabilidade civil
+- Registro criminal
+
+RECOMENDAÇÕES:
+
+1. Use este código apenas em ambientes isolados (localhost)
+2. Sempre obtenha autorização escrita antes de testar segurança
+3. Enfatize aspectos legais e éticos em demonstrações
+4. Não distribua sem incluir este aviso legal
+5. Consulte um advogado se tiver dúvidas sobre legalidade
+
+EDUCAÇÃO RESPONSÁVEL:
+
+O conhecimento de segurança deve ser usado para:
+- Proteger sistemas e dados
+- Educar sobre ameaças
+- Desenvolver defesas
+- Promover segurança digital
+
+NÃO para:
+- Atacar sistemas
+- Causar danos
+- Violar privacidade
+- Cometer crimes
+
+═══════════════════════════════════════════════════════════════════════
+
+Ao usar este software, você concorda em:
+- Usar apenas para fins educacionais legítimos
+- Não usar para atividades ilegais ou maliciosas
+- Assumir total responsabilidade pelo uso deste código
+- Cumprir todas as leis aplicáveis
+
+Se você não concorda com estes termos, NÃO use este software.
+
+═══════════════════════════════════════════════════════════════════════
+
