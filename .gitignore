@@ -76,3 +76,16 @@ recon/
 
 # Output padronizado
 output/
+
+# Arquivos com nomes muito longos (problema Windows)
+# Sourcetrail - binários e dados de teste (podem ser baixados separadamente)
+pentest/reverse-engineering/debuggers/sourcetrail/bin/
+pentest/reverse-engineering/debuggers/sourcetrail/lib/
+**/sourcetrail/**/bin/
+**/sourcetrail/**/lib/
+
+# Ferramentas com arquivos de teste grandes (pode ser baixado separadamente se necessário)
+# Manter apenas código fonte e documentação
+**/test/data/
+**/bin/test/
+**/test/fixtures/

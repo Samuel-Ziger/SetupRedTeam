@@ -1,3 +1,0 @@
-lol
-intranet.example.com
-dev.example.com
