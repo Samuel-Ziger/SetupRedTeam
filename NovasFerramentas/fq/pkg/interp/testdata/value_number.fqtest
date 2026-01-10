@@ -1,0 +1,116 @@
+$ fq -i -d mp3 . test.mp3
+mp3> .headers[0].header.version | ., tovalue, toactual, tosym, type, length?
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|         04                                    |   .            |.headers[0].header.version: 4 (valid)
+4
+4
+null
+"number"
+4
+mp3> .headers[0].header.version[0] | ., type, length?
+error: expected an array but got: number
+mp3> .headers[0].header.version[-1000] | ., type, length?
+error: expected an array but got: number
+mp3> .headers[0].header.version[1000] | ., type, length?
+error: expected an array but got: number
+mp3> .headers[0].header.version[1:3] | ., type, length?
+error: expected an array but got: number
+mp3> .headers[0].header.version[0:-1] | ., type, length?
+error: expected an array but got: number
+mp3> .headers[0].header.version[-1000:2000] | ., type, length?
+error: expected an array but got: number
+mp3> .headers[0].header.version["test"] | ., type, length?
+null
+"null"
+0
+mp3> [.headers[0].header.version[]] | type, length?
+error: cannot iterate over: number
+mp3> .headers[0].header.version | keys
+error: keys cannot be applied to: number
+mp3> .headers[0].header.version | has("a")
+error: has cannot be applied to: number
+mp3> .headers[0].header.version | has(0)
+error: has cannot be applied to: number
+mp3> .headers[0].header.version | type
+"number"
+mp3> .headers[0].header.version | tonumber
+4
+mp3> .headers[0].header.version | tostring
+"4"
+mp3> .headers[0].header.version + ""
+error: cannot add: number (4) and string ("")
+mp3> .headers[0].header.version + 1
+5
+mp3> .headers[0].header.version._start | ., type, length?
+24
+"number"
+24
+mp3> .headers[0].header.version._stop | ., type, length?
+32
+"number"
+32
+mp3> .headers[0].header.version._len | ., type, length?
+8
+"number"
+8
+mp3> .headers[0].header.version._name | ., type, length?
+"version"
+"string"
+7
+mp3> .headers[0].header.version._actual | ., type, length?
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|         04                                    |   .            |.headers[0].header.version: 4 (valid)
+"number"
+4
+mp3> .headers[0].header.version._sym | ., type, length?
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|         04                                    |   .            |.headers[0].header.version: 4 (valid)
+"null"
+0
+mp3> .headers[0].header.version._description | ., type, length?
+"valid"
+"string"
+5
+mp3> .headers[0].header.version._path | ., type, length?
+[
+  "headers",
+  0,
+  "header",
+  "version"
+]
+"array"
+4
+mp3> .headers[0].header.version._bits | ., type, length?
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|         04                                    |   .            |.: raw bits 0x3-0x4 (1)
+"string"
+8
+mp3> .headers[0].header.version._bytes | ., type, length?
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|         04                                    |   .            |.: raw bits 0x3-0x4 (1)
+"string"
+1
+mp3> .headers[0].header.version._error | ., type, length?
+null
+"null"
+0
+mp3> .headers[0].header.version._gap | ., type, length?
+false
+"boolean"
+mp3> .headers[0].header.version.a = 1
+error: setpath(["headers",0,"header","ve ...]; 1) cannot be applied to {"footers":[],"frames":[{" ...: expected an object but got: number (4)
+mp3> .headers[0].header.version[0] = 1
+error: setpath(["headers",0,"header","ve ...]; 1) cannot be applied to {"footers":[],"frames":[{" ...: expected an array but got: number (4)
+mp3> .headers[0].header.version.a |= empty
+error: delpaths([["headers",0,"header","v ...]) cannot be applied to {"footers":[],"frames":[{" ...: expected an object but got: number (4)
+mp3> .headers[0].header.version[0] |= empty
+error: expected an array but got: number
+mp3> .headers[0].header.version | setpath(["a"]; 1)
+error: setpath(["a"]; 1) cannot be applied to 4: expected an object but got: number (4)
+mp3> .headers[0].header.version | setpath([0]; 1)
+error: setpath([0]; 1) cannot be applied to 4: expected an array but got: number (4)
+mp3> .headers[0].header.version | delpaths([["a"]])
+error: delpaths([["a"]]) cannot be applied to 4: expected an object but got: number (4)
+mp3> .headers[0].header.version | delpaths([[0]])
+error: delpaths([[0]]) cannot be applied to 4: expected an array but got: number (4)
+mp3> ^D

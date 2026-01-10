@@ -1,0 +1,77 @@
+Scripts
+=======
+
+`tests/run_test` can be run from the root folder to run individual test suites.
+
+`tests/run_all_tests [--parallel]` can be run from the root folder to run all test suites (Tested only on Linux)
+
+Folder Layout
+=============
+
+Most new tests requiring no additional configuration should go in `files`.
+
+Folders
+-------
+
+### fallback\_test
+
+Tests of error-tolerant PHP AST parser (`--use-fallback-parser`)
+
+### files
+
+General tests.
+
+### misc
+
+Contains tests of
+
+- ast: `--simplify-ast` (Simplifying AST into an easier to analyze format)
+  This tests the resulting AST.
+- fallback\_test: `--use-fallback-parser`: Tests of error-tolerant PHP AST parser
+  This tests the emitted issues. The parser has its own unit tests.
+- rewriting\_test: `--simplify-ast`. This tests the resulting issues emitted by Phan on a simplified AST.
+
+As well as these extension-specific tests that are skipped if the extension isn't loaded:
+(TODO: Can we use Phan's stubs to work around the need for this?)
+
+- intl\_files Test cases for issues Phan had analyzing the intl extension.
+- soap\_files Test cases for issues Phan had analyzing the SOAP extension.
+  (Originally a different folder because SOAP was an optional extension.
+
+### multi\_files
+
+Contain tests of expected behavior for multi-file project analysis.
+This also contains regression tests.
+Add a test here if the bug can *only* be reproduced with multiple files.
+
+### Phan
+
+Contains unit tests and integration tests of Phan and its classes.
+Some of the other subfolders provide test cases to test classes in the Phan/ folder.
+(Many of the other tests are integration tests)
+
+### plugin\_test
+
+Integration tests of all of Phan's plugins' output.
+
+### rasmus\_files
+
+Rasmus's original test cases for Phan.
+These get updated when Phan's behavior improves or intentionally changes.
+
+Language Server Tests
+---------------------
+
+There are integration tests of the language server(both with and without pcntl) in `tests/Phan/LanguageServer/LanguageServerIntegrationTest.php`
+
+`PHAN_RUN_INTEGRATION_TEST=1` must be set in your environment variables in order to run this test (Otherwise, these tests are skipped)
+
+Regenerating Test Expectations
+------------------------------
+
+A few scripts are provided for Unix/Linux to make it easier to automatically update issue expectations after making a change that
+causes many outputs to differ (E.g. changing the message format string of a frequently emitted issue).
+
+`PHAN_DUMP_NEW_TEST_EXPECTATION=1` can be used to dump the new test expectations(`*.php.expected.new`)  for many of the phpunit tests.
+
+`internal/regenerate_test_folder_expect.sh` will regenerate the test output of many non-phpunit tests (the ones invoked with `test.sh`)

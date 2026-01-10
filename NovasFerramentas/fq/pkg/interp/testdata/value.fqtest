@@ -1,0 +1,269 @@
+# ffmpeg -f lavfi -i sine -t 10ms test.mp3
+# test alt //
+$ fq -d mp3 '.headers[].frames[0].flags.unsync // 123' test.mp3
+123
+$ fq -d mp3 '.headers[].frames[0].size // 123' test.mp3
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|                                          00 00|              ..|.headers[0].frames[0].size: 15
+0x10|00 0f                                          |..              |
+# test each in decoded order
+$ fq -d mp3 '.headers[0].header[]' test.mp3
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|49 44 33                                       |ID3             |.headers[0].header.magic: "ID3" (valid)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|         04                                    |   .            |.headers[0].header.version: 4 (valid)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|            00                                 |    .           |.headers[0].header.revision: 0
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.headers[0].header.flags{}:
+0x0|               00                              |     .          |  unsynchronisation: false
+0x0|               00                              |     .          |  extended_header: false
+0x0|               00                              |     .          |  experimental_indicator: false
+0x0|               00                              |     .          |  unused: 0
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|                  00 00 00 23                  |      ...#      |.headers[0].header.size: 35
+# TODO: proper buffer_root test
+$ fq -d mp3 -i . test.mp3
+mp3> .frames[0].header.mpeg_version | (topath | path_to_expr), tovalue, toactual, tosym, todescription
+".frames[0].header.mpeg_version"
+"1"
+3
+"1"
+"MPEG Version 1"
+mp3> .frames[0].header.bitrate | (topath | path_to_expr), tovalue, toactual, tosym, todescription
+".frames[0].header.bitrate"
+56000
+4
+56000
+null
+mp3> . | (root, buffer_root, format_root, parent | try (topath | path_to_expr) catch .), [parents | topath | path_to_expr]
+"."
+"."
+"."
+"expected decode value but got: null (null)"
+[]
+mp3> .headers[0].header.magic | (root, buffer_root, format_root, parent | topath | path_to_expr), [parents | topath | path_to_expr]
+"."
+"."
+".headers[0]"
+".headers[0].header"
+[
+  ".headers[0].header",
+  ".headers[0]",
+  ".headers",
+  "."
+]
+mp3> .frames[0].side_info.granules[1] | (root, buffer_root, format_root, parent | topath | path_to_expr), [parents | topath | path_to_expr]
+"."
+"."
+".frames[0]"
+".frames[0].side_info.granules"
+[
+  ".frames[0].side_info.granules",
+  ".frames[0].side_info",
+  ".frames[0]",
+  ".frames",
+  "."
+]
+mp3> 123 | root
+error: expected decode value but got: number (123)
+mp3> 123 | buffer_root
+error: expected decode value but got: number (123)
+mp3> 123 | format_root
+error: expected decode value but got: number (123)
+mp3> 123 | parent
+error: expected decode value but got: number (123)
+mp3> 123 | parents
+error: expected decode value but got: number (123)
+mp3> ^D
+$ fq -d mp3 -i . test.mp3
+mp3> . as $c | ("headers", 0, "abc") as $n | $n, try ($c | has($n)) catch .
+"headers"
+true
+0
+"cannot check whether object has a key: 0"
+"abc"
+false
+mp3> .headers as $c | (0, "abc") as $n | $n, try ($c | has($n)) catch .
+0
+true
+"abc"
+"cannot check whether array has a key: abc"
+mp3> .headers[0].header.magic as $c | (0, "abc") as $n | $n, try ($c | has($n)) catch .
+0
+"has cannot be applied to: string"
+"abc"
+"has cannot be applied to: string"
+mp3> . as $c | ("_start", "_stop", "_len", "_name", "_root", "_buffer_root", "_format_root", "_parent", "_sym", "_description", "_path", "_bits", "_bytes", "_error", "_gap", "_format", "_abc") as $n | $n, try ($c | has($n)) catch .
+"_start"
+true
+"_stop"
+true
+"_len"
+true
+"_name"
+true
+"_root"
+true
+"_buffer_root"
+true
+"_format_root"
+true
+"_parent"
+true
+"_sym"
+true
+"_description"
+true
+"_path"
+true
+"_bits"
+true
+"_bytes"
+true
+"_error"
+true
+"_gap"
+true
+"_format"
+true
+"_abc"
+false
+mp3> .headers as $c | ("_start", "_stop", "_len", "_name", "_root", "_buffer_root", "_format_root", "_parent", "_sym", "_description", "_path", "_bits", "_bytes", "_error", "_gap", "_format", "_abc") as $n | $n, try ($c | has($n)) catch .
+"_start"
+"cannot check whether array has a key: _start"
+"_stop"
+"cannot check whether array has a key: _stop"
+"_len"
+"cannot check whether array has a key: _len"
+"_name"
+"cannot check whether array has a key: _name"
+"_root"
+"cannot check whether array has a key: _root"
+"_buffer_root"
+"cannot check whether array has a key: _buffer_root"
+"_format_root"
+"cannot check whether array has a key: _format_root"
+"_parent"
+"cannot check whether array has a key: _parent"
+"_sym"
+"cannot check whether array has a key: _sym"
+"_description"
+"cannot check whether array has a key: _description"
+"_path"
+"cannot check whether array has a key: _path"
+"_bits"
+"cannot check whether array has a key: _bits"
+"_bytes"
+"cannot check whether array has a key: _bytes"
+"_error"
+"cannot check whether array has a key: _error"
+"_gap"
+"cannot check whether array has a key: _gap"
+"_format"
+"cannot check whether array has a key: _format"
+"_abc"
+"cannot check whether array has a key: _abc"
+mp3> .headers[0].header.magic as $c | ("_start", "_stop", "_len", "_name", "_root", "_buffer_root", "_format_root", "_parent", "_sym", "_description", "_path", "_bits", "_bytes", "_error", "_gap", "_format", "_abc") as $n | $n, try ($c | has($n)) catch .
+"_start"
+"has cannot be applied to: string"
+"_stop"
+"has cannot be applied to: string"
+"_len"
+"has cannot be applied to: string"
+"_name"
+"has cannot be applied to: string"
+"_root"
+"has cannot be applied to: string"
+"_buffer_root"
+"has cannot be applied to: string"
+"_format_root"
+"has cannot be applied to: string"
+"_parent"
+"has cannot be applied to: string"
+"_sym"
+"has cannot be applied to: string"
+"_description"
+"has cannot be applied to: string"
+"_path"
+"has cannot be applied to: string"
+"_bits"
+"has cannot be applied to: string"
+"_bytes"
+"has cannot be applied to: string"
+"_error"
+"has cannot be applied to: string"
+"_gap"
+"has cannot be applied to: string"
+"_format"
+"has cannot be applied to: string"
+"_abc"
+"has cannot be applied to: string"
+mp3> ^D
+$ fq -d mp3 -i . test.mp3
+mp3> ._start
+0
+mp3> ._stop
+5152
+mp3> ._len
+5152
+mp3> ._name
+""
+mp3> ._root
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.{}: test.mp3 (mp3)
+0x000|49 44 33 04 00 00 00 00 00 23 54 53 53 45 00 00|ID3......#TSSE..|  headers[0:1]:
+*    |until 0x2c.7 (45)                              |                |
+0x020|                                       ff fb 40|             ..@|  frames[0:3]:
+0x030|c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|................|
+*    |until 0x283.7 (end) (599)                      |                |
+     |                                               |                |  footers[0:0]:
+mp3> ._buffer_root
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.{}: test.mp3 (mp3)
+0x000|49 44 33 04 00 00 00 00 00 23 54 53 53 45 00 00|ID3......#TSSE..|  headers[0:1]:
+*    |until 0x2c.7 (45)                              |                |
+0x020|                                       ff fb 40|             ..@|  frames[0:3]:
+0x030|c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|................|
+*    |until 0x283.7 (end) (599)                      |                |
+     |                                               |                |  footers[0:0]:
+mp3> ._format_root
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.{}: test.mp3 (mp3)
+0x000|49 44 33 04 00 00 00 00 00 23 54 53 53 45 00 00|ID3......#TSSE..|  headers[0:1]:
+*    |until 0x2c.7 (45)                              |                |
+0x020|                                       ff fb 40|             ..@|  frames[0:3]:
+0x030|c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|................|
+*    |until 0x283.7 (end) (599)                      |                |
+     |                                               |                |  footers[0:0]:
+mp3> ._parent
+null
+mp3> ._sym
+null
+mp3> todescription
+"test.mp3"
+mp3> topath
+[]
+mp3> ._bits
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x000|49 44 33 04 00 00 00 00 00 23 54 53 53 45 00 00|ID3......#TSSE..|.: raw bits 0x0-0x284 (644)
+*    |until 0x283.7 (end) (644)                      |                |
+mp3> ._bytes
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x000|49 44 33 04 00 00 00 00 00 23 54 53 53 45 00 00|ID3......#TSSE..|.: raw bits 0x0-0x284 (644)
+*    |until 0x283.7 (end) (644)                      |                |
+mp3> ._error
+null
+mp3> ._gap
+false
+mp3> ._format
+"mp3"
+mp3> ._abc
+null
+mp3> fgrep("toc") | arrays[10]._index
+10
+mp3> .headers._index
+null
+mp3> ._index
+null
+mp3> .headers[0].header.version as $r | {a:12} | tojson({indent: $r}) | println
+{
+    "a": 12
+}
+mp3> ^D

@@ -1,0 +1,222 @@
+// Code below generated from decode_gen.go.tmpl
+package decode
+
+import (
+	"fmt"
+	"math/big"
+
+	"github.com/wader/fq/pkg/bitio"
+	"github.com/wader/fq/pkg/scalar"
+	"golang.org/x/text/encoding"
+)
+
+{{- range $name, $t := $.types }}
+	// Type {{$name}}
+
+	// TryField{{$name}}ScalarFn tries to add a field, calls scalar functions and returns actual value as a {{$name}}
+	func (d *D) TryField{{$name}}ScalarFn(name string, fn func(d *D) (scalar.{{$name}}, error), sms ...scalar.{{$name}}Mapper) ({{$t.go_type}}, error) {
+		v, err := d.TryFieldScalar{{$name}}Fn(name, func(d *D) (scalar.{{$name}}, error) { return fn(d) }, sms...)
+		if err != nil {
+			return {{$t.zero}}, err
+		}
+		return v.Actual, err
+	}
+
+	// Field{{$name}}ScalarFn adds a field, calls scalar functions and returns actual value as a {{$name}}
+	func (d *D) Field{{$name}}ScalarFn(name string, fn func(d *D) scalar.{{$name}}, sms ...scalar.{{$name}}Mapper) {{$t.go_type}} {
+		v, err := d.TryFieldScalar{{$name}}Fn(name, func(d *D) (scalar.{{$name}}, error) { return fn(d), nil }, sms...)
+		if err != nil {
+			d.IOPanic(err, name, "{{$name}}")
+		}
+		return v.Actual
+	}
+
+	// Field{{$name}}Fn adds a field, calls {{$t.go_type}} decode function and returns actual value as a {{$name}}
+	func (d *D) Field{{$name}}Fn(name string, fn func(d *D) {{$t.go_type}}, sms ...scalar.{{$name}}Mapper) {{$t.go_type}} {
+		return d.Field{{$name}}ScalarFn(name, func(d *D) scalar.{{$name}} { return scalar.{{$name}}{Actual: fn(d) } }, sms...)
+	}
+
+	// TryField{{$name}}Fn tries to add a field, calls {{$t.go_type}} decode function and returns actual value as a {{$name}}
+	func (d *D) TryField{{$name}}Fn(name string, fn func(d *D) ({{$t.go_type}}, error), sms ...scalar.{{$name}}Mapper) ({{$t.go_type}}, error) {
+		return d.TryField{{$name}}ScalarFn(name, func(d *D) (scalar.{{$name}}, error) {
+			v, err := fn(d)
+			return scalar.{{$name}}{Actual: v}, err
+		}, sms...)
+	}
+
+	// FieldScalar{{$name}}Fn tries to add a field, calls {{$t.go_type}} decode function and returns scalar
+	func (d *D) FieldScalar{{$name}}Fn(name string, fn func(d *D) scalar.{{$name}}, sms ...scalar.{{$name}}Mapper) *scalar.{{$name}} {
+		v, err := d.TryFieldScalar{{$name}}Fn(name, func(d *D) (scalar.{{$name}}, error) { return fn(d), nil }, sms...)
+		if err != nil {
+			d.IOPanic(err, name, "{{$name}}")
+		}
+		return v
+	}
+
+	func (d *D) FieldValue{{$name}}(name string, a {{$t.go_type}}, sms ...scalar.{{$name}}Mapper) {
+		d.FieldScalar{{$name}}Fn(name, func(_ *D) scalar.{{$name}} { return scalar.{{$name}}{Actual: a, Flags: scalar.FlagSynthetic}}, sms...)
+	}
+
+	// TryFieldScalar{{$name}}Fn tries to add a field, calls {{$t.go_type}} decode function and returns scalar
+	func (d *D) TryFieldScalar{{$name}}Fn(name string, fn func(d *D) (scalar.{{$name}}, error), sms ...scalar.{{$name}}Mapper) (*scalar.{{$name}}, error) {
+		v, err := d.TryFieldValue(name, func() (*Value, error) {
+			s, err := fn(d)
+			if err != nil {
+				return &Value{V: &s}, err
+			}
+			for _, sm := range sms {
+				s, err = sm.Map{{$name}}(s)
+				if err != nil {
+					return &Value{V: &s}, err
+				}
+			}
+			return &Value{V: &s}, nil
+		})
+		if err != nil {
+			return &scalar.{{$name}}{}, err
+		}
+		sr, ok := v.V.(*scalar.{{$name}})
+		if !ok {
+			panic("not a scalar value")
+		}
+		return sr, nil
+	}
+
+{{end}}
+
+{{- range $name, $t := $.types }}
+	{{- if $t.compare}}
+		// Require/Assert/Validate {{$name}}
+
+		func require{{$name}}(name string, s scalar.{{$name}}, desc bool, fail bool, vs ...{{$t.go_type}}) (scalar.{{$name}}, error) {
+			a := s.Actual
+			for _, b := range vs {
+				if {{$t.compare}} {
+					if desc {
+						s.Description = "valid"
+					}
+					return s, nil
+				}
+			}
+			if desc {
+				s.Description = "invalid"
+			}
+			if fail {
+				return s, fmt.Errorf("failed to %s {{$name}}", name)
+			}
+			return s, nil
+		}
+
+		// {{$name}}Require that actual value is one of given {{$t.go_type}} values
+		func (d *D) {{$name}}Require(vs ...{{$t.go_type}}) scalar.{{$name}}Mapper {
+			return scalar.{{$name}}Fn(func(s scalar.{{$name}}) (scalar.{{$name}}, error) { return require{{$name}}("require", s, false, true, vs...) })
+		}
+
+		// {{$name}}Assert validate and asserts that actual value is one of given {{$t.go_type}} values
+		func (d *D) {{$name}}Assert(vs ...{{$t.go_type}}) scalar.{{$name}}Mapper {
+			return scalar.{{$name}}Fn(func(s scalar.{{$name}}) (scalar.{{$name}}, error) { return require{{$name}}("assert", s, true, !d.Options.Force, vs...) })
+		}
+
+		// {{$name}}Validate validates that actual value is one of given {{$t.go_type}} values
+		func (d *D) {{$name}}Validate(vs ...{{$t.go_type}}) scalar.{{$name}}Mapper {
+			return scalar.{{$name}}Fn(func(s scalar.{{$name}}) (scalar.{{$name}}, error) { return require{{$name}}("validate", s, true, false, vs...) })
+		}
+	{{- end}}
+	{{- if $t.range}}
+		// Require/Assert/ValidateRange {{$name}}
+
+		func requireRange{{$name}}(name string, s scalar.{{$name}}, desc bool, fail bool, start, end {{$t.go_type}}) (scalar.{{$name}}, error) {
+			a := s.Actual
+			if {{$t.range}} {
+				if desc {
+					s.Description = "valid"
+				}
+				return s, nil
+			}
+			if desc {
+				s.Description = "invalid"
+			}
+			if fail {
+				return s, fmt.Errorf("failed to %s {{$name}} range %v-%v", name, start, end)
+			}
+			return s, nil
+		}
+
+		// {{$name}}RequireRange require that actual value is in range
+		func (d *D) {{$name}}RequireRange(start, end {{$t.go_type}}) scalar.{{$name}}Mapper {
+			return scalar.{{$name}}Fn(func(s scalar.{{$name}}) (scalar.{{$name}}, error) { return requireRange{{$name}}("require", s, false, true, start, end) })
+		}
+
+		// {{$name}}AssertRange asserts that actual value is in range
+		func (d *D) {{$name}}AssertRange(start, end {{$t.go_type}}) scalar.{{$name}}Mapper {
+			return scalar.{{$name}}Fn(func(s scalar.{{$name}}) (scalar.{{$name}}, error) { return requireRange{{$name}}("assert", s, true, !d.Options.Force, start, end) })
+		}
+
+		// {{$name}}ValidateRange validates that actual value is in range
+		func (d *D) {{$name}}ValidateRange(start, end {{$t.go_type}}) scalar.{{$name}}Mapper {
+			return scalar.{{$name}}Fn(func(s scalar.{{$name}}) (scalar.{{$name}}, error) { return requireRange{{$name}}("validate", s, true, false, start, end) })
+		}
+	{{- end}}
+{{- end}}
+
+{{- range $r := $.readers }}
+	{{- $t := index $.types $r.type }}
+
+	{{- range $v := $r.variants }}
+		{{- $range_start := 1 }}
+		{{- $range_stop := 2 }}
+		{{- if $v.range }}
+			{{- $range_start = index $v.range 0 }}
+			{{- $range_stop = index $v.range 1 }}
+		{{- end}}
+
+		{{- range $n := xrange $range_start $range_stop }}
+
+			// Reader {{$r.name}}{{replace $v.name "$n" $n}}
+
+			// Try{{$r.name}}{{replace $v.name "$n" $n}} tries to read {{replace $v.doc "$n" $n}}
+			func (d *D) Try{{$r.name}}{{replace $v.name "$n" $n}}({{$v.params}}) ({{$t.go_type}}, error) { return {{replace $v.call "$n" $n}} }
+
+			// {{$r.name}}{{replace $v.name "$n" $n}} reads {{replace $v.doc "$n" $n}}
+			func (d *D) {{$r.name}}{{replace $v.name "$n" $n}}({{$v.params}}) {{$t.go_type}} {
+				v, err := {{replace $v.call "$n" $n}}
+				if err != nil {
+					d.IOPanic(err, "", "{{$r.name}}{{replace $v.name "$n" $n}}")
+				}
+				return v
+			}
+
+			// TryFieldScalar{{$r.name}}{{replace $v.name "$n" $n}} tries to add a field and read {{replace $v.doc "$n" $n}}
+			func (d *D) TryFieldScalar{{$r.name}}{{replace $v.name "$n" $n}}(name string{{if $v.params}}, {{$v.params}}{{end}}, sms ...scalar.{{$r.type}}Mapper) (*scalar.{{$r.type}}, error) {
+				s, err := d.TryFieldScalar{{$r.type}}Fn(name, func(d *D) (scalar.{{$r.type}}, error) {
+					v, err := {{replace $v.call "$n" $n}}
+					return scalar.{{$r.type}}{Actual: v}, err
+				}, sms...)
+				if err != nil {
+					return nil, err
+				}
+				return s, err
+			}
+
+			// FieldScalar{{$r.name}}{{replace $v.name "$n" $n}} adds a field and reads {{replace $v.doc "$n" $n}}
+			func (d *D) FieldScalar{{$r.name}}{{replace $v.name "$n" $n}}(name string{{if $v.params}}, {{$v.params}}{{end}}, sms ...scalar.{{$r.type}}Mapper) *scalar.{{$r.type}} {
+				s, err := d.TryFieldScalar{{$r.name}}{{replace $v.name "$n" $n}}(name{{if $v.args}}, {{$v.args}}{{end}}, sms...)
+				if err != nil {
+					d.IOPanic(err, name, "{{$r.name}}{{replace $v.name "$n" $n}}")
+				}
+				return s
+			}
+
+			// TryField{{$r.name}}{{replace $v.name "$n" $n}} tries to add a field and read {{replace $v.doc "$n" $n}}
+			func (d *D) TryField{{$r.name}}{{replace $v.name "$n" $n}}(name string{{if $v.params}}, {{$v.params}}{{end}}, sms ...scalar.{{$r.type}}Mapper) ({{$t.go_type}}, error) {
+				s, err := d.TryFieldScalar{{$r.name}}{{replace $v.name "$n" $n}}(name{{if $v.args}}, {{$v.args}}{{end}}, sms...)
+				return s.Actual, err
+			}
+
+			// Field{{$r.name}}{{replace $v.name "$n" $n}} adds a field and reads {{replace $v.doc "$n" $n}}
+			func (d *D) Field{{$r.name}}{{replace $v.name "$n" $n}}(name string{{if $v.params}}, {{$v.params}}{{end}}, sms ...scalar.{{$r.type}}Mapper) {{$t.go_type}} {
+				return d.FieldScalar{{$r.name}}{{replace $v.name "$n" $n}}(name{{if $v.args}}, {{$v.args}}{{end}}, sms...).Actual
+			}
+		{{- end}}
+	{{- end}}
+{{- end}}

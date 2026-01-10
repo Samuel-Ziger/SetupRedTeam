@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html class="bg-dark" lang="{{ page.lang | default: site.lang | default: "en" }}">
+
+  {%- include head.html -%}
+
+  <body class="d-flex flex-column vh-100">
+
+    {%- include header.html -%}
+
+    <main role="main" class="flex-grow-1 bg-black text-light">
+      {{ content }}
+    </main>
+
+    {%- include footer.html -%}
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '{{ site.google_analytics }}');
+    </script>
+    <script async src="/assets/javascript/dark-mode.js"></script>
+  </body>
+</html>

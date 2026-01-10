@@ -1,0 +1,115 @@
+# TODO: use test format instead of mp3_frame
+$ fq -i
+null> 
+null> .
+null
+null> 1+1
+2
+null> repl({color: true})
+[90m>[39m [39mnull[39m> )
+        ^ unexpected token ")"
+[90m>[39m [39mnull[39m> ^D
+null> )
+      ^ unexpected token ")"
+null> 
+null> abc
+error: expr: function not defined: abc/0
+null> 1+"a"
+error: cannot add: number (1) and string ("a")
+null> abc | repl
+error: expr: function not defined: abc/0
+null> "a"+1 | repl
+error: cannot add: string ("a") and number (1)
+> empty> ^D
+null> repl | 1
+error: repl must be last in pipeline. ex: ... | repl
+null> 1 | repl
+> number> .+1
+2
+> number> ^D
+null> 1 | 2 | repl
+> number> .+1
+3
+> number> ^D
+null> 1,2,3 | repl
+> number, ...[0:3][]> .
+1
+2
+3
+> number, ...[0:3][]> ^D
+null> 1,error("err"),3 | repl
+error: err
+> number> .
+1
+> number> ^D
+null> (1 | mp3_frame | .gap0), 1 | repl
+> .gap0 string, ...[0:2][]> ^D
+null> def f: 1; f,f | repl
+> number, ...[0:2][]> .
+1
+1
+> number, ...[0:2][]> ^D
+null> [1,2,3] | repl
+> [number, ...][0:3]> .
+[
+  1,
+  2,
+  3
+]
+> [number, ...][0:3]> ^D
+null> [1] | repl
+> [number]> .
+[
+  1
+]
+> [number]> ^D
+null> 1,2,error("err"),3 | repl
+error: err
+> number, ...[0:2][]> .
+1
+2
+> number, ...[0:2][]> ^D
+null> repl(123)
+error: expr: options must be an object
+null> repl(123; 123)
+error: expr: repl requires none or one options argument. ex: ... | repl or ... | repl({compact: true})
+null> [] | repl
+> []> ^D
+null> ^D
+$ fq -i 'empty'
+empty> 1
+empty> ^D
+$ fq -i 1,2,3
+number, ...[0:3][]> .*2
+2
+4
+6
+number, ...[0:3][]> .*2 | repl
+> number, ...[0:3][]> .
+2
+4
+6
+> number, ...[0:3][]> ^D
+number, ...[0:3][]> ^D
+$ fq -i '[1,2,3]'
+[number, ...][0:3]> repl({compact: true})
+> [number, ...][0:3]> tovalue
+[1,2,3]
+> [number, ...][0:3]> ^D
+[number, ...][0:3]> ^D
+$ fq -i -d mp3 '.headers[0]' test.mp3
+.headers[0] id3v2> ^D
+$ fq -i -d mp3 . test.mp3
+mp3> .headers[0] | repl
+> .headers[0] id3v2> ^D
+mp3> ^D
+$ fq -i -d json . test.mp3
+json!> ^D
+$ fq -i -n '"[]" | json'
+json> ^D
+$ fq -i -d bytes . test.mp3
+binary> ^D
+$ fq -n repl
+exitcode: 3
+stderr:
+error: arg: repl can only be used from interactive repl

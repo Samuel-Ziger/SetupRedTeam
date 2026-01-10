@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "search-that-hash"
+version = "0.2.8"
+description = "Search hashes quickly before cracking them"
+authors = ["brandon <brandon@skerritt.blog>","jayy <jayy2004@gmx.co.uk>"]
+license = "GPL-3.0-or-later"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+click = ">=7.1.2,<9.0.0"
+appdirs = "^1.4.4"
+toml = "^0.10.2"
+loguru = "^0.5.3"
+name-that-hash = "^1.1.6"
+requests = "^2.25.1"
+rich = ">=9.12.2,<11.0.0"
+coloredlogs = "^15.0"
+cloudscraper = "^1.2.56"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+coverage = {extras = ["toml"], version = "^5.5"}
+pytest-cov = "^2.12.1"
+codecov = "^2.1.12"
+
+[build-system]
+requires = ["poetry-core>=1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+sth = "search_that_hash.__main__:main"
+search-that-hash = "search_that_hash.__main__:main"
+
+[tool.coverage.paths]
+source = ["search_that_hash", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["search_that_hash"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100

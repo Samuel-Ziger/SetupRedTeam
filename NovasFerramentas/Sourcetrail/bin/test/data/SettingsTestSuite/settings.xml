@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<Bool>1</Bool>
+	<Int>42</Int>
+	<Float>3.1416</Float>
+	<String>Hello World!</String>
+	<WString>Hello World!</WString>
+
+	<source_groups>
+        <source_group_77438437-02db-4207-8bbf-75c627d53b89>
+            <type>Custom Command Source Group</type>
+			<source_paths>
+				<source_path>src</source_path>
+				<source_path>test</source_path>
+			</source_paths>
+        </source_group_77438437-02db-4207-8bbf-75c627d53b89>
+	</source_groups>
+</config>
+

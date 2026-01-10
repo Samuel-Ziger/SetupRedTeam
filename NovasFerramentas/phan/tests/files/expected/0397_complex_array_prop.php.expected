@@ -1,0 +1,3 @@
+%s:15 PhanTypeMismatchArgumentInternal Argument 1 ($string) is $x->myProp of type array<int,\stdClass[][]> but \strlen() takes string
+%s:16 PhanUnusedVariable Unused definition of variable $phoneFlow
+%s:17 PhanTypeMismatchArgumentInternal Argument 1 ($string) is $x->myProp[42] of type \stdClass[][] but \strlen() takes string

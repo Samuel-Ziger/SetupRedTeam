@@ -1,0 +1,6 @@
+Gemfile.lock
+coverage/
+test/coverage/
+.bundle
+bundle
+*.gem

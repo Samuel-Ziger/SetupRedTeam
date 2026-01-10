@@ -1,0 +1,76 @@
+$ fq -i
+null> he\t
+help
+hevc_annexb
+hevc_au
+hevc_dcr
+hevc_nalu
+hevc_pps
+hevc_sps
+hevc_vps
+hex
+hexdump
+null> _is_ide\t
+_is_ident
+null> {aa: 123} | slurp("test")
+null> $\t
+$ENV
+$test
+null> $test[].a\t
+aa
+null> {bb: 123} as $aa | $aa.b\t
+bb
+null> {aa: 123, ab: "a"} | .a\t
+aa
+ab
+null> {a: {aa: 123, ab: "a"}} | .a.a\t
+aa
+ab
+null> {aa: 123, ab: "a"} | repl
+> object> .a\t
+aa
+ab
+> object> ^D
+null> ^D
+$ fq -i . test.mp3
+mp3> .f\t
+footers
+frames
+mp3> ._\t
+_actual
+_bits
+_buffer_root
+_bytes
+_description
+_error
+_format
+_format_root
+_gap
+_index
+_len
+_name
+_out
+_parent
+_path
+_root
+_start
+_stop
+_sym
+mp3> .frames\t
+frames[]
+mp3> .frames[]\t
+.
+mp3> "abc" | tobitsrange.s\t
+size
+start
+stop
+mp3> options.c\t
+color
+colors
+compact
+completion_timeout
+mp3> .frames[0] | repl
+> .frames[0] mp3_frame> .he\t
+header
+> .frames[0] mp3_frame> ^D
+mp3> ^D

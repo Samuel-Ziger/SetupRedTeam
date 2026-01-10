@@ -1,0 +1,1 @@
+%s:4 PhanTypeMismatchReturn Returning ['string'] of type array{0:'string'} but f() is declared to return ?int[]

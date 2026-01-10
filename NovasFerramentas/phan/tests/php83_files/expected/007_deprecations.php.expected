@@ -1,0 +1,4 @@
+%s:11 PhanDeprecatedClassConstant Reference to deprecated class constant \NumberFormatter::TYPE_CURRENCY defined at internal:%r\d+%r (Deprecated because: Deprecated in PHP 8.3. Use NumberFormatter::formatCurrency()/parseCurrency().)
+%s:13 PhanDeprecatedFunctionArgument Deprecated argument usage for function \mb_strimwidth(): Passing a negative $width is deprecated as of PHP 8.3
+%s:15 PhanDeprecatedFunctionArgument Deprecated argument usage for function \ldap_connect(): Calling with host and port parameters is deprecated as of PHP 8.3; pass a URI instead
+%s:18 PhanDeprecatedGlobalConstant Reference to deprecated constant \MT_RAND_PHP (Deprecated because: Deprecated in PHP 8.3. Use Random\Engine\Mt19937 to reproduce legacy sequences.)

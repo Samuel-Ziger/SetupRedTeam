@@ -1,0 +1,65 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "digitalsleuth",
+      "name": "Digital Sleuth",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62841822?v=4",
+      "profile": "https://github.com/digitalsleuth",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "amadejpapez",
+      "name": "amadejpapez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63184600?v=4",
+      "profile": "https://github.com/amadejpapez",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "SkeletalDemise",
+      "name": "SkeletalDemise",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29117662?v=4",
+      "profile": "https://github.com/SkeletalDemise",
+      "contributions": [
+        "code",
+        "maintenance",
+        "ideas"
+      ]
+    },
+    {
+      "login": "bee-san",
+      "name": "Brandon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10378052?v=4",
+      "profile": "https://skerritt.blog",
+      "contributions": [
+        "code",
+        "maintenance",
+        "ideas"
+      ]
+    },
+    {
+      "login": "swanandx",
+      "name": "Swanand Mulay",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73115739?v=4",
+      "profile": "http://swanandx.github.io",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Name-That-Hash",
+  "projectOwner": "HashPals",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

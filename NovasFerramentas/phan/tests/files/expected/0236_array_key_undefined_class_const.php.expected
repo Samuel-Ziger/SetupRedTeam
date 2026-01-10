@@ -1,0 +1,4 @@
+%s:11 PhanUndeclaredConstantOfClass Reference to undeclared class constant \Bar::B
+%s:12 PhanUndeclaredConstantOfClass Reference to undeclared class constant \Bar::C
+%s:14 PhanUndeclaredConstantOfClass Reference to undeclared class constant \FooParent::Y
+%s:16 PhanUndeclaredConstantOfClass Reference to undeclared class constant \Foo::UNDECLARED_PAST_FIRST_5

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bishop Configuration</title>
+    <link rel="stylesheet" type="text/css" href="/style.css"></link>
+</head>
+
+<body>
+    <div class="container">
+        <h2><img src="/img/bishop38.png"> Bishop</h2>
+        <div id="notifications"></div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12" id="vulnerableSites">
+                <h3><i class="glyphicon glyphicon-screenshot"></i> Vulnerable Sites</h3>
+		<div class="btn-group">
+		    <button type="button" class="btn btn-sm btn-warning" id="clearSites"><i class="glyphicon glyphicon-trash"></i> Clear Vulnerable Sites</button>
+		    <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			<span class="caret"></span>
+			<span class="sr-only">Toggle Dropdown</span>
+		    </button>
+		    <ul class="dropdown-menu" role="menu">
+			<li><a href="#" id="dedupSites">Remove Duplicate Sites</a></li>
+		    </ul>
+		</div>
+		<button id="exportSites" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-transfer"></i> Import/Export Vulnerable Sites</button>
+		<div class="clearfix"></div>
+		<div style="height: 200px; overflow: auto;">
+		    <table class="table table-striped" id="siteTable">
+			<thead>
+			    <tr>
+				<th>Location</th>
+				<th>Matched Rule</th>
+				<th>Delete</th>
+			    </tr>
+			</thead>
+			<tbody id="siteTableBody">
+			</tbody>
+		    </table>
+		</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="ruleBox">
+		<h3>
+		    <i class="glyphicon glyphicon-th-list"></i>
+		    Rules
+		</h3>
+		<span id="ruleCount"></span><br />
+		<div class="btn-group" style="margin-right: 5px;">
+		    <button type="button" class="btn btn-sm btn-success" id="bulkEnableAll"><i class="glyphicon glyphicon-ok-circle"></i>  Enable All</button>
+		    <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			<span class="caret"></span>
+			<span class="sr-only">Toggle Dropdown</span>
+		    </button>
+		    <ul class="dropdown-menu" role="menu">
+			<li><a href="#" id="bulkEnableLow">Enable Low Risk</a></li>
+			<li><a href="#" id="bulkEnableMedium">Enable Medium Risk</a></li>
+			<li><a href="#" id="bulkEnableHigh">Enable High Risk</a></li>
+		    </ul>
+		</div>
+		<div class="btn-group" style="margin-right: 5px;">
+		    <button type="button" class="btn btn-sm btn-warning" id="bulkDisableAll"><i class="glyphicon glyphicon-remove-circle"></i> Disable All</button>
+		    <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			<span class="caret"></span>
+			<span class="sr-only">Toggle Dropdown</span>
+		    </button>
+		    <ul class="dropdown-menu" role="menu">
+			<li><a href="#" id="bulkDisableLow">Disable Low Risk</a></li>
+			<li><a href="#" id="bulkDisableMedium">Disable Medium Risk</a></li>
+			<li><a href="#" id="bulkDisableHigh">Disable High Risk</a></li>
+		    </ul>
+		</div>
+		<button type="button" class="btn btn-sm btn-danger" id="deleteAllRules"><i class="glyphicon glyphicon-trash"></i> Delete All Rules</button>
+                <a href="#" id="addDemoRules" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-gift"></i> Add Demo Rules</a>
+                <a href="#" id="exportRule" class="btn btn-sm btn-primary pull-right" style="margin-right: 5px;"><i class="glyphicon transfer"></i> Import/Export Rules</a>
+		<a href="#" id="addRule" class="btn btn-sm btn-success pull-right" style="margin-right: 5px;"><i class="glyphicon glyphicon-plus"></i> Add Rule</a>
+                <div class="clearfix"></div>
+                <div style="height: 200px; overflow: auto;">
+                    <table class="table table-striped" id="ruleTable">
+                        <thead>
+                            <tr>
+				<th>Enabled</th>
+                                <th>Risk</th>
+                                <th>Rule</th>
+                                <th>Description</th>
+                                <th>URL</th>
+                                <th>Regex String</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rulesTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12" id="configBox">
+                <h3><i class="glyphicon glyphicon-cog"></i> Configuration</h3>
+                <form id="config" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Enabled</label>
+                        <div class="col-sm-10">
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="enabled" name="config"> Enable Bishop to send requests and test pages</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Recursive</label>
+                        <div class="col-sm-10">
+                            <div class="checkbox">
+                                    <label><input type="checkbox" id="recursive" name="config"> If checked, Bishop will recurse to all parent directories (i.e <code>/dir/subdir/folder</code>, <code>/dir/subdir/</code>, <code>/dir/</code>, and <code>/</code>). Recursive will yield the most results, but also fires off the most XHR requests.</label>
+                            </div>
+                        </div>
+                    </div>
+		    <div class="form-group" id="delayBox">
+                        <label class="col-sm-2 control-label">XHR</label>
+                        <div class="col-sm-10">
+                            <div class="checkbox">
+                                <p class="form-control-static">Put a delay between XHR requests of <input id="xhrDelay" name="config" size="3"> seconds (reduces network strain and keeps browser responding)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Sounds*</label>
+                        <div class="col-sm-10">
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="soundFound" name="config"> Play sound when a match is found (<a href="#" id="demoSound">Play Sound</a>)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Alerts*</label>
+                        <div class="col-sm-10">
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="alertFound" name="config"> Show JS alert when a match is found (page blocking; <a href="#" id="demoAlert">demo alert</a>)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="alertCSSFound" name="config"> Show in-page CSS alert at the top of the page when a match is found (non-page blocking; <a href="#" id="demoCSSAlert">demo alert</a>)</label>
+                            </div>
+                        </div>
+                    </div>
+		    <div class="form-group" id="includeBox">
+                        <label class="col-sm-2 control-label">Sites to Scan**</label>
+                        <div class="col-sm-10">The host will only be scanned if the regular expression in this box matches against the URL <input id="inclusionRegex" name="config"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <span class="text-muted">* the extension icon will display the number of new matches discovered since the last visit to the options page regardless of the Sounds and Alerts configuration</span><br />
+                            <span class="text-muted">** leaving this empty will result in all sites being scanned. For example, if you want to exclude site1.com, site2.com, and all sites with the string 'etc' in the url, use ^(?:(?!site1\.com|site2\.com|etc).)*$</span>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <hr />
+	<div id="beggingBox">
+	    <p class="text-center text-muted">
+		<a href="https://github.com/jkingsman/bishop" target="_blank">Fork this on GitHub</a> |
+		<a href="https://flattr.com/submit/auto?user_id=jkingsman&url=https%3A%2F%2Fgithub.com%2Fjkingsman%2Fbishop" target="_blank">
+		    <img src="https://button.flattr.com/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0">
+		</a>
+	    </p>
+	</div>
+    </div>
+
+    <div class="modal fade" id="exportDataModal" tabindex="-1" role="dialog" aria-labelledby="exportData" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="exportDataLabel">Import/Export Vulnerable Sites</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea id="exportBox" style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: order-box; width: 100%;" rows=15></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success pull-left" id="importSites">Import</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exportRuleModal" tabindex="-1" role="dialog" aria-labelledby="exportRule" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="exportDataLabel">Import/Export Rules</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea id="exportRuleBox" style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: order-box; width: 100%;" rows=15></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success pull-left" id="importRule">Import</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addRuleModal" tabindex="-1" role="dialog" aria-labelledby="addRule" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form class="form-horizontal" id="addRuleForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="detailsLabel">Add Rule</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="ruleName" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="ruleName" placeholder=".git/HEAD">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ruleDesc" class="col-sm-2 control-label">Description</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="ruleDesc" placeholder="Finds Git repos by checking for 'ref:' in .git/HEAD.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="existenceURL" class="col-sm-2 control-label">Check URL*</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="existenceURL" placeholder=".git/HEAD">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="urlBody" class="col-sm-2 control-label">URL body matches regex</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="urlBody" placeholder="ref:">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="urlBody" class="col-sm-2 control-label">Risk</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" name="risk" id="risk0" value="low"> <span class="bg-success">Low</span>
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="risk" id="risk1" value="medium"> <span class="bg-warning">Medium</span>
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="risk" id="risk2" value="high"> <span class="bg-danger">High</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-10 col-sm-offset-2">
+                            *(no trailing or leading slash)
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success" id="saveRule">Save Rule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="lib.js"></script>
+    <script type="text/javascript" src="options.js"></script>
+</body>
+
+</html>

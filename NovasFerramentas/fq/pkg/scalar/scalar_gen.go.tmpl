@@ -1,0 +1,144 @@
+// Code below generated from scalar_gen.go.tmpl
+package scalar
+
+import (
+	"fmt"
+	"math/big"
+
+	"github.com/wader/fq/pkg/bitio"
+)
+
+{{- range $name, $t := $.types }}
+	// Type {{$name}}
+	// does not use embedding for common fields as it works poorly with struct literals
+	type {{$name}} struct {
+		Sym         any
+		Description string
+		Flags       Flags
+		Actual {{$t.go_type}}
+		{{- if $t.display_format}}
+		DisplayFormat DisplayFormat
+		{{- end}}
+	}
+
+	// interp.Scalarable
+	func (s {{$name}}) ScalarActual() any { return s.Actual }
+	func (s {{$name}}) ScalarValue() any {
+		if s.Sym != nil {
+			return s.Sym
+		}
+		return s.Actual
+	}
+	func (s {{$name}}) ScalarSym() any { return s.Sym }
+	func (s {{$name}}) ScalarDescription() string { return s.Description }
+	func (s {{$name}}) ScalarFlags() Flags { return s.Flags }
+	{{- if $t.display_format}}
+	func (s {{$name}}) ScalarDisplayFormat() DisplayFormat { return s.DisplayFormat }
+	{{- else }}
+	func (s {{$name}}) ScalarDisplayFormat() DisplayFormat { return 0 }
+	{{- end}}
+
+	func {{$name}}Actual(v {{$t.go_type}}) {{$name}}Mapper {
+		return {{$name}}Fn(func(s {{$name}}) ({{$name}}, error) { s.Actual = v; return s, nil })
+	}
+	func {{$name}}Sym(v any) {{$name}}Mapper {
+		return {{$name}}Fn(func(s {{$name}}) ({{$name}}, error) { s.Sym = v; return s, nil })
+	}
+	func {{$name}}Description(v string) {{$name}}Mapper {
+		return {{$name}}Fn(func(s {{$name}}) ({{$name}}, error) { s.Description = v; return s, nil })
+	}
+
+	type {{$name}}Mapper interface {
+		Map{{$name}}({{$name}}) ({{$name}}, error)
+	}
+
+	// {{$name}}Fn map actual {{$name}} using f
+	type {{$name}}Fn func(s {{$name}}) ({{$name}}, error)
+
+	func (fn {{$name}}Fn) Map{{$name}}(s {{$name}}) ({{$name}}, error) {
+		return fn(s)
+	}
+
+	// {{$name}}ActualFn map actual {{$name}} using f
+	type {{$name}}ActualFn func(a {{$t.go_type}}) {{$t.go_type}}
+
+	// TODO: error?
+	func (fn {{$name}}ActualFn) Map{{$name}}(s {{$name}}) ({{$name}}, error) {
+		s.Actual = fn(s.Actual)
+		return s, nil
+	}
+
+	// {{$name}}SymFn map sym {{$name}} using f
+	type {{$name}}SymFn func(a any) any
+
+	func (f {{$name}}SymFn) Map{{$name}}(s {{$name}}) ({{$name}}, error) {
+		s.Sym = f(s.Sym)
+		return s, nil
+	}
+
+	// {{$name}}DescriptionFn map sym {{$name}} using f
+	type {{$name}}DescriptionFn func(a string) string
+
+	func (f {{$name}}DescriptionFn) Map{{$name}}(s {{$name}}) ({{$name}}, error) {
+		s.Description = f(s.Description)
+		return s, nil
+	}
+
+	{{- range $sym_name, $sym_t := $.types }}
+		// TrySym{{$sym_name}} try assert symbolic value is a {{$sym_name}} and return result
+		func (s {{$name}}) TrySym{{$sym_name}}() ({{$sym_t.go_type}}, bool) {
+			{{- if eq $sym_t.go_type "any"}}
+				return s.Sym, true
+			{{- else}}
+				v, ok := s.Sym.({{$sym_t.go_type}})
+				return v, ok
+			{{- end}}
+		}
+
+		// Sym{{$sym_name}} asserts symbolic value is a {{$sym_name}} and returns it
+		func (s {{$name}}) Sym{{$sym_name}}() {{$sym_t.go_type}} {
+			v, ok := s.TrySym{{$sym_name}}()
+			if !ok {
+				panic(fmt.Sprintf("failed to type assert s.Sym %v (%T) as {{$t.go_type}}", s.Sym, s.Sym))
+			}
+			return v
+		}
+	{{- end}}
+{{end}}
+
+{{- range $from_name, $from := $.types }}
+	{{- if $from.map_from}}
+		// Map {{$from_name}}
+		type {{$from_name}}Map map[{{$from.go_type}}]{{$from_name}}
+		func (m {{$from_name}}Map) Map{{$from_name}}(s {{$from_name}}) ({{$from_name}}, error) {
+			if ns, ok := m[s.Actual]; ok {
+				ns.Actual = s.Actual
+				return ns, nil
+			}
+			return s, nil
+		}
+
+		// Map {{$from_name}} description
+		type {{$from_name}}MapDescription map[{{$from.go_type}}]string
+		func (m {{$from_name}}MapDescription) Map{{$from_name}}(s {{$from_name}}) ({{$from_name}}, error) {
+			if d, ok := m[s.Actual]; ok {
+				s.Description = d
+			}
+			return s, nil
+		}
+
+		{{- range $to_name, $to := $.types }}
+			{{- if $to.map_to}}
+				// Map {{$from_name}} sym {{$to_name}}
+				type {{$from_name}}MapSym{{$to_name}} map[{{$from.go_type}}]{{$to.go_type}}
+				func (m {{$from_name}}MapSym{{$to_name}}) Map{{$from_name}}(s {{$from_name}}) ({{$from_name}}, error) {
+					if t, ok := m[s.Actual]; ok {
+						s.Sym = t
+					}
+					return s, nil
+				}
+			{{- end}}
+		{{- end}}
+	{{- end}}
+{{- end}}
+

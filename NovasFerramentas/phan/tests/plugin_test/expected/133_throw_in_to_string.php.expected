@@ -1,0 +1,1 @@
+src/133_throw_in_to_string.php:6 PhanPluginNeverReturnMethod Method \X133::__toString() never returns and has a return type of (empty union type), but phpdoc type never could be used instead

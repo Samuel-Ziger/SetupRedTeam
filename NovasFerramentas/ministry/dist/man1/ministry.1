@@ -1,0 +1,196 @@
+.\" Ministry manual page
+.TH MINISTRY "1" "Nov 2015" "Networking Utilities" "User Commands"
+.SH NAME
+ministry \- stats daemon
+.SH SYNOPSIS
+.nf
+.BI "ministry [-v|-h]"
+.BI "ministry [-DVtEdsKFIiTUu] -c <" config-file "> [-p <" pid-file ">] [-P <" prefix ">]"
+.fi
+.SH DESCRIPTION
+.PP
+\fBMinistry\fP is a statsd-like statistics daemon that listens on network sockets, UDP or TCP, for
+data points, and either adds them or produces metrics suitable for ingestion by graphite, coal or
+other time-series databases.  It is written in highly-threaded C.
+.PP
+The main options are:
+.TP
+\fB\-h\fR
+print help
+.TP
+\fB\-v\fR
+print version and exit
+.TP
+\fB\-t\fR
+just test config and exit
+.TP
+\fB\-c\fR \fI<FILE|URI>\fR
+select config source instead of default file
+.TP
+\fB\-E\fR
+disable reading variables from the environment
+.TP
+\fB\-P\fR \fI<prefix>\fP
+override the prefix for environment variable
+.TP
+\fB\-F\fR
+disable reading config source (environment only)
+.TP
+\fB\-R\fR
+disable all including of other config
+.TP
+\fB\-U\fR
+disable reading any URI config (even if given with -c)
+.TP
+\fB\-u\fR
+disable URI config including other URI configs
+.TP
+\fB\-X\fR
+disable matching of config file suffix in include-dir
+.TP
+\fB\-x\fR \fI<suffix>\fR
+Set config file suffix for include-dir
+.TP
+\fB\-i\fR
+allow insecure URI's
+.TP
+\fB\-I\fR
+allow secure URI's to include insecure URI's
+.TP
+\fB\-K\fR
+interactively ask for a TLS key password
+.TP
+\fB\-T\fR
+Validate the certificates of any secure URI's
+.TP
+\fB\-W\fR
+Permit invalid certificates from fetch targets even if we are validating config certificates.
+.TP
+\fB\-x\fR \fI<suffix>\fR
+Set config file suffix filter for include-dir
+.TP
+\fB\-X\fR
+Disable matching config file suffix for include-dir (match all files)
+.TP
+\fB\-d\fR
+run in daemon mode (background)
+.TP
+\fB\-D\fR
+run in debug mode
+.TP
+\fB\-V\fR
+run in verbose mode, with more output to stdout
+.TP
+\fB\-p\fR \fI<FILE>\fR
+override the configured pidfile
+.TP
+\fB\-s\fR
+be strict about parsing config
+.PP
+The config file format is in sections, denoted as \fB[Section]\fR and is of a general format of:
+.TP
+\fBvariable\fR = \fIvalue\fR
+.PP
+It may use the keyword \fBinclude\fR to read in another file - the current section context is kept.
+.PP
+The default config file is /etc/ministry/ministry.conf
+.SH Behaviour
+.SS Line Ports
+.PP
+\fBMinistry\fR performs four separate functions, each storing data against input paths, which are
+graphite-style, dot-delimited, directory-safe strings.  Those functions are: summation of data,
+keeping gauge values, generating histograms of input data and generating simple statistics about
+input values.
+.PP
+The stats port creates an array of values against the path and at submission time this array is
+sorted to assess the lowest, highest and median value.  Any configured threshold values are also
+calculated.  Then the data is summed to create the arithmetic mean.  The count is also submitted.
+.PP
+The histogram port expects to be configured with sets of histogram bounds, and regular expressions
+to match against incoming data, so permit it to calculate the count of each bucket.
+.SS Web Server
+.PP
+\fBMinistry\fR can run a webserver, powered by \fIlibmicrohttpd\fR, which both permits some control
+of the application during runtime, provides a /metrics endpoint for \fIPrometheus\fR and also four
+/submit/XXXX endpoints for data submission.  This is, naturally, not as performant as the line ports.
+It can receive either line data or JSON data - the latter must be signalled with the Content-Type.
+.SS Fetching Over HTTP
+.PP
+\fBMinistry\fR can also fetch data using HTTP(S), powered by \fIlibcurl\fR, and can be configured
+with endpoints which may also be either line data, or JSON data - again, a JSON Content-Type will
+trigger that parsing.
+.PP
+Also available is parsing of /metrics endpoints, intended for \fIPrometheus\fR.  \fBMinistry\fR
+requires considerable configuration to successfully parse these endpoints, due to the very different
+nature of the data - the config must map labels to field paths to generate output.
+.SH Formats
+.SS Line Format
+.PP
+\fBMinistry\fR accepts data in two line formats; a subset of the \fIStatsd\fR format and a simpler,
+new format specific to \fBministry\fR.  The new format is:
+.TP
+\fBpath\fR(dot-delimited string) \fIvalue\fR(double)\\n
+.PP
+\fBMinistry\fR would normally listen on four ports (or sets of ports) to delineate different types
+of traffic.
+.PP
+The subset of \fIStatsd\fR formats supported is:
+.TP
+\fBpath\fR(dot-delimited string):\fIvalue\fR(float)|ms\\n
+.TP
+\fBpath\fR(dot-delimited string):\fIvalue\fR(float)|c\\n
+.TP
+\fBpath\fR(dot-delimited string):\fI[+/-]value\fR(float)|g\\n
+.PP
+The first format is used to create stats, the second to aggregate values submitted - they are just
+added up - and the third for gauges - keeping track of differences in a value.
+.PP
+\fBMinistry\fR does not recognise the sampling rate construct from \fIStatsd\fR formats; it is
+capable of such a rate of data ingestion that it is simply better to send everything.
+.SS Keepalives
+.PP
+\fBMinistry\fR accepts a simple keepalive to prevent connections from being reaped for inactivity.
+The line is ignored but resets the last-metric timer.  It consists entirely of:
+.TP
+\fBkeepalive\fR\\n
+.PP
+.SS Graphite Tags
+.PP
+\fBMinistry\fP supports the new tags format in graphite 1.1 and higher, meaning in the new format
+given above, \fBpath\fP can be \fBdot-delimited-path;var=val;var=val...\fP \fIvalue\fR(double)\\n
+.PP
+This is supported even with stats metrics, where the tags must be transplanted onto the end of the
+path suffixes of \fI.count\fP, \fI.upper\fP, \fI.lower\fP, etc.
+.SS JSON Format
+.PP
+\fBMinistry\fR accepts JSON in both fetched data and posted data.  The expected JSON format is:
+.EX
+[ { "path": "<path>", "values": [ <values, either strings or double> ]}, ... ]
+.EE
+.PP
+\fBNote\fP, gauge values may have to be strings, as "\fB+3.0\fR" has different meaning to "\fB3\fR".
+.SH Threading
+.PP
+\fBMinistry\fR can open up a number of ports, listening on both TCP and UDP for data.  The threading
+model runs one acceptor thread per TCP port and a number of handler threads.  The number of these,
+as well as their maximum handled connections, are config values.  This allows it to engage multiple
+cores to handle multiple connections.  However, UDP does not allow that option.
+.PP
+To permit multiple cores to be used to handle UDP traffic, the config permits multiple UDP ports to
+be specified for any format port.  A single thread is created to handle packets received by each
+port.
+.PP
+Data is inserted into the data hashes the by the thread handling the incoming packets - so either a
+TCP connection handling thread or a UDP port thread.  Mutexes control the individual hash structures
+to mediate data addition collisions.
+.PP
+At the point of the stats submission timers going off, new threads are created for that single
+data submission cycle.  The number of them is configurable.  They walk the data hash 'stealing' the
+incoming data points, dropping them on a processing list instead.  Only after all points have been
+moved from incoming to processing do they go back and begin stats generation.  This means that the
+stats arriving are very cleanly delineated at the submission timer.
+.SH SEE ALSO
+.BR ministry.conf (5)
+.BR ministry-test (1)
+.SH AUTHOR
+\fBMinistry\fP is written and maintained by John Denholm, Sky Betting And Gaming.

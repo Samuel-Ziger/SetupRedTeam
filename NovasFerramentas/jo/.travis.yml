@@ -1,0 +1,22 @@
+os:
+ - linux
+ - osx
+
+arch:
+  - amd64
+  - ppc64le
+sudo: false
+language: c
+compiler:
+ - gcc
+ - clang
+before_install:
+ - echo $TRAVIS_OS_NAME
+ - uname -a
+ - echo $LANG
+ - echo $LC_ALL
+before_script:
+ - autoreconf -i
+ - ./configure
+script:
+ - make check

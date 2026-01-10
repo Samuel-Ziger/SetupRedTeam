@@ -1,0 +1,60 @@
+{
+  "name": "downloadnet",
+  "version": "4.5.2",
+  "type": "module",
+  "description": "Library server and an archivist browser controller.",
+  "main": "global-run.cjs",
+  "module": "build/esm/downloadnet.mjs",
+  "bin": {
+    "dn": "global-run.cjs"
+  },
+  "scripts": {
+    "start": "node --max-old-space-size=4096 src/app.js",
+    "build": "node exec.js \"./scripts/build_only.sh\"",
+    "parcel": "node exec.js \"./scripts/parcel.sh\"",
+    "clean": "node exec.js \"./scripts/clean.sh\"",
+    "test": "node --watch src/app.js",
+    "inspect": "node --inspect-brk=127.0.0.1:9999 src/app.js",
+    "save": "node src/app.js DownloadNet save",
+    "serve": "node src/app.js DownloadNet serve",
+    "lint": "watch -n 5 npx eslint .",
+    "test-hl": "node src/highlighter.js",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dosyago/DownloadNet.git"
+  },
+  "keywords": [
+    "archivist",
+    "library"
+  ],
+  "author": "@dosy",
+  "bugs": {
+    "url": "https://github.com/dosyago/DownloadNet/issues"
+  },
+  "homepage": "https://github.com/dosyago/DownloadNet#readme",
+  "dependencies": {
+    "@667/ps-list": "latest",
+    "@dosyago/rainsum": "latest",
+    "chalk": "latest",
+    "chrome-launcher": "latest",
+    "express": "latest",
+    "flexsearch": "latest",
+    "fz-search": "latest",
+    "inquirer": "latest",
+    "natural": "latest",
+    "ndx": "^1.0.2",
+    "ndx-query": "^1.0.1",
+    "ndx-serializable": "^1.0.0",
+    "ukkonen": "latest",
+    "ws": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "esbuild": "latest",
+    "eslint": "latest",
+    "globals": "latest",
+    "postject": "latest"
+  }
+}

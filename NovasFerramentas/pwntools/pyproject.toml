@@ -1,0 +1,89 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["version", "scripts"]
+
+name = "pwntools"
+description = "Pwntools CTF framework and exploit development library."
+license = {text = "Mostly MIT, some GPL/BSD, see LICENSE-pwntools.txt"}
+readme = "README.md"
+authors = [{name = "Gallopsled et al.", email = "pwntools-users@googlegroups.com"}]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: Software Development :: Assemblers",
+    "Topic :: Software Development :: Debuggers",
+    "Topic :: Software Development :: Disassemblers",
+    "Topic :: Software Development :: Embedded Systems",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: System Shells",
+    "Topic :: Utilities",
+]
+keywords = ["pwntools", "exploit", "ctf", "capture", "the", "flag", "binary", "wargame", "overflow", "stack", "heap", "defcon"]
+
+requires-python = ">=3.6"
+dependencies = [
+    "paramiko>=1.15.2",
+    "mako>=1.0.0",
+    "pyelftools>=0.32",
+    "capstone>=4.0.0",
+    "ropgadget>=5.3",
+    "pyserial>=2.7",
+    "requests>=2.0",
+    "pygments>=2.0",
+    "pysocks",
+    "python-dateutil",
+    "packaging",
+    "psutil>=3.3.0",
+    "intervaltree>=3.0",
+    "sortedcontainers",
+    "unicorn>=2.0.1, !=2.1.3, !=2.1.4",  # see https://github.com/unicorn-engine/unicorn/issues/2134
+    "rpyc",
+    "colored_traceback",
+    "unix-ar",
+    "zstandard",
+]
+
+[project.urls]
+homepage = "https://pwntools.com"
+download = "https://github.com/Gallopsled/pwntools/releases"
+
+[tool.distutils.bdist_wheel]
+universal = 1
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+namespaces = false
+
+[tool.coverage.run]
+branch = true
+parallel = true
+concurrency = ["thread", "multiprocessing"]
+omit = [
+    "*/constants/*",
+]
+source = [
+    "pwn",
+    "pwnlib",
+    "~/.cache/.pwntools-cache-3.10/",
+    "~/.cache/.pwntools-cache-3.11/",
+    "~/.cache/.pwntools-cache-3.12/",
+    "~/.cache/.pwntools-cache-3.13/",
+]
+disable_warnings = ["module-not-imported"]
+
+[tool.coverage.paths]
+pwnlib = ["pwnlib", "*/pwntools/pwnlib", "*\\pwntools\\pwnlib"]
+pwn = ["pwn", "*/pwntools/pwn", "*\\pwntools\\pwn"]

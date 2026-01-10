@@ -1,0 +1,1 @@
+%s:5 PhanTypeMismatchArgumentInternal Argument 1 ($array) is $arg of type string but \key() takes array|object

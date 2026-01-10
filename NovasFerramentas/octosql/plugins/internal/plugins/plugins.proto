@@ -1,0 +1,136 @@
+syntax = "proto3";
+package plugins;
+
+option go_package = "github.com/cube2222/octosql/plugins/internal/plugins";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+message TableContext {
+    string table_name = 1;
+    map<string, string> options = 2;
+}
+
+service Datasource {
+    rpc GetTable (GetTableRequest) returns (GetTableResponse);
+    rpc PushDownPredicates (PushDownPredicatesRequest) returns (PushDownPredicatesResponse);
+    rpc Materialize (MaterializeRequest) returns (MaterializeResponse);
+    rpc Metadata (MetadataRequest) returns (MetadataResponse);
+}
+
+message GetTableRequest {
+    TableContext table_context = 1;
+}
+
+message GetTableResponse {
+    Schema schema = 1;
+}
+
+message PushDownPredicatesRequest {
+    // TODO: Add schema? Maybe TableWithSchemaContext? Or PhysicalTableContext?
+
+    TableContext table_context = 1;
+    // []Expression JSONs, not performance sensitive.
+    bytes new_predicates = 2;
+    bytes pushed_down_predicates = 3;
+}
+
+message PushDownPredicatesResponse {
+    // []Expression JSONs, not performance sensitive.
+    bytes rejected = 1;
+    bytes pushed_down = 2;
+    bool changed = 3;
+}
+
+message MaterializeRequest {
+    TableContext table_context = 1;
+    Schema schema = 2;
+    bytes pushed_down_predicates = 3;
+    PhysicalVariableContext variable_context = 4;
+}
+
+message MaterializeResponse {
+    string socket_path = 1;
+}
+
+message MetadataRequest {}
+
+message MetadataResponse {
+    int64 api_level = 1;
+}
+
+service ExecutionDatasource {
+    rpc Run (RunRequest) returns (stream RunResponseMessage);
+}
+
+message RunRequest {
+    ExecutionVariableContext variable_context = 4;
+}
+
+message RunResponseMessage {
+    Record record = 1;
+    MetadataMessage metadata = 2;
+}
+
+message Record {
+    repeated Value values = 1;
+    bool retraction = 2;
+    google.protobuf.Timestamp event_time = 3;
+}
+
+message MetadataMessage {
+    int32 message_type = 1;
+    google.protobuf.Timestamp watermark = 2;
+}
+
+message Value {
+    int32 type_id = 1;
+    int64 int = 2;
+    double float = 3;
+    bool boolean = 4;
+    string str = 5;
+    google.protobuf.Timestamp time = 6;
+    google.protobuf.Duration duration = 7;
+    repeated Value list = 8; // TODO: These should have their own messages.
+    repeated Value struct = 9;
+    repeated Value tuple = 10;
+}
+
+message Schema {
+    repeated SchemaField fields = 1;
+    int32 time_field = 2;
+    bool no_retractions = 3;
+}
+
+message SchemaField {
+    string name = 1;
+    Type type = 2;
+}
+
+message Type {
+    int32 type_id = 1;
+    Type list = 2;
+    repeated StructField struct = 3;
+    repeated Type tuple = 4;
+    repeated Type union = 5;
+}
+
+message StructField {
+    string name = 1;
+    Type type = 2;
+}
+
+message PhysicalVariableContext {
+    repeated PhysicalVariableContextFrame frames = 1;
+}
+
+message PhysicalVariableContextFrame {
+    repeated SchemaField fields = 1;
+}
+
+message ExecutionVariableContext {
+    repeated ExecutionVariableContextFrame frames = 1;
+}
+
+message ExecutionVariableContextFrame {
+    repeated Value values = 1;
+}

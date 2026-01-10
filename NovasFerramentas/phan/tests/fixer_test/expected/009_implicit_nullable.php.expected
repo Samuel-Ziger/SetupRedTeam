@@ -1,0 +1,6 @@
+src_copy/009_implicit_nullable.php:6 PhanPluginCanUseNullableParamType Can use ?int as the type of parameter $z of testImplicitNullable
+src_copy/009_implicit_nullable.php:6 PhanPluginCanUseVoidReturnType Can use void as a return type of testImplicitNullable
+src_copy/009_implicit_nullable.php:6 PhanUnreferencedFunction Possibly zero references to function \testImplicitNullable()
+src_copy/009_implicit_nullable.php:6 PhanUnusedGlobalFunctionParameter Parameter $x is never used
+src_copy/009_implicit_nullable.php:6 PhanUnusedGlobalFunctionParameter Parameter $y is never used
+src_copy/009_implicit_nullable.php:6 PhanUnusedGlobalFunctionParameter Parameter $z is never used

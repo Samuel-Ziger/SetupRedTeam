@@ -1,0 +1,4 @@
+%s:11 PhanTypeMismatchArgumentReal Argument 1 ($x) is [new stdClass()] of type \stdClass (real type ?\stdClass) but \TestStaticCallable377::triple() takes int defined at %s:24
+%s:12 PhanTypeMismatchArgumentReal Argument 1 ($x) is [new stdClass()] of type \stdClass (real type ?\stdClass) but \TestStaticCallable377::triple() takes int defined at %s:24
+%s:20 PhanTypeMismatchArgumentReal Argument 1 ($x) is [new stdClass()] of type \stdClass (real type ?\stdClass) but \TestStaticCallable377::triple() takes int defined at %s:24
+%s:21 PhanTypeMismatchArgumentReal Argument 1 ($x) is [new stdClass()] of type \stdClass (real type ?\stdClass) but \TestStaticCallable377::triple() takes int defined at %s:24

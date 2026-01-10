@@ -1,0 +1,20 @@
+{
+    "description": "Codesniffer configuration for phan/phan",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tyson Andre"
+        }
+    ],
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "7.2.31"
+        }
+    },
+    "require": {
+        "squizlabs/php_codesniffer": "^3.5.6",
+        "slevomat/coding-standard": "^6.4.1"
+    }
+}

@@ -1,0 +1,608 @@
+$ fq -d mp3 '.headers[0].header.magic._bits[8:16] | hd' test.mp3
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|   44                                          | D              |.: raw bits 0x1-0x2 (1)
+$ fq -d mp3 '.headers[0].header.magic._bits | [.[8:16], .[0:8]] | hd' test.mp3
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|44 49|                                         |DI|             |.: raw bits 0x0-0x2 (2)
+$ fq -d mp3 '.headers[0].header.magic._bits | [.[8:16], .[0:8]] | tobits | hd' test.mp3
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|44 49|                                         |DI|             |.: raw bits 0x0-0x2 (2)
+$ fq -d mp3 '.headers[0].header.magic._bits | [.[8:16], .[0:8]] | tobytes | hd' test.mp3
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|44 49|                                         |DI|             |.: raw bits 0x0-0x2 (2)
+$ fq -n '"12" | tobytes | hd'
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|31 32|                                         |12|             |.: raw bits 0x0-0x2 (2)
+$ fq -n '"12" | tobits | hd'
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|31 32|                                         |12|             |.: raw bits 0x0-0x2 (2)
+$ fq -n '["12", "3"] | tobytes | hd'
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|31 32 33|                                      |123|            |.: raw bits 0x0-0x3 (3)
+$ fq -n '["12", "3"] | tobits  | hd'
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|31 32 33|                                      |123|            |.: raw bits 0x0-0x3 (3)
+$ fq -n '[("11" | fromhex), ("22" | fromhex)] | tobits  | hd'
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|11 22|                                         |."|             |.: raw bits 0x0-0x2 (2)
+# TODO: bug, hexdump uses io.Copy which is byte oritneted
+$ fq -n '[("12" | fromhex | .bits[4:]), ("34" | fromhex | .bits[0:4])] | tobits  | hd'
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|23|                                            |#|              |.: raw bits 0x0-0x1 (1)
+$ fq -d mp3 '.frames[]._bits[0:12] | tonumber' test.mp3
+4095
+4095
+4095
+$ fq -d mp3 '.headers[0].header.magic._bits[0:24] | tostring' test.mp3
+"ID3"
+$ fq -d mp3 '.frames[0].audio_data, (.frames[0].tag.header | tobytes) | ("", "md5", "hex", "base64", "snippet", "byte_array") as $f | try tovalue({bits_format: $f}) catch .' test.mp3
+"invalid bits format \"\""
+"ca9c491ac66b2c62500882e93f3719a8"
+"0000000000"
+"AAAAAAA="
+"<5>AAAAAAA="
+[
+  0,
+  0,
+  0,
+  0,
+  0
+]
+"invalid bits format \"\""
+"4059b0251f66a18cb56f544728796875"
+"496e666f"
+"SW5mbw=="
+"<4>SW5mbw=="
+[
+  73,
+  110,
+  102,
+  111
+]
+$ fq -o bits_format=hex -n '[1,2,3] | tobytes'
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|01 02 03|                                      |...|            |.: raw bits 0x0-0x3 (3)
+$ fq -o bits_format=hex -V -n '[1,2,3] | tobytes'
+"010203"
+$ fq -d mp3 -i . test.mp3
+mp3> [1, 2, 3] | tobytes
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|01 02 03|                                      |...|            |.: raw bits 0x0-0x3 (3)
+mp3> [1, 2, 3, [1, 2, 3]] | tobytes
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|01 02 03 01 02 03|                             |......|         |.: raw bits 0x0-0x6 (6)
+mp3> [1, 2, 3, [1, 2, 3], .headers[0].header.magic] | tobytes
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|01 02 03 01 02 03 49 44 33|                    |......ID3|      |.: raw bits 0x0-0x9 (9)
+mp3> [0,"abc",1,2.1] | tobytes
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|00 61 62 63 01 02|                             |.abc..|         |.: raw bits 0x0-0x6 (6)
+mp3> [-1] | tobytes
+error: byte in binary list must be bytes (0-255) got -1
+mp3> [256] | tobytes
+error: byte in binary list must be bytes (0-255) got 256
+mp3> ^D
+$ fq -d mp3 -i . test.mp3
+mp3> .frames[1] | tobits       | ., .start, .stop, .size, .[4:17], (tobits, tobytes, tobitsrange, tobytesrange | ., .start, .stop, .size, .[4:17])
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+1664
+1664
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|ff fb 50                                       |..P             |.: raw bits 0x0.4-0x2.1 (1.5)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+1664
+1664
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|ff fb 50                                       |..P             |.: raw bits 0x0.4-0x2.1 (1.5)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+208
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|            00 00 0a 2c 43 2e 55 94 80 01 80 93|    ...,C.U.....|.: raw bits 0x4-0x11 (13)
+0x10|6b                                             |k               |
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+1664
+1664
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|ff fb 50                                       |..P             |.: raw bits 0x0.4-0x2.1 (1.5)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+208
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|            00 00 0a 2c 43 2e 55 94 80 01 80 93|    ...,C.U.....|.: raw bits 0x4-0x11 (13)
+0x10|6b                                             |k               |
+mp3> .frames[1] | tobytes      | ., .start, .stop, .size, .[4:17], (tobits, tobytes, tobitsrange, tobytesrange | ., .start, .stop, .size, .[4:17])
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+208
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|            00 00 0a 2c 43 2e 55 94 80 01 80 93|    ...,C.U.....|.: raw bits 0x4-0x11 (13)
+0x10|6b                                             |k               |
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+1664
+1664
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|ff fb 50                                       |..P             |.: raw bits 0x0.4-0x2.1 (1.5)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+208
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|            00 00 0a 2c 43 2e 55 94 80 01 80 93|    ...,C.U.....|.: raw bits 0x4-0x11 (13)
+0x10|6b                                             |k               |
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+1664
+1664
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|ff fb 50                                       |..P             |.: raw bits 0x0.4-0x2.1 (1.5)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+208
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|            00 00 0a 2c 43 2e 55 94 80 01 80 93|    ...,C.U.....|.: raw bits 0x4-0x11 (13)
+0x10|6b                                             |k               |
+mp3> .frames[1] | tobitsrange  | ., .start, .stop, .size, .[4:17], (tobits, tobytes, tobitsrange, tobytesrange | ., .start, .stop, .size, .[4:17])
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0e0|         ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80|   ..P....,C.U..|.: raw bits 0xe3-0x1b3 (208)
+0x0f0|01 80 93 6b 27 30 80 00 07 aa c3 8e 33 85 d3 64|...k'0......3..d|
+*    |until 0x1b2.7 (208)                            |                |
+1816
+3480
+1664
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0xe0|         ff fb 50                              |   ..P          |.: raw bits 0xe3.4-0xe5.1 (1.5)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+1664
+1664
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|ff fb 50                                       |..P             |.: raw bits 0x0.4-0x2.1 (1.5)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+208
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|            00 00 0a 2c 43 2e 55 94 80 01 80 93|    ...,C.U.....|.: raw bits 0x4-0x11 (13)
+0x10|6b                                             |k               |
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0e0|         ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80|   ..P....,C.U..|.: raw bits 0xe3-0x1b3 (208)
+0x0f0|01 80 93 6b 27 30 80 00 07 aa c3 8e 33 85 d3 64|...k'0......3..d|
+*    |until 0x1b2.7 (208)                            |                |
+1816
+3480
+1664
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0xe0|         ff fb 50                              |   ..P          |.: raw bits 0xe3.4-0xe5.1 (1.5)
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0e0|         ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80|   ..P....,C.U..|.: raw bits 0xe3-0x1b3 (208)
+0x0f0|01 80 93 6b 27 30 80 00 07 aa c3 8e 33 85 d3 64|...k'0......3..d|
+*    |until 0x1b2.7 (208)                            |                |
+227
+435
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0xe0|                     00 00 0a 2c 43 2e 55 94 80|       ...,C.U..|.: raw bits 0xe7-0xf4 (13)
+0xf0|01 80 93 6b                                    |...k            |
+mp3> .frames[1] | tobytesrange | ., .start, .stop, .size, .[4:17], (tobits, tobytes, tobitsrange, tobytesrange | ., .start, .stop, .size, .[4:17])
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0e0|         ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80|   ..P....,C.U..|.: raw bits 0xe3-0x1b3 (208)
+0x0f0|01 80 93 6b 27 30 80 00 07 aa c3 8e 33 85 d3 64|...k'0......3..d|
+*    |until 0x1b2.7 (208)                            |                |
+227
+435
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0xe0|                     00 00 0a 2c 43 2e 55 94 80|       ...,C.U..|.: raw bits 0xe7-0xf4 (13)
+0xf0|01 80 93 6b                                    |...k            |
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+1664
+1664
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|ff fb 50                                       |..P             |.: raw bits 0x0.4-0x2.1 (1.5)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80 01 80 93|..P....,C.U.....|.: raw bits 0x0-0xd0 (208)
+*   |until 0xcf.7 (end) (208)                       |                |
+0
+208
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|            00 00 0a 2c 43 2e 55 94 80 01 80 93|    ...,C.U.....|.: raw bits 0x4-0x11 (13)
+0x10|6b                                             |k               |
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0e0|         ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80|   ..P....,C.U..|.: raw bits 0xe3-0x1b3 (208)
+0x0f0|01 80 93 6b 27 30 80 00 07 aa c3 8e 33 85 d3 64|...k'0......3..d|
+*    |until 0x1b2.7 (208)                            |                |
+1816
+3480
+1664
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0xe0|         ff fb 50                              |   ..P          |.: raw bits 0xe3.4-0xe5.1 (1.5)
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0e0|         ff fb 50 c4 00 00 0a 2c 43 2e 55 94 80|   ..P....,C.U..|.: raw bits 0xe3-0x1b3 (208)
+0x0f0|01 80 93 6b 27 30 80 00 07 aa c3 8e 33 85 d3 64|...k'0......3..d|
+*    |until 0x1b2.7 (208)                            |                |
+227
+435
+208
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0xe0|                     00 00 0a 2c 43 2e 55 94 80|       ...,C.U..|.: raw bits 0xe7-0xf4 (13)
+0xf0|01 80 93 6b                                    |...k            |
+mp3> .frames[1].audio_data | tobytes | match([0x33, 0x85]), first(scan([0x33, 0x85]) | tohex), first(splits([0x33, 0x85]) | tohex)
+{
+  "captures": [],
+  "length": 2,
+  "offset": 4,
+  "string": "3\ufffd"
+}
+"3385"
+"07aac38e"
+mp3> scan("")
+error: match(""; "g") cannot be applied to: object ({"footers":[],"frames":[{" ...)
+mp3> tobytes| scan("")
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.: raw bits 0x0-0x0 (0)
+mp3> .frames[1] | tobytes | mp3_frame | ., ((.header.bitrate | tobitsrange) as $v | tobitsrange | [.[:$v.start], (0xf | tobits), .[$v.start+$v.size:]] | mp3_frame) | .header.bitrate
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|      50                                       |  P             |.header.bitrate: 64000 (5)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|      f0                                       |  .             |.header.bitrate: 15 (bad)
+mp3> ^D
+$ fq -i
+null> "fq" | tobits | [.[range(.size)]] | map(tobits) | tobytes | tostring
+"fq"
+null> "fq" | tobits | chunk(range(17)+1) | tobytes | tostring
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+"fq"
+null> 1 | tobits(range(10)) | tohex
+"80"
+"80"
+"40"
+"20"
+"10"
+"08"
+"04"
+"02"
+"01"
+"0080"
+null> 1 | tobytes(range(5)) | tohex
+"01"
+"01"
+"0001"
+"000001"
+"00000001"
+null> range(17) | [range(.) | 1 | tobits] | tobits | tohex
+""
+"80"
+"c0"
+"e0"
+"f0"
+"f8"
+"fc"
+"fe"
+"ff"
+"ff80"
+"ffc0"
+"ffe0"
+"fff0"
+"fff8"
+"fffc"
+"fffe"
+"ffff"
+null> range(17) | [range(.) | 1 | tobits] | tobytes | tohex
+""
+"01"
+"03"
+"07"
+"0f"
+"1f"
+"3f"
+"7f"
+"ff"
+"01ff"
+"03ff"
+"07ff"
+"0fff"
+"1fff"
+"3fff"
+"7fff"
+"ffff"
+null> "c9dfdac2f6ef68e5db666b6fbeee66d9c7deda66bebfbfe860bfbfbfe9d1636bbfbebf" | fromhex | tobits | reduce chunk(8)[] as $c ({h:[],g:[]}; .h += [(0|tobits), $c[0:7]] | .g |= . + [if length % 8 == 0 then (0|tobits) else empty end, $c[7:8]]) | .h, .g  | tobytes
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|64 6f 6d 61 7b 77 34 72 6d 33 35 37 5f 77 33 6c|doma{w4rm357_w3l|.: raw bits 0x0-0x23 (35)
+*   |until 0x22.7 (end) (35)                        |                |
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|62 6c 30 67 7d|                                |bl0g}|          |.: raw bits 0x0-0x5 (5)
+null> "åäö" | tobytes | explode, (tobits | explode)
+[
+  195,
+  165,
+  195,
+  164,
+  195,
+  182
+]
+[
+  1,
+  1,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  0,
+  1,
+  0,
+  0,
+  1,
+  0,
+  1,
+  1,
+  1,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  0,
+  1,
+  0,
+  0,
+  1,
+  0,
+  0,
+  1,
+  1,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  0,
+  1,
+  1,
+  0,
+  1,
+  1,
+  0
+]
+null> "ååå" as $p | "cbbcåååccåååcbc", "åååcbbc", "cbbcååå" | ., "orig", split($p), "binary_rune", (tobytes | split($p)), "binary_byte", (tobytes | split("ååå" | tobytes; "b"))
+"cbbcåååccåååcbc"
+"orig"
+[
+  "cbbc",
+  "cc",
+  "cbc"
+]
+"binary_rune"
+[
+  "cbbc",
+  "cc",
+  "cbc"
+]
+"binary_byte"
+[
+  "cbbc",
+  "cc",
+  "cbc"
+]
+"åååcbbc"
+"orig"
+[
+  "",
+  "cbbc"
+]
+"binary_rune"
+[
+  "",
+  "cbbc"
+]
+"binary_byte"
+[
+  "",
+  "cbbc"
+]
+"cbbcååå"
+"orig"
+[
+  "cbbc",
+  ""
+]
+"binary_rune"
+[
+  "cbbc",
+  ""
+]
+"binary_byte"
+[
+  "cbbc",
+  ""
+]
+null> "å(?<n>å)(å)" as $p | "cbbcåååccåååcbc", "åååcbbc", "cbbcååå" | ., "orig", splits($p), "binary_rune", (tobytes | splits($p)), "binary_byte", (tobytes | splits("ååå" | tobytes; "b"))
+"cbbcåååccåååcbc"
+"orig"
+"cbbc"
+"cc"
+"cbc"
+"binary_rune"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|63 62 62 63                                    |cbbc            |.: raw bits 0x0-0x4 (4)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|                              63 63            |          cc    |.: raw bits 0xa-0xc (2)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x10|      63 62 63|                                |  cbc|          |.: raw bits 0x12-0x15 (3)
+"binary_byte"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|63 62 62 63                                    |cbbc            |.: raw bits 0x0-0x4 (4)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|                              63 63            |          cc    |.: raw bits 0xa-0xc (2)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x10|      63 62 63|                                |  cbc|          |.: raw bits 0x12-0x15 (3)
+"åååcbbc"
+"orig"
+""
+"cbbc"
+"binary_rune"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.: raw bits 0x0-0x0 (0)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|                  63 62 62 63|                 |      cbbc|     |.: raw bits 0x6-0xa (4)
+"binary_byte"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.: raw bits 0x0-0x0 (0)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|                  63 62 62 63|                 |      cbbc|     |.: raw bits 0x6-0xa (4)
+"cbbcååå"
+"orig"
+"cbbc"
+""
+"binary_rune"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|63 62 62 63                                    |cbbc            |.: raw bits 0x0-0x4 (4)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.: raw bits 0xa-0xa (0)
+"binary_byte"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|63 62 62 63                                    |cbbc            |.: raw bits 0x0-0x4 (4)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.: raw bits 0xa-0xa (0)
+null> "å(?<n>å)(å)" as $p | "cbbcåååccåååcbc", "åååcbbc", "cbbcååå" | ., "orig", scan($p), "binary_rune", (tobytes | scan($p)), "binary_byte", (tobytes | scan("ååå" | tobytes; "b"))
+"cbbcåååccåååcbc"
+"orig"
+[
+  "å",
+  "å"
+]
+[
+  "å",
+  "å"
+]
+"binary_rune"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|            c3 a5 c3 a5 c3 a5                  |    ......      |.: raw bits 0x4-0xa (6)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|                                    c3 a5 c3 a5|            ....|.: raw bits 0xc-0x12 (6)
+0x10|c3 a5                                          |..              |
+"binary_byte"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|            c3 a5 c3 a5 c3 a5                  |    ......      |.: raw bits 0x4-0xa (6)
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|                                    c3 a5 c3 a5|            ....|.: raw bits 0xc-0x12 (6)
+0x10|c3 a5                                          |..              |
+"åååcbbc"
+"orig"
+[
+  "å",
+  "å"
+]
+"binary_rune"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|c3 a5 c3 a5 c3 a5                              |......          |.: raw bits 0x0-0x6 (6)
+"binary_byte"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|c3 a5 c3 a5 c3 a5                              |......          |.: raw bits 0x0-0x6 (6)
+"cbbcååå"
+"orig"
+[
+  "å",
+  "å"
+]
+"binary_rune"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|            c3 a5 c3 a5 c3 a5|                 |    ......|     |.: raw bits 0x4-0xa (6)
+"binary_byte"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|            c3 a5 c3 a5 c3 a5|                 |    ......|     |.: raw bits 0x4-0xa (6)
+null> [range(256)] | . as $b | tobytes | tostring | tobytes | $b == explode, dd, tostring, tovalue
+true
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x000|00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|................|.: raw bits 0x0-0x100 (256)
+0x010|10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f|................|
+0x020|20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f| !"#$%&'()*+,-./|
+0x030|30 31 32 33 34 35 36 37 38 39 3a 3b 3c 3d 3e 3f|0123456789:;<=>?|
+0x040|40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f|@ABCDEFGHIJKLMNO|
+0x050|50 51 52 53 54 55 56 57 58 59 5a 5b 5c 5d 5e 5f|PQRSTUVWXYZ[\]^_|
+0x060|60 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f|`abcdefghijklmno|
+0x070|70 71 72 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f|pqrstuvwxyz{|}~.|
+0x080|80 81 82 83 84 85 86 87 88 89 8a 8b 8c 8d 8e 8f|................|
+0x090|90 91 92 93 94 95 96 97 98 99 9a 9b 9c 9d 9e 9f|................|
+0x0a0|a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 aa ab ac ad ae af|................|
+0x0b0|b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf|................|
+0x0c0|c0 c1 c2 c3 c4 c5 c6 c7 c8 c9 ca cb cc cd ce cf|................|
+0x0d0|d0 d1 d2 d3 d4 d5 d6 d7 d8 d9 da db dc dd de df|................|
+0x0e0|e0 e1 e2 e3 e4 e5 e6 e7 e8 e9 ea eb ec ed ee ef|................|
+0x0f0|f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 fa fb fc fd fe ff|................|
+"\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007f\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd"
+"\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007f\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd"
+null> ^D
+# test regexp overloading and source binary matching
+$ fq -n '`"text"` | fromjson | ., tobytes, tobytes[1:], tobytesrange, tobytesrange[1:] | scan(`ext"`) // "not found", dd'
+"not found"
+"text"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|      65 78 74 22|                             |  ext"|         |.: raw bits 0x2-0x6 (4)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|22 74 65 78 74 22|                             |"text"|         |.: raw bits 0x0-0x6 (6)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|      65 78 74 22|                             |  ext"|         |.: raw bits 0x2-0x6 (4)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|   74 65 78 74 22|                             | text"|         |.: raw bits 0x1-0x6 (5)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|      65 78 74 22|                             |  ext"|         |.: raw bits 0x2-0x6 (4)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|22 74 65 78 74 22|                             |"text"|         |.: raw bits 0x0-0x6 (6)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|      65 78 74 22|                             |  ext"|         |.: raw bits 0x2-0x6 (4)
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|   74 65 78 74 22|                             | text"|         |.: raw bits 0x1-0x6 (5)

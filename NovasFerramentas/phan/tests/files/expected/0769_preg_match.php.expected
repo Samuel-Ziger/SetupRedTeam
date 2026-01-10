@@ -1,0 +1,1 @@
+%s:13 PhanTypeMismatchArgumentInternal Argument 1 ($num1) is $matches of type array{0:string} but \intdiv() takes int

@@ -1,0 +1,4 @@
+[submodule "rules"]
+	path = data
+	url = https://gitlab.com/ClearURLs/rules.git
+	branch = master

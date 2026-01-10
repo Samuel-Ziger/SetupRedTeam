@@ -1,0 +1,178 @@
+require_relative '../test'
+require 'brakeman/app_tree'
+require 'fileutils'
+
+class AppTreeTests < Minitest::Test
+  def temp_dir_and_file_from_path(relative_path)
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, relative_path)
+      FileUtils.mkdir_p(File.dirname(file))
+      FileUtils.touch(file)
+      yield dir, file
+    end
+  end
+
+  def temp_dir_absolute_symlink_and_file_from_path(relative_path)
+    Dir.mktmpdir do |dir|
+      sibling_dir = File.join(dir, "sibling")
+      FileUtils.mkdir_p(sibling_dir)
+
+      target_dir = File.join(dir, "target")
+      FileUtils.mkdir_p(target_dir)
+
+      file = File.join(sibling_dir, relative_path)
+      FileUtils.mkdir_p(File.dirname(file))
+      FileUtils.touch(file)
+
+      symlink = File.join(target_dir, "symlink")
+      FileUtils.ln_s(sibling_dir, symlink, force: true)
+      yield target_dir, file
+    end
+  end
+
+  def temp_dir_relative_symlink_and_file_from_path(relative_path)
+    Dir.mktmpdir do |dir|
+      sibling_dir = File.join(dir, "sibling")
+      FileUtils.mkdir_p(sibling_dir)
+
+      target_dir = File.join(dir, "target")
+      FileUtils.mkdir_p(target_dir)
+
+      file = File.join(sibling_dir, relative_path)
+      FileUtils.mkdir_p(File.dirname(file))
+      FileUtils.touch(file)
+
+      symlink = File.join(target_dir, "symlink")
+      FileUtils.ln_s("../sibling", symlink, force: true)
+      yield target_dir, file
+    end
+  end
+
+  def test_directory_absolute_symlink_support
+    temp_dir_absolute_symlink_and_file_from_path("test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, follow_symlinks: true)
+      assert_equal [file], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_directory_relative_symlink_support
+    temp_dir_relative_symlink_and_file_from_path("test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, follow_symlinks: true)
+      assert_equal [file], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_directory_relative_disabled_symlink_support
+    temp_dir_relative_symlink_and_file_from_path("test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, follow_symlinks: false)
+      assert_empty at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_ruby_file_paths
+    temp_dir_and_file_from_path("test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir)
+      assert_equal [file], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_ruby_file_paths_skip_vendor_false
+    temp_dir_and_file_from_path("vendor/test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, :skip_vendor => false)
+      assert_equal [file], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_ruby_file_paths_skip_vendor_true
+    temp_dir_and_file_from_path("vendor/test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, :skip_vendor => true)
+      assert_equal [], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_ruby_file_paths_skip_vendor_true_add_libs_path
+    temp_dir_and_file_from_path("vendor/bundle/gems/gem123/lib/test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, :skip_vendor => true, :additional_libs_path => ["vendor/bundle/gems/gem123/lib"])
+      assert_equal [file], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_ruby_file_paths_skip_vendor_true_add_engine_path
+    temp_dir_and_file_from_path("vendor/bundle/gems/gem123/test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, :skip_vendor => true, :engine_paths => ["vendor/bundle/gems"])
+      assert_equal [file], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_ruby_file_paths_skip_vendor_true_tests_in_engine_path_still_excluded
+    temp_dir_and_file_from_path("vendor/bundle/gems/gem123/test/test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, :skip_vendor => true, :engine_paths => ["vendor/bundler/gems"])
+      assert_equal [], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_ruby_file_paths_add_engine_path
+    temp_dir_and_file_from_path("lib/gems/gem123/test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, :engine_paths => ["lib/gems"])
+      assert_equal [file], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_ruby_file_paths_add_libs_path
+    temp_dir_and_file_from_path("gem123/lib/test.rb") do |dir, file|
+      at = Brakeman::AppTree.new(dir, :additional_libs_path => ["gems/gem123/lib"])
+      assert_equal [file], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_ruby_file_paths_directory_with_rb_extension
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(File.join(dir, "test.rb"))
+
+      at = Brakeman::AppTree.new(dir)
+      assert_equal [], at.ruby_file_paths.collect(&:absolute).to_a
+    end
+  end
+
+  def test_match_path
+    temp_dir_and_file_from_path('match/this/file.rb') do |dir, file|
+      at = Brakeman::AppTree.new(dir)
+
+      # '/path1/ - Matches any path that is rooted at 'path1' in the project directory.
+      paths = Brakeman::AppTree.__send__(:regex_for_paths, ['/match/'])
+
+      assert app_tree_match?(at, paths, File.join(dir, 'match'))
+      assert app_tree_match?(at, paths, File.join(dir, 'match', 'this'))
+      assert app_tree_match?(at, paths, File.join(dir, 'match', 'this', 'file.rb'))
+      assert app_tree_match?(at, paths, File.join(dir, 'match', '/'))
+      refute app_tree_match?(at, paths, File.join(dir, 'nested', 'match'))
+      refute app_tree_match?(at, paths, File.join(dir, 'not_exact_match'))
+
+      # 'path1/' - Matches any path that contains 'path1' in the project directory.
+      FileUtils.mkdir_p(File.join(dir, 'this'))
+      paths = Brakeman::AppTree.__send__(:regex_for_paths, ['this/'])
+
+      assert app_tree_match?(at, paths, File.join(dir, 'this', 'one.rb'))
+      assert app_tree_match?(at, paths, File.join(dir, 'this', File::SEPARATOR))
+      assert app_tree_match?(at, paths, File.join(dir, 'match', 'this', File::SEPARATOR))
+      assert app_tree_match?(at, paths, File.join(dir, 'match', 'this', 'file.rb'))
+      assert app_tree_match?(at, paths, File.join(dir, 'also', 'this', 'other.rb'))
+      refute app_tree_match?(at, paths, File.join(dir, 'not_this_match'))
+
+      # 'path1/file1.rb' - Matches a specific filename in the project directory.
+      paths = Brakeman::AppTree.__send__(:regex_for_paths, ['file.rb', 'this'])
+
+      assert app_tree_match?(at, paths, File.join(dir, 'file.rb'))
+      assert app_tree_match?(at, paths, File.join(dir, 'this', 'file.rb'))
+      assert app_tree_match?(at, paths, File.join(dir, 'match', 'this', 'file.rb'))
+      refute app_tree_match?(at, paths, File.join(dir, 'no', 'file.rb', 'match'))
+      refute app_tree_match?(at, paths, File.join(dir, 'match', 'this', File::SEPARATOR))
+    end
+  end
+
+  private
+
+  def app_tree_match?(app_tree, paths, path)
+    app_tree.__send__(:match_path, paths, path)
+  end
+end

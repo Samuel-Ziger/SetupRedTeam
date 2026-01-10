@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- BOOL: 0, 1 -->
+<!-- INTEGER: int e.g 123 -->
+<!-- DECIMAL: float e.g 123.456 -->
+<!-- STRING: string e.g hello -->
+<!-- UUID: string e.g. 00000000-0000-0000-0000-000000000000 -->
+<!-- TIME: string in format "%Y-%m-%d %H:%M:%S" -->
+<!-- VERSION: string in format "yyyy.x.z" -->
+
+<config>
+	<version><!-- INTEGER: Version number --></version>
+
+	<application>
+		<font_name><!-- STRING: font name --></font_name>
+		<font_size><!-- INTEGER: font size in pt --></font_size>
+		<color_scheme><!-- STRING: color scheme path --></color_scheme>
+
+		<font_size_max><!-- INTEGER: maximum font size in pt --></font_size_max>
+		<font_size_min><!-- INTEGER: minimum font size in pt --></font_size_min>
+		<font_size_std><!-- INTEGER: standard font size in pt --></font_size_std>
+
+		<use_animations><!-- BOOL: define if animations are used --></use_animations>
+		<builtin_types_in_graph><!-- BOOL: if the graph shows built-in types when referenced --></builtin_types_in_graph>
+
+		<window_base_width><!-- INTEGER: initial width of an overlay window --></window_base_width>
+		<window_base_height><!-- INTEGER: initial height of an overlay window --></window_base_height>
+
+		<scroll_speed><!-- DECIMAL: multiplier for default scroll speed in views --></scroll_speed>
+
+		<logging_enabled><!-- BOOL: define if console and file logging is enabled --></logging_enabled>
+		<verbose_indexer_logging_enabled><!-- BOOL: define if verbose indexer logging is enabled --></verbose_indexer_logging_enabled>
+
+		<graph_controls_visible><!-- BOOL: define if the graph controls are visible or collapsed --></graph_controls_visible>
+		<graph_grouping><!-- STRING: group type name --></graph_grouping>
+	</application>
+
+	<screen>
+		<auto_scaling><!-- INTEGER: 0 or 1 if auto scaling is enabled, -1 for system setting --></auto_scaling>
+		<scale_factor><!-- DECIMAL: defines highDPI scale factor, < 0 uses system setting --></scale_factor>
+	</screen>
+
+	<indexing>
+		<indexer_thread_count><!-- INTEGER: number of threads indexing the source code --></indexer_thread_count>
+		<multi_process_indexing><!-- BOOL: use different processes instead of threads during indexing --></multi_process_indexing>
+
+		<cxx>
+			<compiler_flags>
+				<compiler_flag><!-- STRING: compiler flag, including the dash e.g. -v --></compiler_flag>
+			</compiler_flags>
+
+			<header_search_paths>
+				<header_search_path><!-- STRING: header search path for each path a header_search_path element --></header_search_path>
+			</header_search_paths>
+
+			<!-- MAC ONLY -->
+			<framework_search_paths>
+				<framework_search_path><!-- STRING: framework search path --></framework_search_path>
+			</framework_search_paths>
+		</cxx>
+
+		<java>
+			<java_path><!-- STRING: path java installation on Windows e.g. .../java/JDK/jre/bin --></java_path>
+			<java_maximum_memory><!-- INTEGER: memory in MB used by java indexer --></java_maximum_memory>
+		</java>
+	</indexing>
+
+	<code>
+		<tab_width><!-- INTEGER: number of spaces to represent a tab in code files --></tab_width>
+
+		<snippet>
+			<snap_range><!-- INTEGER: max amount of lines that the current snippet will be extended to snap to scope start/end --></snap_range>
+			<expand_range><!-- INTEGER: amount of lines that the snippet range (not snapped) will be extended --></expand_range>
+		</snippet>
+
+		<view_mode_single><!-- BOOL: whether code view is used in single or list mode --></view_mode_single>
+	</code>
+
+	<user>
+		<recent_projects>
+			<recent_project><!-- STRING: recent project path --></recent_project>
+		</recent_projects>
+
+		<token><!-- UUID: identifier for this user --></token>
+
+		<update_check>
+			<automatic><!-- BOOL: whether to check automatically for new software updates --></automatic>
+			<time_stamp><!-- TIME: time of the last update check --></time_stamp>
+			<skip_version><!-- VERSION: version to skip for update --></skip_version>
+			<update_url><!-- STRING: url to new version download --></update_url>
+			<update_version><!-- VERSION: version of last check --></update_version>
+			<news><!-- STRING: news in last update check --></news>
+		</update_check>
+
+		<seen_error_help_message><!-- BOOL: whether user has been shown help message on errors after indexing --></seen_error_help_message>
+	</user>
+
+	<network>
+		<plugin_port><!-- INTEGER: port the plugin listens to, standard is 6666 --></plugin_port>
+		<sourcetrail_port><!-- INTEGER: port sourcetrail is listening to, standard is 6667 --></sourcetrail_port>
+	</network>
+
+	<controls>
+		<mouse_back_button><!-- INTEGER: mouse button code of back button, default is 8 --></mouse_back_button>
+		<mouse_forward_button><!-- INTEGER: mouse button code of forward button, default is 16 --></mouse_forward_button>
+		<graph_zoom_on_mouse_wheel><!-- BOOL: set mouse wheel to zooming by default --></graph_zoom_on_mouse_wheel>
+	</controls>
+</config>

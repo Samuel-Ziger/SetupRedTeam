@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "master"
+  pull_request:
+
+env:
+  GOLANGCILINT_VERSION: "2.7.1"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.5"
+      - uses: actions/checkout@v4
+      - uses: golangci/golangci-lint-action@v7
+        with:
+          version: v${{ env.GOLANGCILINT_VERSION }}
+
+  test:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            test_target: test-race
+            GOARCH: amd64
+            # race requires cgo, otherwise should not be needed
+            CGO_ENABLED: 1
+          # build and test on 32 bit, does not support race
+          - os: ubuntu-latest
+            test_target: test
+            GOARCH: "386"
+            CGO_ENABLED: 0
+          - os: macos-latest
+            test_target: test
+            GOARCH: amd64
+            CGO_ENABLED: 0
+          - os: windows-latest
+            test_target: test
+            GOARCH: amd64
+            CGO_ENABLED: 0
+    runs-on: ${{ matrix.os }}
+    steps:
+      # only run cli binary tests on linux
+      - name: Install expect
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: sudo apt-get install expect
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.25.5"
+      - name: Test
+        env:
+          CGO_ENABLED: ${{ matrix.CGO_ENABLED }}
+          GOARCH: ${{ matrix.GOARCH }}
+        run: make ${{ matrix.test_target }}

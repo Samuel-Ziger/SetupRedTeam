@@ -1,0 +1,1 @@
+%s:3 PhanTypeArraySuspiciousNullable Suspicious array access to $p of nullable type ?array

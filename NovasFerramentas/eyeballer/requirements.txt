@@ -1,0 +1,11 @@
+Augmentor
+click
+matplotlib
+numpy
+pandas
+pillow
+scikit-learn
+tensorflow
+jinja2
+progressbar2
+scipy

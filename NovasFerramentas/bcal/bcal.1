@@ -1,0 +1,226 @@
+.TH "BCAL" "1" "24 Jan 2022" "Version 2.4" "User Commands"
+.SH NAME
+bcal \- Storage expression calculator.
+.SH SYNOPSIS
+.B bcal [-c N] [-f loc] [-s bytes] [expr] [N [unit]] [-b [expr]] [-m] [-d] [-h]
+.SH DESCRIPTION
+.B bcal
+(Byte CALculator) is a command-line utility to help with numerical calculations and expressions involving binary prefixes, SI/IEC conversion, byte addressing, base conversion, LBA/CHS calculation etc.
+.PP
+It invokes GNU \fBbc\fR for non-storage expressions. Alternatively, it can also invoke \fBcalc\fR (\fIhttp://www.isthe.com/chongo/tech/comp/calc/\fR). To use \fBcalc\fR:
+.PP
+.EX
+.B export BCAL_USE_CALC=1
+.EE
+.PP
+\fBbcal\fR uses [SI and IEC binary prefixes]:
+.I https://en.wikipedia.org/wiki/Binary_prefix
+.PP
+.SH FEATURES
+.PP
+  * evaluate arithmetic expressions involving storage units
+  * perform general purpose calculations (using bc or calc)
+  * works with piped input or file redirection
+  * convert to IEC/SI standard data storage units
+  * interactive mode with the last valid result stored for reuse
+  * show the address in bytes
+  * show address as LBA:OFFSET
+  * convert CHS to LBA and vice versa
+  * base conversion to binary, decimal and hex
+  * custom sector size, max heads/cylinder and max sectors/track
+  * minimal dependencies
+.SH OPERATIONAL NOTES
+.PP
+.IP 1. 4
+\fBInteractive mode\fR: \fBbcal\fR enters the REPL mode if no arguments are provided. Storage unit conversion, base conversion and expression evaluation are supported in this mode. The last valid result is stored in the variable \fBr\fR.
+.PP
+.IP 2. 4
+\fBExpression\fR: Expression passed as argument in one-shot mode must be within double quotes. Inner spaces are ignored. Supported operators: +, -, *, /, % and C bitwise operators (except ~ due to storage width dependency).
+.PP
+.IP 3. 4
+\fBN [unit]\fR: \fIN\fR can be a decimal or '0x' prefixed hex value. \fIunit\fR can be B/KiB/MiB/GiB/TiB/kB/MB/GB/TB. Default is Byte. As all of these tokens are unique, \fIunit\fR is case-insensitive.
+.PP
+.IP 4. 4
+\fBNumeric representation\fR: Decimal and hex are recognized in expressions and unit conversions. Binary is also recognized in other operations.
+.PP
+.IP 5. 4
+\fBSyntax\fR: Prefix hex inputs with '0x', binary inputs with '0b'.
+.PP
+.IP 6. 4
+\fBPrecision\fR: 128 bits if \fI__uint128_t\fR is available or 64 bits for numerical conversions. Floating point operations use \fIlong double\fR. Negative values in storage expressions are unsupported. Only 64-bit operating systems are supported.
+.PP
+.IP 7. 4
+\fBFractional bytes do not exist\fR, because they can't be addressed. \fBbcal\fR shows the floor value of non-integer \fIbytes\fR.
+.PP
+.IP 8. 4
+\fBCHS and LBA syntax\fR:
+  - LBA: 'lLBA-MAX_HEAD-MAX_SECTOR'   [NOTE: LBA starts with 'l' (case ignored)]
+  - CHS: 'cC-H-S-MAX_HEAD-MAX_SECTOR' [NOTE: CHS starts with 'c' (case ignored)]
+  - Format conversion arguments must be hyphen separated.
+  - Any unspecified value, including the one preceding the first '-' to the one following the last '-', is considered '0' (zero).
+  - Examples:
+    - 'c-50--0x12-' -> C = 0, H = 50, S = 0, MH = 0x12, MS = 0
+    - 'l50-0x12' -> LBA = 50, MH = 0x12, MS = 0
+.PP
+.IP 9. 4
+\fBDefault values\fR:
+  - sector size: 0x200 (512)
+  - max heads per cylinder: 0x10 (16)
+  - max sectors per track: 0x3f (63)
+.PP
+.IP 10. 4
+\fBbc variables\fR: \fIscale\fR = 10, \fIibase\fR = 10. \fBr\fR is synced and can be used in expressions. \fBbc\fR is not called in minimal output mode. To use \fBcalc\fR instead of \fBbc\fR, \fIexport BCAL_USE_CALC=1\fR.
+.SH OPTIONS
+.TP
+.BI "-c=" N
+Show decimal, binary and hex representation of positive integer \fIN\fR.
+.TP
+.BI "-f=" loc
+Convert CHS to LBA or LBA to CHS. \fIloc\fR is hyphen-separated representation of LBA or CHS. Please refer to the \fBOperational Notes\fR section for more details.
+.TP
+.BI "-s=" bytes
+Sector size in bytes. Default value is 512.
+.TP
+.BI "-b=" [expr]
+Start in \fBbc\fR mode. If expression is provided, evaluate in \fBbc\fR and quit.
+.TP
+.BI "-m"
+Show minimal output (e.g. decimal bytes).
+.TP
+.BI "-d"
+Enable debug information and logs.
+.TP
+.BI "-h"
+Show program help, storage sizes on the system and exit.
+.SH PROMPT KEYS
+.TP
+.BI "b"
+Toggle \fBbc\fR mode.
+.TP
+.BI "r"
+Show result from last operation.
+.TP
+.BI "s"
+Show sizes of storage types.
+.TP
+.BI "?"
+Show prompt help.
+.TP
+.BI "q, double Enter"
+Quit the program.
+.SH EXAMPLES
+.PP
+.IP 1. 4
+Evaluate arithmetic expression of storage units
+.PP
+.EX
+.IP
+.B $ bcal """(5kb+2mb)/3"""
+.B $ bcal """5 tb / 12"""
+.B $ bcal """2.5mb*3"""
+.B $ bcal """(2giB * 2) / (2kib >> 2)"""
+.EE
+.PP
+.IP 2. 4
+Convert storage capacity to other units and get address, LBA.
+.PP
+.EX
+.IP
+.B $ bcal 20140115 b
+.B $ bcal 0x1335053 B
+.B $ bcal 0xaabbcc kb
+.B $ bcal 0xdef Gib
+Note that the units are case-insensitive.
+.EE
+.PP
+.IP 3. 4
+Convert storage capacity, set sector size to 4096 to calculate LBA.
+.PP
+.EX
+.IP
+.B $ bcal 0xaabbcc kb -s 4096
+.EE
+.PP
+.IP 4. 4
+Convert LBA to CHS.
+.PP
+.EX
+.IP
+.B $ bcal -f l500
+.B $ bcal -f l0x600-18-0x7e
+.B $ bcal -f l0x300-0x12-0x7e
+.EE
+.PP
+.IP 5. 4
+Convert CHS to LBA.
+.PP
+.EX
+.IP
+.B $ bcal -f c10-10-10
+.B $ bcal -f c0x10-0x10-0x10
+.B $ bcal -f c0x10-10-2-0x12
+.B $ bcal -f c-10-2-0x12
+.B $ bcal -f c0x10-10--0x12
+.EE
+.PP
+.IP 6. 4
+Show binary, decimal and hex representations of a number.
+.PP
+.EX
+.IP
+.B $ bcal -c 20140115
+.B $ bcal -c 0b1001100110101000001010011
+.B $ bcal -c 0x1335053
+.B bcal> c 20140115  // Interactive mode
+.EE
+.PP
+.IP 7. 4
+Invoke \fIbc\fR.
+.PP
+.EX
+.IP
+.B $ bcal -b '3.5 * 2.1 + 5.7'
+.B bcal> b  // Interactive mode
+.B bc vars: scale = 10, ibase = 10, last = r
+.B bc> 3.5 * 2.1 + 5.7
+.EE
+.PP
+.IP 8. 4
+Pipe input.
+.PP
+.EX
+.IP
+.B $ printf '15 kib + 15 gib \en r / 5' | bcal -m
+.B $ printf '15 + 15 + 2' | bcal -bm
+.EE
+.PP
+.IP 9. 4
+Redirect from file.
+.PP
+.EX
+.IP
+.B $ cat expr
+.B 15 gib + 15 kib
+.B r / 5
+.B $ bcal -m < expr
+.EE
+.PP
+.IP 10. 4
+Use as a general-purpose calculator.
+.PP
+.EX
+.IP
+.B $ bcal -b
+.EE
+.SH AUTHORS
+Arun Prakash Jana <engineerarun@gmail.com>
+.SH HOME
+.I https://github.com/jarun/bcal
+.SH REPORTING BUGS
+.I https://github.com/jarun/bcal/issues
+.SH LICENSE
+Copyright \(co 2016 Arun Prakash Jana <engineerarun@gmail.com>
+.PP
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law.

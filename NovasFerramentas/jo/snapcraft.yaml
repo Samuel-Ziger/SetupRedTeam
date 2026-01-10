@@ -1,0 +1,22 @@
+name: jo
+version: "1.9"
+summary: jo
+description: |
+  This is jo, a small utility to create JSON objects or arrays.
+
+confinement: strict
+grade: stable
+base: core20
+
+apps:
+  jo:
+    command: usr/local/bin/jo
+    plugs: [home, removable-media]
+
+parts:
+  jo:
+    plugin: autotools
+    source-type: git
+    source: https://github.com/jpmens/jo
+    build-packages:
+      - pkg-config

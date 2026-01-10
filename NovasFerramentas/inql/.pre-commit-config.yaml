@@ -1,0 +1,32 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: check-added-large-files
+    -   id: check-ast
+    -   id: check-case-conflict
+    -   id: check-docstring-first
+    -   id: check-executables-have-shebangs
+    -   id: check-merge-conflict
+    -   id: check-yaml
+    -   id: fix-encoding-pragma
+        args: [--pragma, '# coding: utf-8']
+    -   id: mixed-line-ending
+        args: [--fix, 'no']
+    -   id: no-commit-to-branch
+        args: [--branch, master]
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: local
+    hooks:
+    -   id: ktlint
+        name: Run ktlint
+        entry: ktlint --color --format
+        language: system
+        files: '\.kt$'
+    -   id: detekt
+        name: Run detekt
+        entry: ./detekt.sh
+        language: script

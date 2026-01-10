@@ -1,0 +1,1 @@
+%s:4 PhanParamNameIndicatingUnusedInClosure Saw a parameter named $_. If this was used to indicate that a parameter is unused to Phan, consider using @unused-param after a param comment, or suppressing unused parameter warnings, or renaming the parameter if backwards-compatibility for named parameters is not needed.

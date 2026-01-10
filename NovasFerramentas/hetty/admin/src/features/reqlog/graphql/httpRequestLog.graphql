@@ -1,0 +1,24 @@
+query HttpRequestLog($id: ID!) {
+  httpRequestLog(id: $id) {
+    id
+    method
+    url
+    proto
+    headers {
+      key
+      value
+    }
+    body
+    response {
+      id
+      proto
+      headers {
+        key
+        value
+      }
+      statusCode
+      statusReason
+      body
+    }
+  }
+}

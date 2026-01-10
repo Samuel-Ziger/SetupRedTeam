@@ -1,0 +1,3 @@
+%s:3 PhanUndeclaredTypeParameter Parameter $x has undeclared type \resource
+%s:4 PhanTypeMismatchArgumentInternal%SReal Argument 1 ($stream) is $x of type \resource but \fread() takes resource
+%s:10 PhanTypeMismatchArgumentInternal Argument 1 ($num1) is $x of type false|resource but \intdiv() takes int

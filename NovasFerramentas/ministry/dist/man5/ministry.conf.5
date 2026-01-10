@@ -1,0 +1,772 @@
+.\" Ministry config manual page
+.TH MINISTRY.CONF "5" "Nov 2015" "Networking Utilities" "Configuration Files"
+.SH NAME
+ministry.conf \- ministry stats daemon config file
+.SH SYNOPSIS
+.nf
+.BI /etc/ministry/ministry.conf
+.fi
+.SH DESCRIPTION
+.PP
+This manual page describes the configuration file for \fBministry(1)\fP.  The file is in sections,
+and including other files is permitted, though wildcard expansion is not performed - included file
+paths must be complete.  Config is read before \fBministry\fP changes directory to it's configured
+base directory, so non-absolute paths included are interpreted relative to the current working
+directory.
+.PP
+The sections are used to define a context; this context is used to decide which interpreter function
+examines the config line.  This means that config names are essentially namespaced to the section
+in which they are found, and as such names may be present in more than one section.  Section names
+are not case sensitive.  In fact, only values are case-preserving - all config variable names are
+examined case-insensitively.
+.PP
+\fBMinistry\fP can fetch its config from an HTTP URI (http or https, though it is light on checks
+for the validity of https certificates).  It will fetch the source and write it to a temporary file,
+and then read it back.  At this time, \fBMinistry\fP does not support authentication for URI's.  It
+uses \fIlibcurl\fP for these fetches.
+.PP
+By default, \fBMinistry\fP will allow URI configs to include other URI's.  This can be disabled
+separately from reading a URI config.  Also by default, \fBMinistry\fP will refused to let a secure
+URI config include a non-secure one, but this can be enabled explicitly.
+.SH FORMAT
+.SS Section Format
+.PP
+Sections are expected to be presented inside square brackets.  Valid sections are:  \fBmain\fP,
+\fBlogging\fP, \fBnetwork\fP, \fBiplist\fP, \fBio\fP, \fBmemory\fP, \fBgc\fP, \fBsynth\fP, \fBtarget\fP
+and \fBstats\fP.  e.g.
+.PP
+\fB[Logging]\fP
+.SS Line Format
+.PP
+Config lines are expected to follow \fBvariable\fP = \fIvalue\fP
+.PP
+Whitespsace is trimmed fore and aft, and from around the = sign.  If the = and value are absent,
+then the value "1" is automatically filled in.  This is useful for switching behaviour on.  Many
+config variables contain dots.  Wherever lists of values are permitted, they should be
+comma-separated without intervening spaces.  e.g.
+.PP
+\fBstats.udp.ports = 8100,8101,8102,8103\fP
+.SS Booleans
+.PP
+Anything marked as a boolean accepts the following responses as true: (case insenstive) "true",
+"y", "yes" or any non-zero number.  Any other value is taken as false.
+.SS File Inclusion
+.PP
+Ministry can read in other config files using an \fBinclude\fP = \fIfilename\fP directive.  Extra
+arguments can be passed into an \fBinclude\fP directive and those will be available inside the
+included file as \fI%1%\fP, \fI%2%\fP, etc.  These can be placed within configuration values,
+even embedded in strings, and they will be substituted.
+.SS Foreach
+.PP
+Ministry can repeat a line of config with different values, using the \fBforeach\fP construct.
+It is used in one of two ways, and the following line will have the value appended to it, thus it
+best suits \fBinclude\fP, above.
+.PP
+The first way is a list of values, eg:
+.PP
+\fBforeach\fP = \fIfirst second third fourth fifth\fP
+.PP
+The second way is a numeric range, starting at the lower bound, <= the upper bound, with an
+optional step value (which defaults to 1).  It understands only integers.  eg:
+.PP
+\fBforeach\fP = \fI1 - 100\fP
+.PP
+This is most commonly used in \fBministry-test\fP to easily generate a lot of different metric
+configs, but could be used in \fBministry\fP for targets or port configs.
+.SH CONFIG
+.PP
+The config variables accepted by \fBministry\fP are presented here by section.
+.SS (Anywhere)
+.PP
+These values can appear in any section.
+.TP
+\fBinclude\fP
+The name of another source to read in.  \fBMinistry\fP will refuse to read what it believes is the
+same file twice - it could be fooled with symlinks or multiple hardlinks.  This is a protection
+against circular includes.  Included source are read in depth-first, meaning reading the current
+source is paused until the included file is read (possibly recursively).  This is important for any
+duplication of config values, as the last one read will win.  If include is found within a section,
+that section context is preserved into the new file, until it is changed by a new section heading.
+.TP
+\fBinclude-dir\fP
+The name of a directory to scan for files to read in as config sources.  By default, ministry scans
+for files with the suffix ".conf".  This interacts with the command-line option \fI-x <suffix>\fP
+and \fI-X\fP, setting a non-default config suffix, or turning off suffix checks.  Each file that
+passes the filtering, or lack of, is read in as if called by \fBinclude\fP.
+.TP
+\fBforeach\fP
+Cycle over possible values, passing each to the next line of config.
+
+.SS [Main]
+.PP
+These are a few variables controlling overall \fBministry\fP behaviour.
+.TP
+\fBbaseDir\fP
+Directory to chdir to and which forms the basis for any relative paths.
+.TP
+\fBtickMsec\fP
+Overall internal tick time in msec.  Controls internal time accuracy (default 20)
+.TP
+\fBdaemon\fP
+Whether \fBministry\fP disconnects from the controlling terminal with the daemon(2) system call
+(boolean, default 0).  This can also be switched on with the -d CLI option.
+.TP
+\fBpidFile\fP
+Filename \fBministry\fP will write its process ID to (default /var/run/ministry/ministry.pid).  This
+can also be overriden with the -p <file> CLI option.
+.TP
+\fBlimits.TYPE\fP
+Make a call to setrlimit for the specified type.  Supported types are \fBprocs\fP and \fBfiles\fP.
+Both default to the system hard limit of the type.
+.TP
+\fBconfigMonitorSec\fP
+Value in seconds for how often to stat all config files (note: not URLs) to detect mtime changes.
+The default is 0, disabling the check.
+
+.SS [Logging]
+.PP
+\fBMinistry\fP can use either one, two or no logfiles (logging to stdout or syslog).  It has two blocks
+of config, \fImain\fP and \fIhttp\fP.  Not specifying a block implies \fImain\fP.
+.TP
+\fBBLOCK.filename\fP | \fBBLOCK.file\fP | \fBBLOCK.logfile\fP
+File name to write the log to.  The special value \fB-\fP writes to stdout, and is the default.  The
+special value \fBsyslog\fP writes to syslog.
+.TP
+\fBBLOCK.level\fP
+Maximum log level, one of FATAL, ERR, WARN, NOTICE, INFO or DEBUG.
+.PP
+The rest of the configuration items apply to all generally.
+.TP
+\fBunified\fP
+Inform \fBministry\fP to merge the \fImain\fP and \fIhttp\fP logging (essentially, the separate \fIhttp\fP
+logging block is not used).
+.TP
+\fBnotify\fP
+Add a notification of log re-opening.  Guarantees a non-zero log file size after log rotation (boolean,
+default 1).  Disabled for stdout logs and syslog.
+.TP
+\fBfacility\fP
+Set the facility to write to syslog with (if that is the configured output).  Only some are available.
+.TP
+\fBidentifier\fP
+Set the identifier string for syslog messages (default 'ministry').
+.TP
+\fBwriteLevel\fP
+Set whether the log level is written in syslog lines (defaults to on).
+
+.SS [Memory]
+.TP
+\fBmaxMb\fP | \fBmaxSize\fP
+Maximum in-memory size (in MB) before \fBministry\fP self-terminates (default 10GB).
+.TP
+\fBmaxKb\fP
+As above, but expressed in KB.
+.TP
+\fBinterval\fP
+Memory size check interval, in milliseconds (default 5000)
+.TP
+\fBdoChecks\fP
+Boolean to turn on (default) or off the memory size check.
+.PP
+Each memory type has a default block allocation size.  Whenever new memory is allocated
+for registered types it is not done individually, but as a block, to prevent frequent calls to \fBbrk()\fP.
+.PP
+Valid types include: hosts, iobufs, iolist, dhash, points
+.TP
+\fBTYPE.block\fP
+Number of instances to allocate at once.
+
+.SS [Http]
+.PP
+\fBMinistry\fP has an in-built webserver, provided by \fBlibmicrohttpd\fP.  It is used for a variety
+of tasks - metric submission, issuing tokens, controlling targets and offering stats and status.
+\fBLibmicrohttpd\fP understands HTTPS and can manage ciphers anc certificates, so some config is
+offered to control those functions.
+.PP
+The HTTP interface documentation can be read by fetching /.
+.TP
+\fBenable\fP
+A boolean to control whether the HTTP server is active (default off)
+.TP
+\fBport\fP
+The port to listen on (default 9080)
+.TP
+\fBbind\fP
+Which IP to bind to (default 0.0.0.0)
+.TP
+\fBconns.max\fP
+Maximum concurrent connections to the HTTP server (default 256)
+.TP
+\fBconns.maxPerIP\fP
+Maximum concurrent connections from a single IP address (default 64)
+.TP
+\fBconns.timeout\fP
+Seconds before a connection is considered to have died (default 10)
+.TP
+\fBtls.enable\fP
+Boolean controlling whether we use HTTPS instead of HTTP (default off)
+.TP
+\fBtls.port\fP
+If this option is given, and TLS is enabled, this port will be used instead of the normal one
+(default 9443)
+.TP
+\fBtls.certFile\fP
+Path to the server certificate file
+.TP
+\fBtls.keyFile\fP
+Path to the server key file
+.TP
+\fBtls.keyPass\fP
+Password for the server key file.  If either the \fI-K\fP option is passed to ministry on startup,
+or the special value \fI-\fP is used, \fBministry\fP will prompt interactively for the password at
+startup.
+.TP
+\fBtls.priority\fP
+This string controls TLS versions, ciphers and TLS behaviour, and it passed through to the underlying
+TLS library.  The default is TLS v1.2 and v1.3, only secure 256-bit ciphers, and secure renegotiation.
+.PP
+\fBMinistry\fP has a mechanism for validating TCP connections, involving the HTTP server.  The idea
+is that valid clients connect to the HTTP server, requesting \fI/token\fP, and they receive a JSON
+object containing a nonce for each of stats, adder and gauge connections.  This nonce expires in a
+configurable number of milliseconds, and is only valid from the IP address that made the HTTP call.
+The client must then present the token as the first line of data upon connecting, else the connection
+will be closed by \fBministry\fP.
+.PP
+This mechanism is presented as a way to prevent scanning software or other random processing from
+connecting and sending whatever data in an uncontrolled way, but is also part of planned development
+to add authentication to the HTTP server, thus effectively providing authentication on metric
+submission.
+.TP
+\fBtokens.enable\fP
+A boolean controlling whether the token system is enabled (default off)
+.TP
+\fBtokens.filter\fP
+The name of an Iplist as a filter for which hosts are required to use them
+.TP
+\fBtokens.lifetime\fP
+A value in milliseconds for the lifetime of the token (all tokens are burned once used) (default 1000)
+
+.SS [Pmet]
+.PP
+\fBMinistry\fP has an HTTP interface and can provide metrics for Prometheus, on \fB/metrics\fP.  This
+is disabled whenever the HTTP server is disabled.  It is broken up in several internal sources, which
+can be turned off individually.  The internal client code may at some future point be broken out into
+a separate library.
+.PP
+Metrics generation is relatively new, and is currently off by default.  This will likely change in
+future releases.
+.TP
+\fBenable\fP
+Enable or disable the metrics endpoint (boolean, default 0).
+.TP
+\fBperiod\fP
+Post period in milliseconds.  \fBMinistry\fP pre-generates its metrics (to properly support multiple
+Prometheus servers) and will present the same page of metrics within a given period no matter how
+many times it is fetched.  This controls the period of this page generation (default 10000).
+.TP
+\fBdisable\fP
+A single source to be disabled.  This option can repeat.  Sources include: shared, targets, stats
+
+.SS [GC]
+.TP
+\fBenable\fP
+Whether gc is enabled or not (boolean, default 1).
+.TP
+\fBgcThresh\fP
+How many submission cycles a path must lie empty for before it is deleted (default 8640).
+.TP
+\fBgcGaugeThresh\fP
+How many submission cycles a gauge must not be updated for before it is deleted (default 25960).
+
+.SS [Iplist]
+.PP
+\fBMinistry\fP has the concept of an ordered list of network/single ip addresses.  It uses CIDR notation.
+It has the concept of match/miss entries, and a default behaviour.  So it is possible to create a list
+to capture 10.0.0.0/8, but not 10.0.0.0/16, except for still capturing 10.0.0.0/24.  The lists are also
+used to filter connections and apply metric prefixes.
+.PP
+Iplist statements finish with a \fBdone\fP statement, and may include the following:
+.TP
+\fBenable\fP
+Turn a list on or off (boolean, default 1).
+.TP
+\fBdefault\fP
+A boolean indicating whether the default behaviour is to match or miss (default miss).
+.TP
+\fBverbose\fP
+A boolean indicating whether the list should be logged out once it has been read (default false).
+.TP
+\fBhashsize\fP
+The hash size for the list.  It is rarely necessary to alter this (default 2003).
+.PP
+Any Iplist must also include the following:
+.TP
+\fBname\fP
+As Iplists are created separately, then used by different config elements, they are named, and referred
+to by name elsewhere.  After config read is complete, these names are matched up to ensure all lists
+referred to in config actually exist.  These names must be unique.
+.TP
+\fBmatch\fP | \fBmiss\fP
+A list element.  It expects a CIDR specification.  The /32 is optional on individual addresses.  There is no
+maximum number of match/miss statements in one list.
+.TP
+\fBentry\fP
+A list element, as used for prefixing.  It takes two arguments, the first is the CIDR range and second is the
+prefix to apply to that range.
+.TP
+\fBdone\fP
+Indicates this list is complete.  Checks are done to make sure it is valid at this point.
+
+.SS [IO]
+.PP
+\fBMinistry\fP does asynchronous network IO with dedicated threads.  Each outgoing TCP connection has its own
+thread to keep track of it, and buffers being sent to multiple targets are tracked separately without copying
+by having a separate list of buffers to send for each target.
+.TP
+\fBsendMsec\fP
+Interval, in msec, between checks for any buffers to send (default 11).  Reducing this too low can result in
+IO threads spinning quite actively.
+.TP
+\fBreconnectMsec\fP
+Number of msec to wait before attempting to reconnect a dead socket (default 2000).
+
+.SS [Target]
+.PP
+\fBMinistry\fP shares a lot of code with \fBcarbon-copy\fP and so duplicates its behaviour for describing
+network metric targets.  While \fBministry\fP sends to all enabled targets, \fBcarbon-copy\fP has rules
+for which metrics to send to which targets.  So the organisation of targets makes a little more sense in
+the context of \fBcarbon-copy\fP than \fBministry\fP, but for simplicity (and re-useability of target
+config files) the conventions and format at the same.
+.PP
+The basic principle is that targets are organised into lists of equivalent targets, which will always be
+given the same metrics.  This makes handling resilient multi-server targets easier.  There is no reason
+a set of targets cannot be several lists of one address each, thus effectively unrelated.  However, all
+targets in one list must be of the same type.
+.PP
+Targets have names, and lists have names.  If no list is given for a target, a new list named after that
+target is created, so any reference to lists is fully optional within \fBministry\fP.  All targets must
+have a type and a \fBdone\fP statement.  There is no limit to the number of targets, though each target
+has a compute cost associated with it.
+.PP
+\fBMinistry\fP can use a GNUTLS wrapper around the socket connecting to a TLS-enabled target.  GNUTLS
+can be used to verify the target's certificates using system CAs.  \fBMinistry\fB will only use TLSv1.2
+and SECURE-256 ciphers.  Verification of certificates can be disabled.
+.TP
+\fBname\fP
+The name of the target, and the list if no list name is given.
+.TP
+\fBlist\fP
+The (optional) name of the target list this target is part of.  Caution: typos will result in new lists.
+\fBMinistry\fP cannot guess when you meant some other list.
+.TP
+\fBenable\fP
+A boolean to control whether this target is used (default 1).
+.TP
+\fBtype\fP
+What type of target this is - it affects the format of message is sent.  Recognised types include: graphite,
+coal, opentsdb.
+.TP
+\fBport\fP
+Network port to connect to the target on; if none is supplied then a default is guessed from the type.
+.TP
+\fBhost\fP
+Address or DNS name of the target.  Lookups are made at initial connect time.  \fBMinistry\fP does not
+yet support 0-second TTL DNS from the likes of consul which need looking up each time.  Default is localhost.
+.TP
+\fBmaxWaiting\fP
+The maximum number of outstanding network buffers waiting to be sent to this target before new buffers
+are dropped (default 1024).
+.TP
+\fBtls\fP
+Whether this target use TLS around the connection, boolean, defaults to false.
+.TP
+\fBverify\fP
+Whether to attempt certificate verification, boolean, defaults to false.
+.TP
+\fBdone\fP
+Signals the end of one target block.
+
+.SS [Stats]
+.TP
+\fBthresholds\fP
+A list of integer percentage values to generate thresholds at.  Must be 0 < x < 100.  Per-mille values are
+also allowed, and are 0 < x < 1000, but must have an \fIm\fP appended, eg: \fI999m\fP.
+.PP
+In addition to regular thresholds and calculated values, \fBMinistry\fP can produce other sample-moment based
+statistics: standard deviation, skewness and kurtosis.  It does not do this by default, and has a minimum points
+check to avoid producing relatively meaningless stats about a half-dozen data points.  It also can match paths
+against a match/unmatch list regex check - a series of expressions defining whether a path is in or out of the
+list of paths receiving moments processing.
+.TP
+\fBmoments.enable\fP
+Enable or disable moments processing (boolean, defaults to 0)
+.TP
+\fBmoments.minimum\fP
+Set the minimum point count in stats to trigger moment calculations (default is 30)
+.TP
+\fBmoments.match\fP, \fBmoments.unmatch\fP
+A set of regular expressions to control moments calculation.  Each can appear multiple times.  The order of the
+list is preserved and paths are checked against it in order, to decide if they should or should not have this
+processing done.  This will have a performance impact on new path creation for stats paths, depending on the
+number and nature of the expressions.
+.TP
+\fBmoments.fallbackMatch\fP
+Set whether matching no regexes results in overall match or no match (default is to match)
+.PP
+A new, experiemental feature in \fBministry\fP is metric prediction.  It only applies to adder types.  It keeps
+a number of value/timestamp pairs for selected metrics and runs linear regression each time a new metric is
+reported.  It predicts the next period's value, compares it's previous prediction against the actual next input
+and reports the modelling parameters.  This is all done by appending suffixes to the original path.
+.TP
+\fBpredict.enable\fP
+Enable prediction processing (boolean, defaults to 0)
+.TP
+\fBpredict.size\fP
+The number of points of data to keep for matching metrics (default 32)
+.TP
+\fBpredict.match\fP, \fBpredict.unmatch\fP
+A set of regular expressions to control metric prediction.  Each can appear multiple times.  The order of the
+list is preserved and paths are checked against it in order, to decide if they should or should not have this
+processing done.  This will have a performance impact on new path creation for stats paths, depending on the
+number and nature of the expressions.
+.TP
+\fBpredict.fallbackMatch\fP
+Set whether matching no regexes results in an overall match or no match (default is to \fBNOT\fP match)
+.PP
+\fBMinistry\fP can produce histogram data for metrics, showing the count of values falling into each bucket.
+However, it needs these bucket maps defining, along with a regular expression map to match metrics to the
+right map.  One of these maps must be the default, as every histogram metric path needs a map.  If none of
+the buckets are so labelled, \fBministry\fP will choose the last one to appear in config.  The maps are applied
+in the order they appear in config.  In the absence of any maps, a dummy one will be created, but this is \fInot
+likely to give useful results\fP.
+.TP
+\fBhistogram.begin\fP
+Begin a named histogram map - names should be unique but this is not actually a constraint
+.TP
+\fBhistogram.enable\fP
+A boolean to enable or disable this config (default true)
+.TP
+\fBhistogram.default\fP
+A boolean to make this the default config to choose (default false)
+.PP
+\fBNote\fP, disabling the default config is a botch.  We must have at least one enabled config.  So the enable
+flag may be overridden if all supplied configs are disabled.  The order of choosing is:
+.EX
+		1/ Search in order for one flagged as default
+		2/ Search from the back of the list for an enable block
+		3/ Forcibly enable the last block and choose that
+.EE
+.TP
+\fBhistogram.bounds\fP
+A list of float values representing the \fIupper\fP bound of each bucket.  They will be sorted.  A maximum
+of 10 buckets in a map is supported.  An extra '+Infinity' upper bound is implicit and should not be given.
+.TP
+\fBhistogram.match\fP, \fBhistogram.unmatch\fP
+A set of regular expressions to control histogram map matching.  Each can appear multiple times.  The order
+of the list is preserved and paths are checked against it in order, to decide if they should or should not
+match against this map.  This inevitably has a performance penalty at the creation time for new metrics.
+.TP
+\fBhistogram.end\fP
+Complete the current histogram block.
+.PP
+The rest of these are of the form stats.XXX, adder.XXX, gauge.XXX, histo.XXX or self.XXX, affecting the
+behaviour of stats reporting, adder reporting, gauge reporting, histo reporting or self reporting.
+.TP
+\fBTYPE.threads\fP
+How many reporting threads to run (not used for self) (default 2)
+.TP
+\fBTYPE.enable\fP
+Enable or disable this reporting (boolean, defaults to 1 for all)
+.TP
+\fBTYPE.size\fP
+Hashsize information for this type.  Not used for self.  Tells \fBministry\fP how to size the hash table
+for metrics.  The number of metrics can exceed this size, but it can result in performance deteriorating.
+There are five set values: \fBtiny\fP, \fBsmall\fP, \fBmedium\fP, \fBlarge\fP, and \fBxlarge\fP.  It can
+also accept a number, which is taken as the hash table size.  Prime numbers are recommended here, despite
+the apparent memory-friendly attraction of powers of two (that results in poor hashing behaviour, as the
+hash function does limited bit-mixing).  Each type's hash size defaults to the global value.  If all three
+are set, then the global value is not used anywhere.
+.TP
+\fBTYPE.prefix\fP
+Prefix string for all metrics of this type.  (defaults:  stats.timers., (blank), stats.gauges. and
+stats.ministry.)
+.TP
+\fBTYPE.period\fP
+Reporting interval, in msec.  (default 10000 for all)
+.TP
+\fBTYPE.offset\fP
+Reporting delay, in msec.  \fBMinistry\fP's timing loop aligns reporting intervals to the clock, so,
+e.g. 10 second reporting would occur on 10-second boundaries.  The delay must be less than the period
+and is used to offset reporting into that interval.  This is useful when systems report data to
+\fBministry\fP on their own timing cycle but metrics may or may not make it into a given interval.
+So if a reporting system submits adder data every 10 seconds, and \fBministry\fP reports every 10
+seconds, it might be prudent to set an offset of 3 or 4 seconds, so that all data for the interval
+is in and recorded by the interval is closed (defaults are 0 for all).
+
+.SS [Network]
+.TP
+\fBtimeout\fP
+Number of seconds a client connection must have been silent for before being considered dead.
+.TP
+\fBrcvTmout\fP
+Number of seconds to set on UDP sockets for SO_RCVTIMEO (prevents receive blocking indefinitely).
+.PP
+Prefixing specific hosts is configured by IP address (not hostname - reverse lookups are not done).
+Hostnames are looked up and first IPv4 address taken.  Networks are expected as a.b.c.d/x (where the
+specified address is not the base of the network, the masking will select the network base, so
+127.0.3.1/8 is the same as 127.0.0.0/8.  The argument should have a space separating the host
+specifier and the prefix.  The prefix should have a trailing . but will be given one if absent.
+This prefix is prepended to incoming paths at time of network read and so any later behaviour will
+need to account for it.  This config key can be repeated.  \fBNote, this does not work for UDP
+packets - the mechanism would be very DoS'able.\fP
+.TP
+\fBprefix\fP
+The named prefix list to apply.
+.PP
+Filtering is done at TCP connect time.  A filter Iplist is created and named for use.  The assumption
+is that matches are allowed, and misses rejected.  See the \fI[Iplist]\fP section for details on how
+to create and order an Iplist.
+.TP
+\fBfilterList\fP
+The named filter list to apply.
+.PP
+All remaining network variables are of the form stats.XXX, compat.XXX, histo.XXX, gauge.XXX or
+adder.XXX, pertaining to new-style stats ports, statsd-compatible ports, new-style histo ports,
+new-style gauge ports or new-style adder ports.
+.TP
+\fBTYPE.enable\fP
+Enable or disable this type of collection (boolean, defaults to 1 for all).
+.TP
+\fBTYPE.tcp.backlog\fP
+Backlog for incoming TCP connections (default 32).
+.TP
+\fBTYPE.udp.checks\fP
+Perform unmatch/match checks and prefixing on UDP for this type.
+.PP
+Everything after this is of the form TYPE.udp.XXX or TYPE.tcp.XXX, pertaining to either UDP ports
+or TCP ports respectively.
+.TP
+\fBTYPE.PROTO.bind\fP
+Bind address for this type and protocol - must be a local IP address (default IPADDR_ANY)
+.TP
+\fBTYPE.PROTO.enable\fP
+Enable or disable his protocol for this type of collection (boolean, defaults to 1).
+.TP
+\fBTYPE.PROTO.port\fP
+A list of listen ports, comma separated.  By default, statsd-compatible listens on 8125, the default
+statsd port, new-style stats is on 9125, new-style adder is on 9225, new-style gauge on 9325 and
+new-style histo on 9425.
+.PP
+\fBMinistry\fP allows several different styles of TCP handling.  It can have one thread per connection
+(recommended for stats connections), or use a pool of threads (using either poll of epoll) to which
+new connections are assigned, hasing on source IP/port.  This does lead to slightly uneven load.  When
+a pool thread can take no more connections, future connections are rejected.  A client might then
+reconnect but is likely to get a new port, and likely will hit a different thread.
+.PP
+So each connection type should be given a style, chosen from \fPthread\fP, \fIpool\fP (poll), or
+\fIepoll\fP.  to assess how many threads to use for pooling, perform the following calculation:
+.PP
+\fIthreads\fP = ( \fImax-connections\fP ) / ( \fIpollMax\fB * 0.8 )
+.PP
+The 0.8 is to allow for uneven hashing.
+.PP
+This does not change the UDP listener behaviour of one thread per port.
+.TP
+\fBTYPE.tcp.style\fI
+How to handle new connections, either with their own thread or on a thread pool.  The defaults are:
+stats/histo/compat - thread, adder/gauge - epoll.
+.TP
+\fBTYPE.tcp.threads\fI
+How many threads in the pool for listening for each type.  Defaults are stats:60, adder:30, gauge:10,
+histo:30, compat:20.
+.TP
+\fBTYPE.tcp.pollMax\fI
+Max connections to a TCP listener thread (default 128).
+
+.SS [Synth]
+.PP
+Synthetic metrics are derived from submitted metrics and calculated at the point of downstream
+metric generation.  The generating function has two phases, gathering and calculation.  After it
+has gathered the metrics from the paths (allowing new data to accrue) it then performs synthetic
+metric calculations.
+.PP
+Synthetics config comes in blocks, terminated by 'done' on a line on its own.  Each must have a
+target path and at least one source (some operations need two), and an operation specifier.  There
+may also be a static factor applied to the metric (this makes percentages easy to generator - just
+set factor to 100).
+.PP
+There is no limit to the number of synthetics that are specified.  They do not take wildcards
+(ministry has no wildcard search mechanism and it would be astonishingly expensive in large data
+sets - it would have to check what matched every submission interval).
+.TP
+\fBtarget\fP
+The metric path to create.
+.TP
+\fBsource\fP
+A source path to take values from.
+.TP
+\fBoperation\fP
+Operation to perform.  One of sum, diff, ratio, min, max, spread, mean, meanIf, count or active.
+.TP
+\fBfactor\fP
+A double precision number that the synthetic metric value is multiplied by.  Default 1.
+.TP
+\fBdone\fP
+No value - signifies the end of the synthetic block.  Error checking on source count is performed
+when this config line is found.  Subsequent lines are taken to be a new synthetic block.
+.SS Synthetic Operation Types
+.TP
+\fBsum\fP
+The sum of the values of all source metrics.
+.TP
+\fBdiff\fP
+The value of second metric is subtracted from the value of the first.
+.TP
+\fBratio\fP
+The value of the first metric is divided by the value of the second (or zero if the second metric
+value is zero).
+.TP
+\fBmin\fP
+The lowest of all source metric values.
+.TP
+\fBmax\fP
+The highest of all source metric values.
+.TP
+\fBspread\fP
+The gap between the highest and lowest source metric values.
+.TP
+\fBmean\fP
+The arithmetic mean of the values of all source metrics.
+.TP
+\fBmeanIf\fP
+The mean of values that were presented in this period, rather than all configured.
+.TP
+\fBcount\fP
+The number of source metrics with a non-zero value.
+.TP
+\fBactive\fP
+Returns 0 or 1 depending on whether any data points were present.
+
+.SS [Fetch]
+.PP
+\fBMinistry\fP can fetch data from sources using \fIlibcurl\fP, and does so on a regular cycle.
+Sources can be either text (line format or Prometheus text format) or in JSON.  \fBMinistry\fP
+will auto-detect JSON by looking at the \fIContent-Type\fP header, but will \fBnot\fP attempt to
+look at the data and guess.
+.PP
+Converting Prometheus metrics into graphite-style metrics is quite a complex process, as metrics
+intended for Prometheus have simple, snake-case paths and then labels with values.  Conversion is
+done according to a profile, which is a set of matches against paths, and then a set of labels to
+take as fields.  These are defined in the \fB[Metrics]\fP section below.
+.PP
+\fBMinistry supports TLS-enabled sources, and can validate certificates or not, as commanded in
+the config for each individual source.  If given a DNS name rather than an IP address, it will
+re-evaluate the DNS periodically to confirm the host exists, but will pass \fIlibcurl\fP the name
+provided in config.
+.PP
+As with other timed operations, \fBMinistry\fP's fetch timing is extremely precise, and it will
+not drift from the requested period and offset, even if the server is slow to respond.  There is
+no specified limit to the number of fetches that can be configured, but each one runs in its own
+thread.
+.PP
+A fetch is specified as a config block ending in a \fIdone\fP statement.  The options within it
+are as follows:
+.TP
+\fBname\fP
+The name of the fetch used in logging.
+.TP
+\fBenable\fP
+Whether this fetch is enabled (booleans, defaults to true).
+.TP
+\fBhost\fP
+The remote host to connect to.  This is passed directly to \fIlibcurl\fP.
+.TP
+\fBtls\fP
+Whether the connection should be over TLS or not (boolean, defaults to false).
+.TP
+\fBport\fP
+The remote port (defaults to 80 or 443, depending on \fBtls\fP settings).
+.TP
+\fBvalidate\fP
+Whether to attempt to validate certificates (boolean, defaults to true).
+.TP
+\fBperiod\fP
+Milliseconds between fetches (default 10000).
+.TP
+\fBoffset\fP
+Milliseconds delay from the top of the period (default 0).
+.TP
+\fBrevalidate\fP
+Milliseconds between revalidation of the DNS (default 0).
+.TP
+\fBprometheus\fP
+Whether this fetch will retrieve Prometheus metrics (boolean, defaults to false).
+.TP
+\fBtype\fP
+Which data type this is (\fIadder\fP, \fIstats\fP, etc), if not Prometheus data.
+.TP
+\fBprofile\fP
+Which named metrics profile to parse the data with.
+
+.SS [Metrics]
+.PP
+\fBMinistry\fP can consume Prometheus-style metrics (in it's text format) from fetch targets.
+However, conversion to graphite-style paths is complex, and may well require a lot of config.
+Individual Prometheus metrics look like:
+.EX
+	<path_name>{<label1>="<value1">,<label2>="<value2>",...} <value>[ <timestamp>]
+	eg http_request_duration{env="prod",host="prodweb05",type="homepage"} 1.502 1234567890500
+.EE
+.PP
+Labels are optional and the {} are absent if no labels are present.  A full specification of
+Prometheus metrics format is available on their website, \fIhttps://prometheus.io/docs/instrumenting/exposition_formats/.\fP
+.PP
+To cope with this complexity, \fBMinistry\fP has the concept of profiles, whereby a set of paths
+and labels are combined to make graphite-style data.  A profile consists of a set of maps, each
+being a regular expression list and set of labels with their ordering.  The lists are defined
+separately and referenced in the maps.
+.PP
+A list is defined as a config block with a \fIdone\fP statement terminating it.
+.TP
+\fBlist\fP
+The name of the list being defined.
+.TP
+\fBattribute\fP
+A couplet of label name and its order, separated by a comma (eg host:2).  This can repeat.
+.PP
+Profiles are also config blocks ending with a \fIdone\fP statement, but they contain maps, each
+also a block, but which are terminated either by the start of the next map, or the end of the
+profile block.
+.TP
+\fBprofile\fP
+The name of the profile being created.
+.TP
+\fBdefault\fP
+Is this the default profile when fetches do not specify one (boolean, defaults to false).
+.TP
+\fBdefaultList\fP
+The name of the attribute list this profile defaults to.
+.TP
+\fBpath\fP
+Direct mapping of a Prometheus path to a named list (eg http_request_duration:some-named-list).
+.TP
+\fBmap.begin\fP
+Statement beginning a map (does not require a value).
+.TP
+\fBmap.enable\fP
+Is this map enabled? (boolean, defaults to true).
+.TP
+\fBmap.list\fP
+Named attribute list that a match on this map applies.
+.TP
+\fBmap.last\fP
+When set to true, this means that a match on this list ends map processing.
+.TP
+\fBmap.regex.[match|fail]\fB
+Repeating element - a regular expression to match or fail map matching.  These are run in the order
+presented in config.
+
+.SH SEE ALSO
+.BR ministry (1)
+.SH AUTHOR
+\fBMinistry\fP is written and maintained by John Denholm, Sky Betting And Gaming.

@@ -1,0 +1,2 @@
+%s:3 PhanDebugAnnotation @phan-debug-var requested for variable $devState - it has union type (empty union type)
+%s:6 PhanUnusedVariable Unused definition of variable $someVar

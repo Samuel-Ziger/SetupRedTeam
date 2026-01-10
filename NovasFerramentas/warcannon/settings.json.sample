@@ -1,0 +1,6 @@
+{
+	"nodeInstanceType": ["c5n.xlarge"],
+	"nodeCapacity": 1,
+	"nodeParallelism": 1.5,
+	"nodeMaxDuration": 3600
+}

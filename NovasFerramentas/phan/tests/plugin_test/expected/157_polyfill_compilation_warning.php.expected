@@ -1,0 +1,1 @@
+src/157_polyfill_compilation_warning.php:3 PhanSyntaxError Fallback parser diagnostic error: Unterminated comment starting line 3 (at column 1)

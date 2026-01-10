@@ -1,0 +1,28 @@
+project_name: octosql
+release:
+  draft: true
+builds:
+  - env: [CGO_ENABLED=0]
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    tags:
+      - purego
+    ldflags:
+      - "-s -w -X github.com/cube2222/octosql/cmd.VERSION={{.Version}}"
+brews:
+  - name: octosql
+    tap:
+      owner: "cube2222"
+      name: "homebrew-octosql"
+      branch: main
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: https://github.com/cube2222/octosql
+    description: "OctoSQL is a query tool that allows you to join, analyse and transform data from multiple databases and file formats using SQL."
+    license: "MPL-2.0"
+    dependencies:
+      - name: graphviz

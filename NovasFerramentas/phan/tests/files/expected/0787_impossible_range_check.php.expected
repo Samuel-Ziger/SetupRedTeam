@@ -1,0 +1,3 @@
+%s:4 PhanImpossibleValueComparison Impossible comparison of $value of type int (value: 3)|int (value: 4) to 4 of type int (value: 4) with operator '>' (the comparison is always false)
+%s:5 PhanRedundantValueComparison Redundant comparison of 'foo' of type string to $b of type bool with operator '>=' (the comparison is always true)
+%s:7 PhanRedundantValueComparison Redundant comparison of $s of type string|string to $nullable of type ?bool with operator '>=' (the comparison is always true)

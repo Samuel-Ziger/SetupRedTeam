@@ -1,0 +1,137 @@
+bcal v2.4
+2022-01-24
+
+- support "exit" and "quit" at prompt
+- fix lint report
+
+-------------------------------------------------------------------------------
+
+bcal v2.3
+2021-10-09
+
+- show binary conversion output in octets for readability
+- handle `^D`
+- quit program or 'exit' or 'quit'
+- fix broken terminal with calc as backend on "undefined input" (#36)
+
+-------------------------------------------------------------------------------
+
+bcal v2.2
+2020-01-07
+
+What's in?
+- Support [`calc`](http://www.isthe.com/chongo/tech/comp/calc/) for multi-base expressions
+- To use `calc`, `export BCAL_USE_CALC=1`
+- Fix lint issues
+- Fix issue #30
+- Updated auto-generated packages
+- More portable Makefile
+
+-------------------------------------------------------------------------------
+
+bcal v2.1
+2018-12-11
+
+What's in?
+- Support for C bitwise operators (`|`, `^`, `&`)
+- Support floating point in unit conversion
+- Support hex in expressions
+- Persistent readline history
+- Static-analysis (clang-tidy and coverity) integration
+
+-------------------------------------------------------------------------------
+
+bcal v2.0
+2018-10-02
+
+What's in?
+- `bc` mode for general purpose calculations
+- Bitwise shift (<< and >>) operations
+- Base conversion in interactive mode
+- Prompt help
+
+-------------------------------------------------------------------------------
+
+bcal v1.9
+2018-05-21
+
+What's in?
+- REPL mode with last result stored
+- Division of an unit by another unit
+- Detect truncation due to division in expressions
+- Use `bc` to evaluate expressions that cannot be handled
+- Show storage unit (B for byte) in minimal mode
+
+-------------------------------------------------------------------------------
+
+bcal v1.8
+2018-03-12
+
+What's in?
+- Dependency on libquadmath dropped (`bcal` will be on Homebrew soon!)
+- Option `-b` to show byte size of basic data types
+- Limit unit conversions to `long double` (`__float128_t` is not portable)
+- Fix test case failures on OS X
+- Generate packages for many more distro versions
+- Automated build and test for gcc, clang (Linux and OS X) and musl-gcc (Linux)
+
+-------------------------------------------------------------------------------
+
+bcal v1.7
+2017-10-07
+
+What's in?
+- PackageCore integration
+- Automated testing in Travis CI
+
+-------------------------------------------------------------------------------
+
+bcal v1.6
+2017-06-30
+
+What's in?
+- Evaluate storage arithmetic expressions involving +, -, *, /
+- A minimal mode (option `-m`) to show result in bytes
+- Assume byte if unit is omitted for a conversion
+- A Python3 test framework with multiple test cases
+- Several fixes and additional sanity checks on input
+
+-------------------------------------------------------------------------------
+
+bcal v1.5
+2017-04-10
+
+Modifications
+- Support binary and octal in CHS2LBA and LBA2CHS conversions
+
+-------------------------------------------------------------------------------
+
+bcal v1.4
+2016-10-17
+
+Modifications
+- Travis integration
+- RPM generation via Travis and Docker
+
+-------------------------------------------------------------------------------
+
+bcal v1.1
+2016-10-04
+
+Modifications
+- Rename utility to bcal (Byte CALculator)
+
+-------------------------------------------------------------------------------
+
+calb v1.0
+2016-09-29
+
+Initial features
+- convert to IEC/SI standard data storage units
+- show the address in bytes
+- show address as LBA:OFFSET
+- convert CHS to LBA and vice versa
+- show binary, decimal and hex representation of a number
+- custom sector size, max heads/cylinder and max sectors/track
+
+-------------------------------------------------------------------------------

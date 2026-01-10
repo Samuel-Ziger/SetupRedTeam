@@ -1,0 +1,1 @@
+%s:21 PhanTypeMismatchReturnReal Returning $i of type string but h() is declared to return int

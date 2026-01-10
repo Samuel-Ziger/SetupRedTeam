@@ -1,0 +1,308 @@
+$ fq -i -d mp3 . test.mp3
+mp3> .frames[1].audio_data | tobytes | match("3\u0085"; "b")
+{
+  "captures": [],
+  "length": 2,
+  "offset": 4,
+  "string": "3\ufffd"
+}
+mp3> ^D
+$ fq -ni
+null> "64ff65ff66" | fromhex | match("\u00ff"; "b")
+{
+  "captures": [],
+  "length": 1,
+  "offset": 1,
+  "string": "\ufffd"
+}
+null> "aöaöa" | tobytes | match("ö")
+{
+  "captures": [],
+  "length": 2,
+  "offset": 1,
+  "string": "ö"
+}
+null> "aöaöa" | tobytes | match("\u00c3"; "b")
+{
+  "captures": [],
+  "length": 1,
+  "offset": 1,
+  "string": "\ufffd"
+}
+null> "aöaöa" | tobytes | match([0xc3])
+{
+  "captures": [],
+  "length": 1,
+  "offset": 1,
+  "string": "\ufffd"
+}
+null> "abba" | match("B"; "gi")
+{
+  "captures": [],
+  "length": 1,
+  "offset": 1,
+  "string": "b"
+}
+{
+  "captures": [],
+  "length": 1,
+  "offset": 2,
+  "string": "b"
+}
+null> [range(256)] | . as $b | tobytes | match($b) | ., (.string | hd)
+{
+  "captures": [],
+  "length": 256,
+  "offset": 0,
+  "string": "\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007f\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd"
+}
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x000|00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|................|.: raw bits 0x0-0x100 (256)
+0x010|10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f|................|
+0x020|20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f| !"#$%&'()*+,-./|
+0x030|30 31 32 33 34 35 36 37 38 39 3a 3b 3c 3d 3e 3f|0123456789:;<=>?|
+0x040|40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f|@ABCDEFGHIJKLMNO|
+0x050|50 51 52 53 54 55 56 57 58 59 5a 5b 5c 5d 5e 5f|PQRSTUVWXYZ[\]^_|
+0x060|60 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f|`abcdefghijklmno|
+0x070|70 71 72 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f|pqrstuvwxyz{|}~.|
+0x080|80 81 82 83 84 85 86 87 88 89 8a 8b 8c 8d 8e 8f|................|
+0x090|90 91 92 93 94 95 96 97 98 99 9a 9b 9c 9d 9e 9f|................|
+0x0a0|a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 aa ab ac ad ae af|................|
+0x0b0|b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 ba bb bc bd be bf|................|
+0x0c0|c0 c1 c2 c3 c4 c5 c6 c7 c8 c9 ca cb cc cd ce cf|................|
+0x0d0|d0 d1 d2 d3 d4 d5 d6 d7 d8 d9 da db dc dd de df|................|
+0x0e0|e0 e1 e2 e3 e4 e5 e6 e7 e8 e9 ea eb ec ed ee ef|................|
+0x0f0|f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 fa fb fc fd fe ff|................|
+null> "abba" | tobytes | match("B"; "gi")
+{
+  "captures": [],
+  "length": 1,
+  "offset": 1,
+  "string": "b"
+}
+{
+  "captures": [],
+  "length": 1,
+  "offset": 2,
+  "string": "b"
+}
+null> "ååå" as $p | "cbbcåååccåååcbc", "åååcbbc", "cbbcååå" | ., test($p), (tobytes | test($p))
+"cbbcåååccåååcbc"
+true
+true
+"åååcbbc"
+true
+true
+"cbbcååå"
+true
+true
+null> "å(?<n>å)(å)" as $p | "cbbcåååccåååcbc", "åååcbbc", "cbbcååå" | ., "orig", match($p), "binary_rune", (tobytes | match($p)), "binary_byte", (tobytes | match("ååå" | tobytes; "b"))
+"cbbcåååccåååcbc"
+"orig"
+{
+  "captures": [
+    {
+      "length": 1,
+      "name": "n",
+      "offset": 5,
+      "string": "å"
+    },
+    {
+      "length": 1,
+      "name": null,
+      "offset": 6,
+      "string": "å"
+    }
+  ],
+  "length": 3,
+  "offset": 4,
+  "string": "ååå"
+}
+"binary_rune"
+{
+  "captures": [
+    {
+      "length": 2,
+      "name": "n",
+      "offset": 6,
+      "string": "å"
+    },
+    {
+      "length": 2,
+      "name": null,
+      "offset": 8,
+      "string": "å"
+    }
+  ],
+  "length": 6,
+  "offset": 4,
+  "string": "ååå"
+}
+"binary_byte"
+{
+  "captures": [],
+  "length": 6,
+  "offset": 4,
+  "string": "ååå"
+}
+"åååcbbc"
+"orig"
+{
+  "captures": [
+    {
+      "length": 1,
+      "name": "n",
+      "offset": 1,
+      "string": "å"
+    },
+    {
+      "length": 1,
+      "name": null,
+      "offset": 2,
+      "string": "å"
+    }
+  ],
+  "length": 3,
+  "offset": 0,
+  "string": "ååå"
+}
+"binary_rune"
+{
+  "captures": [
+    {
+      "length": 2,
+      "name": "n",
+      "offset": 2,
+      "string": "å"
+    },
+    {
+      "length": 2,
+      "name": null,
+      "offset": 4,
+      "string": "å"
+    }
+  ],
+  "length": 6,
+  "offset": 0,
+  "string": "ååå"
+}
+"binary_byte"
+{
+  "captures": [],
+  "length": 6,
+  "offset": 0,
+  "string": "ååå"
+}
+"cbbcååå"
+"orig"
+{
+  "captures": [
+    {
+      "length": 1,
+      "name": "n",
+      "offset": 5,
+      "string": "å"
+    },
+    {
+      "length": 1,
+      "name": null,
+      "offset": 6,
+      "string": "å"
+    }
+  ],
+  "length": 3,
+  "offset": 4,
+  "string": "ååå"
+}
+"binary_rune"
+{
+  "captures": [
+    {
+      "length": 2,
+      "name": "n",
+      "offset": 6,
+      "string": "å"
+    },
+    {
+      "length": 2,
+      "name": null,
+      "offset": 8,
+      "string": "å"
+    }
+  ],
+  "length": 6,
+  "offset": 4,
+  "string": "ååå"
+}
+"binary_byte"
+{
+  "captures": [],
+  "length": 6,
+  "offset": 4,
+  "string": "ååå"
+}
+null> "å(?<n>å)(å)" as $p | "cbbcåååccåååcbc", "åååcbbc", "cbbcååå" | ., "orig", capture($p), "binary_rune", (tobytes | capture($p)), "binary_byte", (tobytes | capture("ååå" | tobytes; "b"))
+"cbbcåååccåååcbc"
+"orig"
+{
+  "n": "å"
+}
+"binary_rune"
+{
+  "n": "å"
+}
+"binary_byte"
+{}
+"åååcbbc"
+"orig"
+{
+  "n": "å"
+}
+"binary_rune"
+{
+  "n": "å"
+}
+"binary_byte"
+{}
+"cbbcååå"
+"orig"
+{
+  "n": "å"
+}
+"binary_rune"
+{
+  "n": "å"
+}
+"binary_byte"
+{}
+null> "å(?<n>å)(å)" as $p | "cbbcåååccåååcbc", "åååcbbc", "cbbcååå" | ., "binary_rune", (tobytes | .[match($p; "g").offset:]), "binary_byte", (tobytes | .[match("ååå" | tobytes; "gb").offset:])
+"cbbcåååccåååcbc"
+"binary_rune"
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|            c3 a5 c3 a5 c3 a5 63 63 c3 a5 c3 a5|    ......cc....|.: raw bits 0x4-0x15 (17)
+0x10|c3 a5 63 62 63|                                |..cbc|          |
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|                                    c3 a5 c3 a5|            ....|.: raw bits 0xc-0x15 (9)
+0x10|c3 a5 63 62 63|                                |..cbc|          |
+"binary_byte"
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|            c3 a5 c3 a5 c3 a5 63 63 c3 a5 c3 a5|    ......cc....|.: raw bits 0x4-0x15 (17)
+0x10|c3 a5 63 62 63|                                |..cbc|          |
+    |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x00|                                    c3 a5 c3 a5|            ....|.: raw bits 0xc-0x15 (9)
+0x10|c3 a5 63 62 63|                                |..cbc|          |
+"åååcbbc"
+"binary_rune"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|c3 a5 c3 a5 c3 a5 63 62 62 63|                 |......cbbc|     |.: raw bits 0x0-0xa (10)
+"binary_byte"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|c3 a5 c3 a5 c3 a5 63 62 62 63|                 |......cbbc|     |.: raw bits 0x0-0xa (10)
+"cbbcååå"
+"binary_rune"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|            c3 a5 c3 a5 c3 a5|                 |    ......|     |.: raw bits 0x4-0xa (6)
+"binary_byte"
+   |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|
+0x0|            c3 a5 c3 a5 c3 a5|                 |    ......|     |.: raw bits 0x4-0xa (6)
+null> ^D

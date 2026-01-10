@@ -1,0 +1,168 @@
+// Buttons
+
+@each $color, $value in $theme-colors {
+  .btn-#{$color} {
+    &:focus,
+    &.focus {
+      box-shadow: 0 0 $btn-focus-width rgba(theme-color($color), 0.85);
+    }
+
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      &:focus {
+        box-shadow: 0 0 $btn-focus-width rgba(theme-color($color), 0.85);
+      }
+    }
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .btn-outline-#{$color} {
+    &:hover {
+      background: rgba(0, 0, 0, 0.02);
+      color: theme-color($color);
+    }
+
+    &:focus,
+    &.focus {
+      box-shadow: 0 0 $btn-focus-width rgba(theme-color($color), 0.85);
+    }
+
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      background: rgba(0, 0, 0, 0.04);
+      color: theme-color($color);
+
+      &:focus {
+        box-shadow: 0 0 $btn-focus-width rgba(theme-color($color), 0.85);
+      }
+    }
+  }
+
+  .bg-black {
+    .btn-outline-#{$color} {
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      &:not(:disabled):not(.disabled):active,
+      &:not(:disabled):not(.disabled).active {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    .btn-outline-secondary {
+      color: $white;
+      border-color: $white;
+    }
+  }
+}
+
+.mode-toggle:hover {
+  filter:
+    brightness(0)
+    saturate(100%)
+    invert(91%)
+    sepia(23%)
+    saturate(6279%)
+    hue-rotate(335deg)
+    brightness(105%)
+    contrast(91%);
+}
+
+.bg-white {
+  background-color: $white !important;
+
+  a:not(.btn) {
+    color: $blue;
+
+    &:hover {
+      color: $blue-500;
+    }
+
+    &:active {
+      color: $blue-600;
+    }
+  }
+}
+
+.bg-black {
+  background-color: $black !important;
+
+  a:not(.btn) {
+    color: $blue-500;
+
+    &:hover {
+      color: $blue;
+    }
+
+    &:active {
+      color: $blue-300;
+    }
+  }
+}
+
+.bg-lighter {
+  background-color: $gray-300 !important;
+}
+
+.bg-darker {
+  background-color: $gray-850 !important;
+}
+
+@include media-breakpoint-down(md) {
+  #sidebar {
+    border-top: $border-width solid $black;
+    margin-top: 1em;
+    padding-top: 0.75em;
+  }
+
+  .bg-black {
+    #sidebar {
+      border-top: $border-width solid $gray-800;
+    }
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  #sidebar {
+    border-left: $border-width solid $black;
+  }
+
+  .bg-black {
+    #sidebar {
+      border-left: $border-width solid $gray-800;
+    }
+  }
+}
+
+article {
+  img {
+    width: 100%;
+  }
+}
+
+main {
+  code {
+    color: $gray-200;
+    background-color: $gray-800;
+    border-radius: 0.25em;
+    border: $border-width solid $gray-500;
+    padding: 0.1em;
+  }
+
+  h2,
+  h3 {
+    &not:first-child {
+      margin-top: 0.75em;
+    }
+  }
+
+  hr {
+    border-radius: 1px;
+    border-width: 0;
+    height: 2px;
+    color: gray;
+    background-color: gray;
+  }
+}

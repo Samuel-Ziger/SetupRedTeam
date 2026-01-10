@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/wayback_machine_downloader'
+require 'optparse'
+require 'pp'
+
+options = {}
+option_parser = OptionParser.new do |opts|
+  opts.banner = "Usage: wayback_machine_downloader http://example.com"
+
+  opts.separator ""
+  opts.separator "Download an entire website from the Wayback Machine."
+
+  opts.separator ""
+  opts.separator "Optional options:"
+
+  opts.on("-d", "--directory PATH", String, "Directory to save the downloaded files into", "Default is ./websites/ plus the domain name") do |t|
+    options[:directory] = t
+  end
+
+  opts.on("-s", "--all-timestamps", "Download all snapshots/timestamps for a given website") do |t|
+    options[:all_timestamps] = true
+  end
+  
+  opts.on("-f", "--from TIMESTAMP", Integer, "Only files on or after timestamp supplied (ie. 20060716231334)") do |t|
+    options[:from_timestamp] = t
+  end
+
+  opts.on("-t", "--to TIMESTAMP", Integer, "Only files on or before timestamp supplied (ie. 20100916231334)") do |t|
+    options[:to_timestamp] = t
+  end
+
+  opts.on("-e", "--exact-url", "Download only the url provied and not the full site") do |t|
+    options[:exact_url] = t
+  end
+
+  opts.on("-o", "--only ONLY_FILTER", String, "Restrict downloading to urls that match this filter", "(use // notation for the filter to be treated as a regex)") do |t|
+    options[:only_filter] = t
+  end
+
+  opts.on("-x", "--exclude EXCLUDE_FILTER", String, "Skip downloading of urls that match this filter", "(use // notation for the filter to be treated as a regex)") do |t|
+    options[:exclude_filter] = t
+  end
+
+  opts.on("-a", "--all", "Expand downloading to error files (40x and 50x) and redirections (30x)") do |t|
+    options[:all] = true
+  end
+
+  opts.on("-c", "--concurrency NUMBER", Integer, "Number of multiple files to download at a time", "Default is one file at a time (ie. 20)") do |t|
+    options[:threads_count] = t
+  end
+
+  opts.on("-p", "--maximum-snapshot NUMBER", Integer, "Maximum snapshot pages to consider (Default is 100)", "Count an average of 150,000 snapshots per page") do |t|
+    options[:maximum_pages] = t
+  end
+
+  opts.on("-l", "--list", "Only list file urls in a JSON format with the archived timestamps, won't download anything") do |t|
+    options[:list] = true
+  end
+
+  opts.on("-v", "--version", "Display version") do |t|
+    options[:version] = t
+  end
+end.parse!
+
+if (base_url = ARGV[-1])
+  options[:base_url] = base_url
+  wayback_machine_downloader = WaybackMachineDownloader.new options
+  if options[:list]
+    wayback_machine_downloader.list_files
+  else
+    wayback_machine_downloader.download_files
+  end
+elsif options[:version]
+  puts WaybackMachineDownloader::VERSION
+else
+  puts "You need to specify a website to backup. (e.g., http://example.com)"
+  puts "Run `wayback_machine_downloader --help` for more help."
+end

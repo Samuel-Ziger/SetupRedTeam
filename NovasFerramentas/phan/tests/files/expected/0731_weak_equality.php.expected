@@ -1,0 +1,2 @@
+%s:6 PhanSuspiciousWeakTypeComparison Suspicious attempt to compare $o of type object to true of type true
+%s:7 PhanImpossibleCondition Impossible attempt to cast $o of type true to object

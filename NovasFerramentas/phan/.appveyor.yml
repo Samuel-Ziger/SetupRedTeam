@@ -1,0 +1,118 @@
+# This tests against the supported versions of Phan 6.x.y (PHP 8.1+)
+# The project name is the same as the build id used, e.g. https://www.appveyor.com/docs/environment-variables/
+
+version: '{branch}.{build}'
+clone_folder: C:\projects\phan
+# Don't include full git history
+clone_depth: 1
+# Test 64-bit builds, which are far more commonly used.
+# This also avoids errors seen when running PhanNativePHPSyntaxCheckPlugin in x86.
+# https://github.com/php/php-src/issues/9650#issuecomment-1273961567
+platform: x64
+
+# Test with a given PHP version
+# 1. (PHP_VERSION is the only version tested of PHP_EXT_VERSION, and it can only be built with VC_VERSION)
+# 2. Also, run tests with a variety of supported php-ast versions. Phan should work properly with php-ast 1.0.1+
+# See https://www.appveyor.com/docs/build-environment/#using-multiple-images-for-the-same-build for APPVEYOR_BUILD_WORKER_IMAGE details
+environment:
+  matrix:
+    # This major release of Phan (6.0) requires PHP 8.1+ and php-ast 1.1.3+
+    - PHP_EXT_VERSION: '8.1'
+      PHP_VERSION: '8.1.10'
+      PHP_AST_VERSION: 1.1.3
+      VC: vs16
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PHAN_RUN_INTEGRATION_TEST: 1
+    - PHP_EXT_VERSION: '8.2'
+      PHP_VERSION: '8.2.0'
+      PHP_AST_VERSION: 1.1.3
+      VC: vs16
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - PHP_EXT_VERSION: '8.3'
+      PHP_VERSION: '8.3.0'
+      PHP_AST_VERSION: 1.1.3
+      VC: vs16
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    # TODO: Re-enable PHP 8.4 testing once TolerantASTConverter line number issues are resolved
+    # The fallback parser has issues with line number calculation for multi-line attributes
+    # and Symfony Console emits deprecation warnings that interfere with test output
+    # - PHP_EXT_VERSION: '8.4'
+    #   PHP_VERSION: '8.4.0'
+    #   PHP_AST_VERSION: 1.1.3
+    #   VC: vs17
+    #   APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+
+init:
+    - SET PATH=c:\projects\php;C:\projects\composer;%PATH%
+
+# There are more than one version of php and php-ast that could be installed,
+# so I'm not sure how to cache those.
+cache:
+    - '%LOCALAPPDATA%\Composer\files -> composer.lock'
+    - 'C:\projects\composer\composer.phar'
+
+branches:
+  only:
+    - v5
+    - v6
+
+install:
+- cmd: choco feature enable -n=allowGlobalConfirmation
+- cmd: mkdir %APPVEYOR_BUILD_FOLDER%\bin
+build_script:
+- cmd: >-
+    mkdir C:\projects\php
+
+    cd C:\projects\php
+
+    SET PHP_ZIP_BASENAME=php-%PHP_VERSION%-nts-Win32-%VC%-x64.zip
+
+    curl -fsS https://windows.php.net/downloads/releases/archives/%PHP_ZIP_BASENAME% -o %PHP_ZIP_BASENAME% || curl -fsS https://windows.php.net/downloads/releases/%PHP_ZIP_BASENAME% -o %PHP_ZIP_BASENAME%
+
+    7z x -y %PHP_ZIP_BASENAME%
+
+    del /Q *.zip
+
+    cd C:\projects\php\ext
+
+    SET AST_ZIP_BASENAME=php_ast-%PHP_AST_VERSION%-%PHP_EXT_VERSION%-nts-%VC%-x64.zip
+
+    curl -fsS https://downloads.php.net/~windows/pecl/releases/ast/%PHP_AST_VERSION%/%AST_ZIP_BASENAME% -o %AST_ZIP_BASENAME%
+
+    7z x %AST_ZIP_BASENAME% php_ast.dll -y >nul
+
+    cd C:\projects\php
+
+    echo [PHP] > php.ini
+
+    echo extension_dir = "ext" >> php.ini
+
+    echo extension=php_ast.dll >> php.ini
+
+    echo extension=php_curl.dll >> php.ini
+
+    echo extension=php_intl.dll >> php.ini
+
+    echo extension=php_mbstring.dll >> php.ini
+
+    echo extension=php_openssl.dll >> php.ini
+
+    echo extension=php_soap.dll >> php.ini
+
+    echo %PATH%
+
+    php -v
+
+    php -m
+
+    IF NOT exist "C:\projects\composer\composer.phar" ( curl --create-dirs -fsS https://getcomposer.org/composer.phar -o "C:\projects\composer\composer.phar" )
+
+test_script:
+- cmd: cd C:\projects\phan
+- cmd: php C:\projects\composer\composer.phar install --classmap-authoritative --prefer-dist
+- cmd: php phan --plugin InvokePHPNativeSyntaxCheckPlugin
+- cmd: .\vendor\bin\phpunit
+# Verify that a phar can be built and executed under windows
+- cmd: mkdir build
+- cmd: php -d phar.readonly=0 internal/package.php
+- cmd: php build/phan.phar --quick --always-exit-successfully-after-analysis

@@ -1,0 +1,53 @@
+linters:
+  presets:
+    - bugs
+    - comment
+    - error
+    - format
+    - import
+    - metalinter
+    - module
+    - performance
+    - style
+    - test
+    - unused
+  disable:
+    - dupl
+    - exhaustive
+    - exhaustivestruct
+    - gochecknoglobals
+    - gochecknoinits
+    - godox
+    - goerr113
+    - gomnd
+    - interfacer
+    - maligned
+    - nilnil
+    - nlreturn
+    - scopelint 
+    - testpackage
+    - varnamelen
+    - wrapcheck
+
+linters-settings:
+  gci:
+    local-prefixes: github.com/dstotijn/hetty
+  godot:
+    capital: true
+  ireturn:
+    allow: "error,empty,anon,stdlib,.*(or|er)$,github.com/99designs/gqlgen/graphql.Marshaler,github.com/dstotijn/hetty/pkg/api.QueryResolver,github.com/dstotijn/hetty/pkg/filter.Expression"
+    
+issues:
+  exclude-rules:
+    - linters:
+      - gosec
+      # Ignore SHA1 usage.
+      text: "G(401|505):"
+    - linters:
+      - wsl
+      # Ignore cuddled defer statements.
+      text: "only one cuddle assignment allowed before defer statement"
+    - linters:
+      - nlreturn
+      # Ignore `break` without leading blank line.
+      text: "break with no blank line before"

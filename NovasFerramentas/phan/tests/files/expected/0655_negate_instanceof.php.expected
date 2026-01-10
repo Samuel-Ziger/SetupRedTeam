@@ -1,0 +1,2 @@
+%s:14 PhanTypeMismatchArgumentInternal Argument 1 ($string) is $value of type ?array<int,\NS655\TestClass> but \strlen() takes string
+%s:17 PhanTypeMismatchArgumentInternal Argument 1 ($string) is $v of type \NS655\TestClass but \strlen() takes string

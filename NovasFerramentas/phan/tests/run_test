@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+function print_all_tests {
+	echo "Valid tests are below:" 1>&2
+	echo 1>&2
+	SCRIPT_PATH="${BASH_SOURCE[0]}"
+	SCRIPT_DIR="$( cd "$( dirname "$SCRIPT_PATH" )" && pwd )"
+	grep --only -E '^\s*\w+\)' < $SCRIPT_PATH| sed 's,\s*\|),,g' |sort 1>&2
+	grep --only -E '<testsuite name="\w+"' < "$SCRIPT_DIR/../phpunit.xml" | sed 's,.*name="\(\w\+\)".*,\1,g' | sort 1>&2
+}
+TEST_SUITE="$1"
+if [ "$#" != 1 ]; then
+	if [[ "$#" == 2 && "$1" == "--print-test-suite" ]]; then
+		TEST_SUITE="$2"
+		echo "Running test suite: $TEST_SUITE"
+	else
+		echo "Usage: $0 [--print-test-suite] \$TEST_SUITE " 1>&2
+		print_all_tests
+		exit 1
+	fi
+fi
+if [ "x$TEST_SUITE" == "x" ]; then
+	echo "Provided TEST_SUITE param was empty" 1>&2
+	exit 1
+fi
+case "$TEST_SUITE" in
+	__FakeSelfTest)
+		./phan --memory-limit 1G
+		exit $?
+		;;
+	__FakeSelfFallbackTest)
+		# This usually requires 1 GB with all plugins enabled.
+		./phan --plugin PHPUnitNotDeadCodePlugin \
+			--plugin InvokePHPNativeSyntaxCheckPlugin \
+			--plugin AvoidableGetterPlugin \
+			--plugin UnknownClassElementAccessPlugin \
+			--plugin PHPDocInWrongCommentPlugin \
+			--dead-code-detection \
+			--assume-real-types-for-internal-functions \
+			--force-polyfill-parser \
+			--disable-cache \
+			--memory-limit 2G
+		exit $?
+		;;
+	__FakeRewritingTest)
+		cd tests/misc/rewriting_test
+		./test.sh
+		exit $?
+		;;
+	__FakeFallbackTest)
+		cd tests/misc/fallback_test
+		./test.sh
+		exit $?
+		;;
+	__FakePluginTest)
+		cd tests/plugin_test
+		./test.sh
+		exit $?
+		;;
+	__FakeRealTypesTest)
+		cd tests/real_types_test
+		./test.sh
+		exit $?
+		;;
+	__FakeToolTest)
+		cd tests/tool_test
+		./test.sh
+		exit $?
+		;;
+	__FakeAllPHPUnitTests)
+		vendor/bin/phpunit
+		exit $?
+		;;
+	__FakeConfigOverrideTest)
+		cd tests/misc/config_override_test
+		./test.sh
+		exit $?
+		;;
+	__FakeEmptyMethodsPluginTest)
+		cd tests/misc/empty_methods_plugin_test
+		./test.sh
+		exit $?
+		;;
+	__FakeFixerTest)
+		cd tests/fixer_test
+		./test.sh
+		exit $?
+		;;
+	__FakePhantasmTest)
+		cd tests/phantasm_test
+		./test.sh
+		exit $?
+		;;
+	__FakePhoundTest)
+		cd tests/phound_test
+		./test.sh
+		exit $?
+		;;
+	__FakeInferMissingTypesTest)
+		cd tests/infer_missing_types_test
+		./test.sh
+		exit $?
+		;;
+	__FakeOverrideReturnTypesTest)
+		cd tests/override_return_types_test
+		./test.sh
+		exit $?
+		;;
+	__*)
+		echo "Unknown test '$TEST_SUITE' (Tests beginning with __ are not phpunit tests)" 1>&2
+		echo 1>&2
+		print_all_tests
+		exit 1
+		;;
+	-*)
+		echo "This script does not accept flags" 1>&2
+		echo "Usage: $0 \$TEST_SUITE" 1>&2
+		echo 1>&2
+		print_all_tests
+		exit 1
+		;;
+	*)
+		./vendor/bin/phpunit --colors --testsuite "$TEST_SUITE"
+		exit $?
+		;;
+esac
+

@@ -1,0 +1,1 @@
+%s:4 PhanTypeMismatchArgumentInternalProbablyReal Argument 3 ($operator) is 'EQ' of type string but \version_compare() takes ?string|?string|?string|?string|?string|?string|?string|?string|?string|?string|?string|?string|?string|?string

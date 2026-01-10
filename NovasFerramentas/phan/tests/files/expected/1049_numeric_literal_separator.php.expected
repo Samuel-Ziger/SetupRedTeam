@@ -1,0 +1,5 @@
+%s:3 PhanTypeMismatchArgumentInternalReal Argument 1 ($string) is 1000000 of type int (value: 1000000) but \strlen() takes string
+%s:4 PhanTypeMismatchArgumentInternalReal Argument 1 ($string) is 3405705229 of type int (value: 3405705229) but \strlen() takes string
+%s:5 PhanTypeMismatchArgumentInternalReal Argument 1 ($string) is 95 of type int (value: 95) but \strlen() takes string
+%s:6 PhanTypeMismatchArgumentInternalReal Argument 1 ($string) is 6.674083E-11 of type float (value: 6.674083E-11) but \strlen() takes string
+%s:7 PhanTypeMismatchArgumentInternalReal Argument 1 ($string) is 12.34 of type float (value: 12.34) but \strlen() takes string

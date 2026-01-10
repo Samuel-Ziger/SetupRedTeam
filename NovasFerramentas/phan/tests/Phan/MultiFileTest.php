@@ -1,0 +1,140 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Phan\Tests;
+
+use const DIRECTORY_SEPARATOR;
+use const MULTI_EXPECTED_DIR;
+use const MULTI_FILE_DIR;
+
+/**
+ * Integration tests that require more than 1 files in a codebase to reproduce
+ * (e.g. regression tests for bugs, tests of expected functionality for multiple files, etc)
+ *
+ * @see self::getTestFiles() for how file groups are represented to test.
+ */
+class MultiFileTest extends AbstractPhanFileTestBase
+{
+
+    /**
+     * @suppress PhanUndeclaredConstant
+     *
+     * The constant MULTI_FILE_DIR is defined in `phpunit.xml`.
+     * @return list<array{0:list<string>,1:string}>
+     */
+    public static function getTestFiles(): array
+    {
+        return [
+            // Issue #157
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '157_a.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '157_b.php'
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '157.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX
+            ],
+
+            // Issue #245
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '245_a.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '245_b.php'
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '245.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX
+            ],
+
+            // Issue #301
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '301_a.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '301_b.php'
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '301.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX
+            ],
+
+            // Issue #321
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '321_a.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '321_b.php'
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '321.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX,
+                MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '321_config.php',
+            ],
+
+            // Issue #551
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '551_b.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '551_c.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '551_a.php',
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '551.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX
+            ],
+
+            // #699
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '699.php',
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '699.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX,
+                MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '699_config.php',
+            ],
+
+            // #704
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '704.php',
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '704.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX,
+                MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '704_config.php',
+            ],
+
+            // #1898
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '1898_a.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '1898_b.php',
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '1898.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX,
+            ],
+            // #3085
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '3085.php',
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '3085.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX,
+                MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '3085_config.php',
+            ],
+            // #3706
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '3706_BagOStuff.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '3706_MediumBagOStuff.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '3706_StorageAwareness.php',
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '3706.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX,
+            ],
+            // #4827
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '4827_a.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '4827_b.php',
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '4827.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX,
+            ],
+            // #6001 - Global variable type pollution in incremental analysis
+            [
+                [
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '6001_a.php',
+                    MULTI_FILE_DIR . DIRECTORY_SEPARATOR . '6001_b.php',
+                ],
+                MULTI_EXPECTED_DIR . DIRECTORY_SEPARATOR . '6001.php' . AbstractPhanFileTestBase::EXPECTED_SUFFIX,
+            ],
+            // Manually add additional file sets and expected
+            // output here.
+
+        ];
+    }
+}

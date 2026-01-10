@@ -1,0 +1,30 @@
+%s:9 PhanImpossibleCondition Impossible attempt to cast 0 of type 0 to truthy
+%s:10 PhanImpossibleCondition Impossible attempt to cast 0 of type 0 to truthy
+%s:11 PhanImpossibleCondition Impossible attempt to cast 0 of type 0 to truthy
+%s:11 PhanTypeArraySuspicious Suspicious array access to $x of type 3
+%s:12 PhanRedundantCondition Redundant attempt to cast 1 of type 1 to truthy
+%s:12 PhanTypeArraySuspicious Suspicious array access to $x of type 3
+%s:13 PhanRedundantCondition Redundant attempt to cast true of type true to truthy
+%s:13 PhanTypeMismatchArgumentInternal Argument 1 ($num1) is (true ?: $x) of type true but \intdiv() takes int
+%s:14 PhanRedundantCondition Redundant attempt to cast \true of type true to truthy
+%s:14 PhanTypeMismatchArgumentInternal Argument 1 ($num1) is (\true ?: $x) of type true but \intdiv() takes int
+%s:15 PhanImpossibleCondition Impossible attempt to cast false of type false to truthy
+%s:16 PhanImpossibleCondition Impossible attempt to cast \false of type false to truthy
+%s:17 PhanImpossibleCondition Impossible attempt to cast false of type false to truthy
+%s:18 PhanRedundantCondition Redundant attempt to cast TRUE of type true to truthy
+%s:18 PhanTypeMismatchArgumentInternal Argument 1 ($num1) is (TRUE ? true : $x) of type true but \intdiv() takes int
+%s:19 PhanRedundantCondition Redundant attempt to cast 'key' of type 'key' to truthy
+%s:19 PhanTypeMismatchArgumentInternalReal Argument 1 ($num1) is ('key' ?: $x) of type string but \intdiv() takes int
+%s:20 PhanRedundantCondition Redundant attempt to cast '1' of type '1' to truthy
+%s:20 PhanTypeMismatchArgumentInternal Argument 1 ($num1) is ('1' ?: $x) of type string but \intdiv() takes int
+%s:21 PhanImpossibleCondition Impossible attempt to cast '' of type '' to truthy
+%s:22 PhanImpossibleCondition Impossible attempt to cast '0' of type '0' to truthy
+%s:23 PhanRedundantCondition Redundant attempt to cast 4.2 of type 4.2 to truthy
+%s:23 PhanTypeMismatchArgumentInternal Argument 1 ($num1) is (4.2 ?: $x) of type float (value: 4.2) but \intdiv() takes int
+%s:24 PhanImpossibleCondition Impossible attempt to cast 0.0 of type 0.0 to truthy
+%s:25 PhanRedundantCondition Redundant attempt to cast FEATURE_FLAG of type true to truthy
+%s:25 PhanTypeMismatchArgumentInternalReal Argument 1 ($num1) is 'value' of type string but \intdiv() takes int
+%s:26 PhanRedundantCondition Redundant attempt to cast FEATURE_FLAG of type true to truthy
+%s:26 PhanTypeMismatchArgumentInternalReal Argument 1 ($num1) is 'value' of type string but \intdiv() takes int
+%s:27 PhanTypeMismatchArgumentInternalReal Argument 1 ($num1) is 'value' of type string but \intdiv() takes int
+%s:28 PhanTypeMismatchArgumentInternalReal Argument 1 ($num1) is 'value' of type string but \intdiv() takes int

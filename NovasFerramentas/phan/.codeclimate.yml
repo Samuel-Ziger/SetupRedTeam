@@ -1,0 +1,31 @@
+---
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - php
+  fixme:
+    enabled: false
+  phpmd:
+    enabled: true
+    config:
+      # cleancode : most rules are not practical
+      # unused is false positives (Phan's own dead code detection is used in CI)
+      # controversial is the opposite of Phan's naming conventions
+      rulesets: "codesize,naming,design"
+    checks:
+      Naming/LongVariable:
+        enabled: false
+  phan:
+    enabled: false
+    config:
+        file_extensions: "php"
+        ignore-undeclared: false
+        quick: false
+        dead-code-detection: true
+ratings:
+  paths:
+    - "**.php"
+exclude_paths:
+  - tests/**/*

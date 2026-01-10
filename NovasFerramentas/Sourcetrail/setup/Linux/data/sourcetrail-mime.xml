@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+    <mime-type type="application/x-sourcetrail">
+		<comment>Sourcetrail Project File</comment>
+		<icon name="project-sourcetrail"/>
+		<glob-deleteall/>
+		<glob pattern="*.srctrlprj"/>
+	</mime-type>
+    <mime-type type="application/x-sourcetrail">
+		<comment>Sourcetrail Database</comment>
+		<glob-deleteall/>
+		<glob pattern="*.srctrldb"/>
+	</mime-type>
+</mime-info>

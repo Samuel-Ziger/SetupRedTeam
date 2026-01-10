@@ -1,0 +1,1 @@
+%s:20 PhanTypeMismatchArgumentInternal Argument 1 ($string) is $v of type \stdClass but \strlen() takes string

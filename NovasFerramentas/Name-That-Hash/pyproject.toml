@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "name-that-hash"
+version = "1.11.0"
+description = "The Modern Hash Identification System"
+authors = ["autumn <autumn@skerritt.blog>"]
+license = "GPL-3.0-or-later"
+
+[tool.poetry.dependencies]
+python = "^3.6.2"
+click = ">=7.1.2"
+rich = ">=11.0.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+nth = "name_that_hash.runner:main"
+name-that-hash = "name_that_hash.runner:main"

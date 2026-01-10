@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "Clairvoyance"
+version = "2.5.5"
+description = "Obtain GraphQL API Schema even if the introspection is not enabled"
+authors = [
+    "Nikita Stupin <nikitastupin@protonmail.com>",
+    "Swan <swan@escape.tech>"
+]
+maintainers = [
+    "Nikita Stupin <nikitastupin@protonmail.com>",
+    "Antoine Carossio <antoine@escape.tech>",
+    "Swan <swan@escape.tech>",
+    "QuentinN42 <quentin@lieumont.fr>"
+]
+license = "MIT"
+packages = [
+    { include = "clairvoyance" }
+]
+include = [
+    "clairvoyance/wordlist.txt"
+]
+readme = "README.md"
+"homepage" = "https://github.com/nikitastupin/clairvoyance"
+"repository" = "https://github.com/nikitastupin/clairvoyance"
+
+[tool.poetry.scripts]
+clairvoyance = 'clairvoyance:cli'
+
+[tool.coverage.run]
+omit = [
+    'tests/*',
+    'examples/*',
+    'docs/*',
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [ "ignore:::aiounittest" ]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+asyncio = "^3.4.3"
+aiohttp = {extras = ["speedups"], version = "^3.8.1"}
+rich = "^13.3.1"
+
+[tool.poetry.dev-dependencies]
+autoflake = "^1.4"
+aiounittest = "^1.4.2"
+black = "^24.4"
+docformatter = "^1.4"
+isort = "^5.10.1"
+mypy = "^0.950"
+poetryup = "^0.3.15"
+pylint = "^2.13.9"
+pytest = "^6.2.5"
+pytest-cov = "^2.12.1"
+pytest-mock = "^3.8.2"
+setuptools = "^45"
+unify = "^0.5"
+vulture = "^2.5"
+yamllint = "^1.27.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

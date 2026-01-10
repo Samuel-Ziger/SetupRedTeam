@@ -1,0 +1,95 @@
+
+2022-11-04 1.9
+- FIX: fix reading of long lines from stdin (mk 2) (#195)
+- FIX: add missing test files (#196)
+
+2022-11-04 1.8
+- FIX: fix reading of long lines from stdin (mk 2) (#195)
+
+2022-10-29 1.7
+- FIX: fix warnings on Windows build and reimplement err{x,} functions (#193)
+- FIX: fix reading of long lines from stdin and refactor slurp_file() in the process. (#192)
+- NEW: Add option -o outfile for when not run from a shell and redirect '>' is not an option. (#189)
+- FIX: fix tables in jo.md (#167)
+
+2022-01-05 1.6
+
+- FIX: repair tests broken by AUTHORS change (#164)
+- FIX: repair make distcheck by removing copied _jo zsh functions
+
+2022-01-04 1.5
+
+- NEW: replace asserts with human errors (#162)
+- NEW: zsh completion (#158)
+- FIX: stdin filter on Windows (#
+- FIX: several cleanups
+- NEW: Meson build
+- UPD: snap to newer base (#149)
+- NEW: option to deduplicate keys (#143, #145)
+- NEW: Filter functionality (#141)
+- FIX: file embedding
+- FIX: add missing tests to Makefile.am
+
+2020-07-18 1.4
+
+- FIX: Coercion flag logic now permits getopt(3) double-dash
+- FIX: Documentation clarifies special characters
+- FIX: Jo builds on snap builds (#110)
+- FIX: Jo builds on systems with slightly older pkg-config (#107)
+
+
+2019-11-04 1.3
+- FIX: Escaped @ ("\@") is treated as "@" (#42, #103)
+- NEW: Support reading JSON array elements (#91)
+- UPD: Add home and removable-media interfaces to snap (#94)
+- FIX: fix unlikely crash after malloc fail when base64 encoding.
+- NEW: Support reading nested data from pipes (#82)
+
+2018-12-10 1.2
+- NEW: Dockerfile (#76)
+- UPD: add examples of empty arrays/objects to manual (#74)
+- NEW: support -e to ignore empty stdin; contributed by Robi Karp
+- NEW: object-path support (#57)
+
+2017-05-18 1.1
+- NEW: type coercion (#55)
+- FIX: quotes in quotes and double quotes at begin of string (#47)
+- FIX: catch null value in assignmen (#46)
+- NEW: support for key:=file.json for reading object values from a file (#43)
+- NEW: PPA contributed by Ross Duggan in #32
+- FIX: "null" is now handled like we handle "true" and "false"; disable with -B
+- NEW: more tests in the test suite
+
+2016-03-11 1.0
+- NEW: read JSON element values from files (#22)
+- FIX: usage diagnostic
+- NEW: add support for OpenBSD pledge(2) (#21)
+
+2016-03-10 0.9
+- UPD: revert support for $JO_PRETTY et. al; it was a bad idea
+
+2016-03-10 0.8
+- UPD: new test suite
+- NEW: support for nested elements (#19)
+- NEW: if $JO_PRETTY is set, jo will always pretty-print
+- NEW: Define $JO_SPACER to any desired number of spaces or tabs for pretty-printing (#18)
+
+2016-03-09 0.7
+- NEW: strings "true"/"false" now default to booleans; avoid with -B (#17)
+- FIX: test.sh get quotes to prevent failures with pdksh (#16)
+- FIX: pretty-print Version if requested (#15)
+- FIX: Add cast to suppress warning when compiling with GCC 4.8.4 (#14)
+
+2016-03-08 0.6
+- FIX: make build work on CentOS 6 (#13)
+- NEW: JSONy version with -V
+
+2016-03-08 0.5
+- FIX: fileno error (#12)
+
+2016-03-08 0.4
+- NEW: Win32 support for CJK contributed by @mattn
+
+2016-03-08 0.3
+- NEW: autotools support
+- NEW: option -v

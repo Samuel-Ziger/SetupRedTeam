@@ -1,0 +1,3 @@
+$ fq -n '"abc&amp;&lt;&gt;" | from_xmlentities | ., to_xmlentities'
+"abc&<>"
+"abc&amp;&lt;&gt;"

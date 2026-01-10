@@ -1,0 +1,29 @@
+# ffmpeg -f lavfi -i sine -t 10ms test.mp3
+# fq '"aaaaa"*100, .frames[0], "bbbbb", .frames[0], "ccccc"*100 | tobytes' test.mp3 > unknown.mp3
+$ fq -d mp3 . unknown.mp3
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.{}: unknown.mp3 (mp3)
+     |                                               |                |  error: mp3: error at position 0x365: exceeds max precent unknown bits, 73 > 50
+     |                                               |                |  headers[0:0]:
+0x000|61 61 61 61 61 61 61 61 61 61 61 61 61 61 61 61|aaaaaaaaaaaaaaaa|  gap0: raw bits
+*    |until 0x1f3.7 (500)                            |                |
+0x1f0|            ff fb 40 c0 00 00 00 00 00 00 00 00|    ..@.........|  frames[0:2]:
+0x200|00 00 00 00 00 00 00 00 00 49 6e 66 6f 00 00 00|.........Info...|
+*    |until 0x364.7 (369)                            |                |
+0x2a0|                              62 62 62 62 62   |          bbbbb |  gap1: raw bits
+     |                                               |                |  footers[0:0]:
+0x360|               63 63 63 63 63 63 63 63 63 63 63|     ccccccccccc|  gap2: raw bits
+0x370|63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63|cccccccccccccccc|
+*    |until 0x558.7 (end) (500)                      |                |
+$ fq -o max_unknown=73 -d mp3 . unknown.mp3
+     |00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f|0123456789abcdef|.{}: unknown.mp3 (mp3)
+     |                                               |                |  headers[0:0]:
+0x000|61 61 61 61 61 61 61 61 61 61 61 61 61 61 61 61|aaaaaaaaaaaaaaaa|  gap0: raw bits
+*    |until 0x1f3.7 (500)                            |                |
+0x1f0|            ff fb 40 c0 00 00 00 00 00 00 00 00|    ..@.........|  frames[0:2]:
+0x200|00 00 00 00 00 00 00 00 00 49 6e 66 6f 00 00 00|.........Info...|
+*    |until 0x364.7 (369)                            |                |
+0x2a0|                              62 62 62 62 62   |          bbbbb |  gap1: raw bits
+     |                                               |                |  footers[0:0]:
+0x360|               63 63 63 63 63 63 63 63 63 63 63|     ccccccccccc|  gap2: raw bits
+0x370|63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63|cccccccccccccccc|
+*    |until 0x558.7 (end) (500)                      |                |

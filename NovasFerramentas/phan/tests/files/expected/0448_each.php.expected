@@ -1,0 +1,4 @@
+%s:4 PhanUndeclaredFunction Call to undeclared function \each()
+%s:11 PhanUndeclaredFunction Call to undeclared function \each()
+%s:12 PhanDebugAnnotation @phan-debug-var requested for variable $val - it has union type array(real=array)
+%s:14 PhanDebugAnnotation @phan-debug-var requested for variable $v - it has union type mixed

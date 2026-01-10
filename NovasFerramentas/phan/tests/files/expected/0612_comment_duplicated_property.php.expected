@@ -1,0 +1,3 @@
+%s:5 PhanCommentDuplicateMagicProperty Comment declares @property* $intReadProperty multiple times
+%s:7 PhanCommentDuplicateMagicProperty Comment declares @property* $mixedProperty multiple times
+%s:9 PhanCommentDuplicateMagicProperty Comment declares @property* $stringWriteProperty multiple times

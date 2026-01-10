@@ -1,0 +1,26 @@
+$ fq
+exitcode: 2
+stderr:
+Usage: fq [OPTIONS] [--] [EXPR] [FILE...]
+$ fq -n '1+"a"'
+exitcode: 5
+stderr:
+error: cannot add: number (1) and string ("a")
+$ fq -n '"abc\n" | halt_error(123)'
+exitcode: 123
+stderr:
+abc
+$ fq -n 'null | halt_error(123)'
+exitcode: 123
+$ fq -n invalid
+exitcode: 3
+stderr:
+error: arg: function not defined: invalid/0
+$ fq -n "("
+exitcode: 3
+stderr:
+error: arg:1:1: unexpected EOF
+$ fq . non-existing
+exitcode: 2
+stderr:
+error: non-existing: no such file or directory

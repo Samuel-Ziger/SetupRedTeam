@@ -1,0 +1,266 @@
+#!/bin/bash
+
+ABORT="\033[31mAbort:\033[00m"
+SUCCESS="\033[32mSuccess:\033[00m"
+INFO="\033[33mInfo:\033[00m"
+
+MY_PATH=`dirname "$0"`
+cd $MY_PATH
+
+echo -e $INFO "Creating app bundle for macOS."
+
+BUNDLE_NAME="@MACOS_BUNDLE_NAME@"
+APP_NAME="@MACOS_BINARY_NAME@"
+INDEXER_NAME="@MACOS_INDEXER_BINARY_NAME@"
+
+VERSION_STRING="@MACOS_BUNDLE_VERSION@"
+VERSION_STRING="${VERSION_STRING//./_}"
+PACKAGE_DIR=${BUNDLE_NAME}_${VERSION_STRING}
+
+BOOST_DIR="@MACOS_BOOST_DIR@"
+CLANG_DIR="@MACOS_CLANG_DIR@"
+QT_DIR="@MACOS_QT_DIR@"
+QT_FRAMEWORK_PATHS=(@MACOS_QT_FRAMEWORKS@)
+
+if [ ! -x "$APP_NAME" ]
+then
+	echo -e $ABORT "Executable $APP_NAME does not exist."
+	exit 1
+fi
+
+if [ ! -e "bundle_info.plist" ]
+then
+	echo -e $ABORT "bundle_info.plist does not exist."
+	exit 1
+fi
+
+if [ -d "$PACKAGE_DIR" ]
+then
+	echo -e $INFO "Removing old package."
+	rm -rf $PACKAGE_DIR
+	rm ${PACKAGE_DIR}_macOS_64bit.dmg
+fi
+
+BUNDLE_PATH=$PACKAGE_DIR/$BUNDLE_NAME.app
+BIN_DIR=$BUNDLE_PATH/Contents/MacOS
+DYNLIB_DIR=$BUNDLE_PATH/Contents/lib
+PLUGIN_DIR=$BUNDLE_PATH/Contents/Plugins
+FRAMEWORK_DIR=$BUNDLE_PATH/Contents/Frameworks
+RES_DIR=$BUNDLE_PATH/Contents/Resources
+APP_PATH=$BIN_DIR/$APP_NAME
+INDEXER_PATH=$RES_DIR/$INDEXER_NAME
+
+
+echo -e $INFO "Creating bundle folders."
+mkdir -p $BIN_DIR
+mkdir -p $DYNLIB_DIR
+mkdir -p $PLUGIN_DIR
+mkdir -p $FRAMEWORK_DIR
+mkdir -p $RES_DIR
+
+
+echo -e $INFO "Copying bundle contents."
+cp $APP_NAME $APP_PATH
+
+cp bundle_info.plist $BUNDLE_PATH/Contents/Info.plist
+
+cp $INDEXER_NAME $INDEXER_PATH
+
+mkdir -p $RES_DIR/data
+
+cp -R ../../../bin/app/data/color_schemes $RES_DIR/data/color_schemes
+cp -R ../../../bin/app/data/syntax_highlighting_rules $RES_DIR/data/syntax_highlighting_rules
+cp -R ../../../bin/app/data/fonts $RES_DIR/data/fonts
+cp -R ../../../bin/app/data/gui $RES_DIR/data/gui
+cp -R ../../../bin/app/data/java $RES_DIR/data/java
+cp -R ../../../bin/app/data/python $RES_DIR/data/python
+cp -R ../../../bin/app/data/fallback $RES_DIR/data/fallback
+cp -R ../../../bin/app/user/projects $RES_DIR/data/fallback/projects
+cp -R ../../../bin/app/data/license $RES_DIR/data/license
+
+mkdir -p $RES_DIR/data/cxx/include
+cp -R ../../../bin/app/data/cxx/include/* $RES_DIR/data/cxx/include
+
+echo -e $INFO "run macdeployqt to copy Qt Frameworks and Plugins"
+$QT_DIR/bin/macdeployqt $BUNDLE_PATH
+
+echo -e $INFO "edit qt.conf"
+sed -i '' -e 's/PlugIns/Plugins/g' $RES_DIR/qt.conf
+
+install_name_tool -delete_rpath "$CLANG_DIR/./lib" $APP_PATH
+install_name_tool -delete_rpath "$BOOST_DIR/stage/lib" $APP_PATH
+install_name_tool -delete_rpath "@executable_path/../Frameworks" $APP_PATH
+install_name_tool -add_rpath "@loader_path/../Frameworks" $APP_PATH
+
+install_name_tool -delete_rpath "$CLANG_DIR/./lib" $INDEXER_PATH
+install_name_tool -delete_rpath "$BOOST_DIR/stage/lib" $INDEXER_PATH
+install_name_tool -delete_rpath "$QT_DIR/lib" $INDEXER_PATH
+install_name_tool -add_rpath "@loader_path/../Frameworks" $INDEXER_PATH
+
+echo -e $INFO "App dependencies"
+# otool -l $APP_PATH
+otool -L $APP_PATH
+
+echo -e $INFO "Indexer dependencies"
+# otool -l $INDEXER_PATH
+otool -L $INDEXER_PATH
+
+
+
+echo -e $INFO "Create icon"
+ICON=../../../bin/app/data/gui/icon/logo_1024_1024.png
+ICON_SET=$RES_DIR/icon.iconset
+
+mkdir -p $ICON_SET
+convert $ICON -resize 16x16 $ICON_SET/icon_16x16.png
+convert $ICON -resize 32x32 $ICON_SET/icon_16x16@2x.png
+convert $ICON -resize 32x32 $ICON_SET/icon_32x32.png
+convert $ICON -resize 64x64 $ICON_SET/icon_32x32@2x.png
+convert $ICON -resize 128x128 $ICON_SET/icon_128x128.png
+convert $ICON -resize 256x256 $ICON_SET/icon_128x128@2x.png
+convert $ICON -resize 256x256 $ICON_SET/icon_256x256.png
+convert $ICON -resize 512x512 $ICON_SET/icon_256x256@2x.png
+convert $ICON -resize 512x512 $ICON_SET/icon_512x512.png
+convert $ICON -resize 1024x1024 $ICON_SET/icon_512x512@2x.png
+
+iconutil -c icns -o $RES_DIR/icon.icns $ICON_SET
+
+echo -e $INFO "Create project icon"
+ICON=../../../bin/app/data/gui/icon/project_256_256.png
+ICON_SET=$RES_DIR/project.iconset
+
+mkdir -p $ICON_SET
+convert $ICON -resize 16x16 $ICON_SET/icon_16x16.png
+convert $ICON -resize 32x32 $ICON_SET/icon_16x16@2x.png
+convert $ICON -resize 32x32 $ICON_SET/icon_32x32.png
+convert $ICON -resize 64x64 $ICON_SET/icon_32x32@2x.png
+convert $ICON -resize 64x64 $ICON_SET/icon_64x64.png
+convert $ICON -resize 128x128 $ICON_SET/icon_64x64@2x.png
+convert $ICON -resize 128x128 $ICON_SET/icon_128x128.png
+convert $ICON -resize 256x256 $ICON_SET/icon_128x128@2x.png
+convert $ICON -resize 256x256 $ICON_SET/icon_256x256.png
+convert $ICON -resize 512x512 $ICON_SET/icon_256x256@2x.png
+convert $ICON -resize 512x512 $ICON_SET/icon_512x512.png
+convert $ICON -resize 1024x1024 $ICON_SET/icon_512x512@2x.png
+
+iconutil -c icns -o $RES_DIR/project.icns $ICON_SET
+
+
+
+echo -e $INFO "List available signing identities"
+security find-identity -v -p codesigning
+
+echo -e $INFO "Codesign frameworks."
+for FRAMEWORK_BIN_PATH in $FRAMEWORK_DIR/*.framework
+do
+	echo "framework" $FRAMEWORK_BIN_PATH
+	codesign --force --sign "Developer ID Application: Coati Software KG" $FRAMEWORK_BIN_PATH
+	codesign -v --verbose=5 $FRAMEWORK_BIN_PATH
+	# spctl -a --verbose $FRAMEWORK_BIN_PATH
+done
+
+echo -e $INFO "Codesign plugins."
+for PLUGIN_PATH in $(find $PLUGIN_DIR -name '*.dylib')
+do
+	echo "plugin" $PLUGIN_PATH
+	codesign --force --sign "Developer ID Application: Coati Software KG" $PLUGIN_PATH
+	codesign -v --verbose=5 $PLUGIN_PATH
+	# spctl -a --verbose $FRAMEWORK_BIN_PATH
+done
+
+echo -e $INFO "Codesign Python binaries."
+for LIB_PATH in $(find $RES_DIR -name '*.dylib')
+do
+	echo "python lib" $LIB_PATH
+	codesign --force --sign "Developer ID Application: Coati Software KG" $LIB_PATH
+	codesign -v --verbose=5 $LIB_PATH
+done
+for LIB_PATH in $(find $RES_DIR -name '*.so')
+do
+	echo "python lib" $LIB_PATH
+	codesign --force --sign "Developer ID Application: Coati Software KG" $LIB_PATH
+	codesign -v --verbose=5 $LIB_PATH
+done
+for LIB_PATH in $(find $RES_DIR -name 'Python')
+do
+	echo "python bin" $LIB_PATH
+	codesign --force --sign "Developer ID Application: Coati Software KG" $LIB_PATH
+	codesign -v --verbose=5 $LIB_PATH
+done
+for LIB_PATH in $(find $RES_DIR -name 'SourcetrailPythonIndexer')
+do
+	echo "python bin" $LIB_PATH
+	codesign --force --options runtime --sign "Developer ID Application: Coati Software KG" $LIB_PATH
+	codesign -v --verbose=5 $LIB_PATH
+done
+
+echo -e $INFO "Codesign indexer."
+codesign --force --options runtime --sign "Developer ID Application: Coati Software KG" $INDEXER_PATH
+codesign -v  --deep --verbose=5 $INDEXER_PATH
+# spctl -a --verbose $INDEXER_PATH
+
+echo -e $INFO "Codesign app."
+codesign --force --options runtime --sign "Developer ID Application: Coati Software KG" $BUNDLE_PATH
+codesign -v  --deep --verbose=5 $BUNDLE_PATH
+# spctl -a --verbose $BUNDLE_PATH
+
+
+
+echo -e $INFO "Copying other package contents."
+mkdir -p $PACKAGE_DIR/plugins/
+cp -R ../../../ide_plugins/sublime_text $PACKAGE_DIR/plugins/sublime_text/
+cp -R ../../../ide_plugins/vim $PACKAGE_DIR/plugins/vim/
+cp -R ../../../ide_plugins/atom $PACKAGE_DIR/plugins/atom/
+cp -R ../../../ide_plugins/emacs $PACKAGE_DIR/plugins/emacs/
+cp -R ../../../ide_plugins/eclipse $PACKAGE_DIR/plugins/eclipse/
+cp -R ../../../ide_plugins/idea $PACKAGE_DIR/plugins/idea/
+cp -R ../../../ide_plugins/qt_creator $PACKAGE_DIR/plugins/qt_creator/
+
+echo -e $SUCCESS "Created bundle successfully!";
+
+
+
+while true; do
+    read -p "Do you want to create a DMG package? [y/n] " yn
+    case $yn in
+        [Yy]* )
+			echo -e $INFO "create DMG package";
+
+			ln -s /Applications $PACKAGE_DIR/Applications;
+			hdiutil create -fs HFS+ ${PACKAGE_DIR}_macOS_64bit.dmg -volname ${PACKAGE_DIR} -srcfolder ${PACKAGE_DIR};
+			rm $PACKAGE_DIR/Applications;
+
+			echo -e $SUCCESS "Created DMG package successfully!";
+
+			break;;
+        [Nn]* )
+			echo -e $INFO "Skip DMG package.";
+			break;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+
+
+while true; do
+    read -p "Do you want to notarize the app? [y/n] " yn
+    case $yn in
+        [Yy]* )
+			echo -e $INFO "Notarize app.";
+
+			ditto -c -k --keepParent ${BUNDLE_PATH} ${BUNDLE_PATH}.zip;
+			xcrun altool --notarize-app --primary-bundle-id "com.sourcetrail" --username "egraether@coati.io"
+				--password "@keychain:sourcetrail_notarization" --file ${BUNDLE_PATH}.zip;
+			# xcrun altool --notarization-history 0 -u "egraether@coati.io" -p "@keychain:sourcetrail_notarization";
+			# xcrun altool --notarization-info <identifier> -u "egraether@coati.io" -p "@keychain:sourcetrail_notarization";
+			rm ${BUNDLE_PATH}.zip;
+
+			echo -e $SUCCESS "Notarized app successfully!";
+
+			break;;
+        [Nn]* )
+			echo -e $INFO "Skip app notarization.";
+			break;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done

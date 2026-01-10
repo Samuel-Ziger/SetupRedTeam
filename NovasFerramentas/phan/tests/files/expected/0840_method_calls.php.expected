@@ -1,0 +1,2 @@
+%s:20 PhanTypeMismatchReturnReal Returning $result of type string but main() is declared to return ?array
+%s:34 PhanTypeMismatchReturnReal Returning $result of type string but main2() is declared to return ?array
