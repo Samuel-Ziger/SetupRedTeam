@@ -1,0 +1,11 @@
+mutation login {
+  a: login(input: { username: "carlos", password: "123456" }) {
+    token
+    success
+  }
+
+  b: login(input: { username: "carlos", password: "password" }) {
+    token
+    success
+  }
+}

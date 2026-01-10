@@ -1,0 +1,141 @@
+┌──(kali㉿kali)-[~/Área de trabalho/Solyd/CTF1]
+└─$ nmap 98.92.238.60 
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-01-05 20:56 -03
+Nmap scan report for ec2-98-92-238-60.compute-1.amazonaws.com (98.92.238.60)
+Host is up (0.15s latency).
+Not shown: 996 closed tcp ports (reset)
+PORT   STATE    SERVICE
+21/tcp open     ftp
+22/tcp open     ssh
+25/tcp filtered smtp
+80/tcp open     http
+
+Nmap done: 1 IP address (1 host up) scanned in 4.15 seconds
+                                                                                                                                                                        
+┌──(kali㉿kali)-[~/Área de trabalho/Solyd/CTF1]
+└─$ ftp 98.92.238.60
+Connected to 98.92.238.60.
+220 (vsFTPd 3.0.3)
+Name (98.92.238.60:kali): anonymous
+331 Please specify the password.
+Password: 
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> pass
+Passive mode: off; fallback to active mode: off.
+ftp> cd Comunicados
+250 Directory successfully changed.
+ftp> cd Comunicados
+550 Failed to change directory.
+ftp> ls =la
+200 EPRT command successful. Consider using EPSV.
+150 Here comes the directory listing.
+226 Directory send OK.
+ftp> ls -la
+200 EPRT command successful. Consider using EPSV.
+150 Here comes the directory listing.
+drwxr-xr-x    2 ftp      ftp          4096 Jan 09  2019 .
+drwxr-xr-x    3 ftp      ftp          4096 Jan 09  2019 ..
+-rw-r--r--    1 ftp      ftp           231 Jan 09  2019 .aviso!
+226 Directory send OK.
+ftp> get .aviso!
+local: .aviso! remote: .aviso!
+200 EPRT command successful. Consider using EPSV.
+150 Opening BINARY mode data connection for .aviso! (231 bytes).
+100% |***************************************************************************************************************************|   231       22.20 KiB/s    00:00 ETA
+226 Transfer complete.
+231 bytes received in 00:00 (1.28 KiB/s)
+ftp> 
+
+
+┌──(kali㉿kali)-[~/Área de trabalho/Solyd/CTF1]
+└─$ wpscan --url http://98.92.238.60/wordpress/
+_______________________________________________________________
+         __          _______   _____
+         \ \        / /  __ \ / ____|
+          \ \  /\  / /| |__) | (___   ___  __ _ _ __ ®
+           \ \/  \/ / |  ___/ \___ \ / __|/ _` | '_ \
+            \  /\  /  | |     ____) | (__| (_| | | | |
+             \/  \/   |_|    |_____/ \___|\__,_|_| |_|
+
+         WordPress Security Scanner by the WPScan Team
+                         Version 3.8.28
+                               
+       @_WPScan_, @ethicalhack3r, @erwan_lr, @firefart
+_______________________________________________________________
+
+[i] Updating the Database ...
+[i] Update completed.
+
+[+] URL: http://98.92.238.60/wordpress/ [98.92.238.60]
+[+] Started: Mon Jan  5 21:12:39 2026
+
+Interesting Finding(s):
+
+[+] Headers
+ | Interesting Entry: Server: Apache/2.4.29 (Ubuntu)
+ | Found By: Headers (Passive Detection)
+ | Confidence: 100%
+
+[+] Upload directory has listing enabled: http://98.92.238.60/wordpress/wp-content/uploads/
+ | Found By: Direct Access (Aggressive Detection)
+ | Confidence: 100%
+
+[+] WordPress version 5.0.3 identified (Insecure, released on 2019-01-09).
+ | Found By: Emoji Settings (Passive Detection)
+ |  - http://98.92.238.60/wordpress/, Match: 'wp-includes\/js\/wp-emoji-release.min.js?ver=5.0.3'
+ | Confirmed By: Meta Generator (Passive Detection)
+ |  - http://98.92.238.60/wordpress/, Match: 'WordPress 5.0.3'
+
+[+] WordPress theme in use: simplent
+ | Location: http://98.92.238.60/wordpress/wp-content/themes/simplent/
+ | Latest Version: 1.2.6 (up to date)
+ | Last Updated: 2018-01-10T00:00:00.000Z
+ | Readme: http://98.92.238.60/wordpress/wp-content/themes/simplent/readme.txt
+ | Style URL: http://98.92.238.60/wordpress/wp-content/themes/simplent/style.css?ver=5.0.3
+ | Style Name: Simplent
+ | Description: Simplent is a responsive simple and minimal WordPress Theme, which allow you to create an effective ...
+ | Author: Abdul Rafay
+ | Author URI: https://abdulrafay.me
+ |
+ | Found By: Css Style In Homepage (Passive Detection)
+ |
+ | Version: 1.2.6 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://98.92.238.60/wordpress/wp-content/themes/simplent/style.css?ver=5.0.3, Match: 'Version: 1.2.6'
+
+[+] Enumerating All Plugins (via Passive Methods)
+[+] Checking Plugin Versions (via Passive and Aggressive Methods)
+
+[i] Plugin(s) Identified:
+
+[+] simply-poll
+ | Location: http://98.92.238.60/wordpress/wp-content/plugins/simply-poll/
+ | Latest Version: 1.4.1 (up to date)
+ | Last Updated: 2012-01-05T16:11:00.000Z
+ |
+ | Found By: Urls In Homepage (Passive Detection)
+ |
+ | Version: 1.4.1 (100% confidence)
+ | Found By: Readme - Stable Tag (Aggressive Detection)
+ |  - http://98.92.238.60/wordpress/wp-content/plugins/simply-poll/readme.txt
+ | Confirmed By: Readme - ChangeLog Section (Aggressive Detection)
+ |  - http://98.92.238.60/wordpress/wp-content/plugins/simply-poll/readme.txt
+
+[+] Enumerating Config Backups (via Passive and Aggressive Methods)
+ Checking Config Backups - Time: 00:00:04 <=========================================================================================> (137 / 137) 100.00% Time: 00:00:04
+
+[i] No Config Backups Found.
+
+[!] No WPScan API Token given, as a result vulnerability data has not been output.
+[!] You can get a free API token with 25 daily requests by registering at https://wpscan.com/register
+
+[+] Finished: Mon Jan  5 21:12:53 2026
+[+] Requests Done: 187
+[+] Cached Requests: 5
+[+] Data Sent: 44.475 KB
+[+] Data Received: 22.825 MB
+[+] Memory used: 276.945 MB
+[+] Elapsed time: 00:00:14
+
