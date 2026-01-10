@@ -68,14 +68,26 @@ Kali/Ferramentas/zphisher/*.dat
 Kali/Ferramentas/zphisher/.sites/
 
 # Output de scripts
-output/
+output/*
+!output/.gitkeep
+!output/README.md
 results/
 loot/
 enum/
 recon/
 
-# Output padronizado
-output/
+# Output padronizado - ignorar conteúdo, mas manter estrutura e README
+output/*
+!output/
+!output/.gitkeep
+!output/README.md
+!output/recon/
+!output/exploits/
+!output/creds/
+!output/screenshots/
+!output/reports/
+output/**/*
+!output/README.md
 
 # Arquivos com nomes muito longos (problema Windows)
 # Sourcetrail - binários e dados de teste (podem ser baixados separadamente)
