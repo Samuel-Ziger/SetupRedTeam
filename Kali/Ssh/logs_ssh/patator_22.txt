@@ -1,0 +1,21 @@
+/usr/bin/patator:452: SyntaxWarning: invalid escape sequence '\w'
+  before_urls=http://10.0.0.1/index before_egrep='_N1_:<input type="hidden" name="nonce1" value="(\w+)"|_N2_:name="nonce2" value="(\w+)"'
+/usr/bin/patator:2674: SyntaxWarning: invalid escape sequence '\w'
+  ('prompt_re', 'regular expression to match prompts [\w+:]'),
+/usr/bin/patator:2687: SyntaxWarning: invalid escape sequence '\w'
+  def execute(self, host, port='23', inputs=None, prompt_re='\w+:', timeout='20', persistent='0'):
+/usr/bin/patator:3361: SyntaxWarning: invalid escape sequence '\w'
+  ('prompt_re', 'regular expression to match prompts [\w+:]'),
+/usr/bin/patator:3383: SyntaxWarning: invalid escape sequence '\w'
+  def execute(self, host, port='513', luser='root', user='', password=None, prompt_re='\w+:', timeout='10', persistent='0'):
+/usr/bin/patator:4254: SyntaxWarning: invalid escape sequence '\d'
+  m = re.search(' Authentication only, exit status (\d+)', err)
+/usr/bin/patator:4971: SyntaxWarning: invalid escape sequence '\('
+  mesg = 'Handshake returned: %s (%s)' % (re.search('SA=\((.+) LifeType', out).group(1), re.search('\t(.+) Mode Handshake returned', out).group(1))
+19:06:33 patator    INFO - Starting Patator 1.0 (https://github.com/lanjelot/patator) with python-3.13.9 at 2025-12-21 19:06 UTC
+19:06:33 patator    INFO - Progress:   0% (0/1) | Speed: 10 r/s | ETC: 19:06:33 (00:00:00 remaining) 
+19:06:33 patator    INFO - Progress:   0% (0/1) | Speed: 10 r/s | ETC: 19:06:33 (00:00:00 remaining) 
+19:06:33 patator    INFO -                                                                              
+19:06:33 patator    INFO - code  size    time | candidate                          |   num | mesg
+19:06:33 patator    INFO - -----------------------------------------------------------------------------
+19:06:34 patator    INFO - Hits/Done/Skip/Fail/Size: 0/0/0/0/0, Avg: 0 r/s, Time: 0h 0m 0s

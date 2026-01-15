@@ -1,0 +1,19 @@
+[0;32m[+] Iniciando ataque geral autônomo[0m
+[0;32m[+] Target: 192.168.1.1 (192.168.1.1)[0m
+[0;32m[+] Timestamp: 20251221_163833[0m
+[0;32m[+] nmap encontrado[0m
+[0;32m[+] hydra encontrado[0m
+[0;32m[+] medusa encontrado[0m
+[0;32m[+] mysql encontrado[0m
+[0;32m[+] ftp encontrado[0m
+[0;32m[+] ssh encontrado[0m
+[0;32m[+] curl encontrado[0m
+[0;32m[+] wget encontrado[0m
+[0;32m[+] python3 encontrado[0m
+[0;32m[+] sqlmap encontrado[0m
+[0;32m[+] nikto encontrado[0m
+[0;32m[+] gobuster encontrado[0m
+[0;32m[+] dirb encontrado[0m
+[0;32m[+] metasploit-framework instalado com sucesso[0m
+[0;32m[+] Todas as ferramentas verificadas[0m
+[1;33m[*] Executando scan Nmap completo...[0m

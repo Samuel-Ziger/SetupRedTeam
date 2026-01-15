@@ -1,0 +1,12 @@
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+NOTICE: ssh.mod: failed to connect, port 2222 was not open on 192.168.1.3
+Medusa v2.3 [http://www.foofus.net] (C) JoMo-Kun / Foofus Networks <jmk@foofus.net>
+

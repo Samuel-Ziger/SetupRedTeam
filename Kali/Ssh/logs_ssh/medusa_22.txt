@@ -1,0 +1,80 @@
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: admin
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: root
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: password
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: 123456
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: admin123
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: root123
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: toor
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: 12345
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: pass
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: 1234
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: root
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: 123456
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: admin
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: password
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: 12345
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: admin123
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: pass
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: root123
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: toor
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: 1234
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: root
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: 123456
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: admin
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: password
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: 12345
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: admin123
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: pass
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: toor
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: 1234
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: root123
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: root
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (0) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: root - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: root
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: 123456
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (3) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: 123456 - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: 123456
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: password
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (2) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: password - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: password
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: admin
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (1) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: admin - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: admin
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: pass
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: 12345
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (8) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: pass - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: pass
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (7) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: 12345 - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: 12345
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: admin123
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: root123
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (4) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: admin123 - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: admin123
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (5) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: root123 - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: root123
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: toor
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: 1234
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (6) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: toor - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: toor
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (9) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: 1234 - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: 1234
+ERROR: ssh.mod: Failed establishing SSH session (1/4): Host: 192.168.1.3 User: root Pass: root
+ERROR: ssh.mod: Failed establishing SSH session (2/4): Host: 192.168.1.3 User: root Pass: root
+ERROR: ssh.mod: Failed establishing SSH session (3/4): Host: 192.168.1.3 User: root Pass: root
+ERROR: ssh.mod: Failed establishing SSH session (4/4): Host: 192.168.1.3 User: root Pass: root
+ERROR: [ssh.mod] Failed to exchange encryption keys. Are you sure this is a SSHv2 server?
+NOTICE: [ssh] Host: 192.168.1.3 - Login thread (0) prematurely ended. The current number of parallel login threads may exceed what this service can reasonably handle. The total number of threads for this host will be decreased.
+NOTICE: [ssh] Host: 192.168.1.3 User: root Password: root - The noted credentials have been added to the end of the queue for testing.
+ERROR: ssh.mod: Failed establishing SSH session. The following credentials have been added to the missed queue for later testing: Host: 192.168.1.3 User: root Pass: root
+Medusa v2.3 [http://www.foofus.net] (C) JoMo-Kun / Foofus Networks <jmk@foofus.net>
+

@@ -1,0 +1,44 @@
+id: sqli-erro-check
+
+info:
+  name: SQL Injection Error Check
+  author: ziger
+  severity: critical
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    payloads:
+      injection:
+        - "'"
+        - "\""
+
+    stop-at-first-match: true
+
+    fuzzing:
+      - part: query
+        type: postfix
+        mode: single
+        fuzz:
+          - "{{injection}}"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "SQL syntax"
+          - "mysql_fetch_array"
+          - "mysql_num_rows"
+          - "You have an error in your SQL syntax"
+          - "Unclosed quotation mark after the character string"
+          - "Microsoft OLE DB Provider for SQL Server"
+          - "Oracle Text error"
+          - "ORA-01756"
+          - "PostgreSQL query failed"
+          - "supplied argument is not a valid PostgreSQL result"
+          - "Warning: pg_"
+          - "invalid input syntax for type"
+        case-insensitive: true

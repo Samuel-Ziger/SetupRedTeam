@@ -1,0 +1,29 @@
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Connection closed by 192.168.1.3 port 22
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Connection closed by 192.168.1.3 port 22
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Connection closed by 192.168.1.3 port 22
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Connection closed by 192.168.1.3 port 22
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Connection closed by 192.168.1.3 port 22
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 192.168.1.3 port 22
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Connection closed by 192.168.1.3 port 22
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: connect to host 192.168.1.3 port 2222: Connection refused
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: connect to host 192.168.1.3 port 2222: Connection refused
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: connect to host 192.168.1.3 port 2222: Connection refused
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: connect to host 192.168.1.3 port 2222: Connection refused
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: connect to host 192.168.1.3 port 2222: Connection refused
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: connect to host 192.168.1.3 port 2222: Connection refused
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: connect to host 192.168.1.3 port 2222: Connection refused
