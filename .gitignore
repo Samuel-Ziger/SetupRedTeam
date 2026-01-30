@@ -3,8 +3,11 @@
 *.log
 *.bak
 *.swp
+*.tar
+*.iso
+*.img
+*.ova
 *~
-
 # Arquivos de sistema
 Thumbs.db
 Desktop.ini
