@@ -1,0 +1,12 @@
+ssh admin@98.80.212.40
+The authenticity of host '98.80.212.40 (98.80.212.40)' can't be established.
+ED25519 key fingerprint is: SHA256:51oqQm3DZtj7JLRdBKCyyJuKJv34WLpmrLQ9830Z8Qo
+This host key is known by the following other names/addresses:
+    ~/.ssh/known_hosts:1: [hashed name]
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '98.80.212.40' (ED25519) to the list of known hosts.
+admin@98.80.212.40's password: 
+Permission denied, please try again.
+admin@98.80.212.40's password: 
+
+

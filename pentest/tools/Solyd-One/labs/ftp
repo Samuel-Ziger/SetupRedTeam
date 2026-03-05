@@ -1,0 +1,29 @@
+ftp -p 98.80.212.40
+Connected to 98.80.212.40.
+220 (vsFTPd 3.0.5)
+Name (98.80.212.40:kali): anonymous
+331 Please specify the password.
+Password: 
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> ls -la
+229 Entering Extended Passive Mode (|||5801|)
+150 Here comes the directory listing.
+drwxr-xr-x    1 0        0            4096 May 03  2023 .
+drwxr-xr-x    1 0        0            4096 May 03  2023 ..
+-rw-r--r--    1 0        0             337 May 03  2023 infraestrutura.txt
+226 Directory send OK.
+ftp> cat infraestrutura,txt
+?Invalid command.
+ftp> cat infraestrutura.txt
+?Invalid command.
+ftp> get infraestrutura.txt
+local: infraestrutura.txt remote: infraestrutura.txt
+229 Entering Extended Passive Mode (|||56428|)
+150 Opening BINARY mode data connection for infraestrutura.txt (337 bytes).
+100% |************************************************************************************************************************|   337       54.41 KiB/s    00:00 ETA
+226 Transfer complete.
+337 bytes received in 00:00 (2.29 KiB/s)
+ftp> exit
+221 Goodbye.

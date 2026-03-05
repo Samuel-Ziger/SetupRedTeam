@@ -1,0 +1,28 @@
+ssh jackson@98.80.212.40
+jackson@98.80.212.40's password: 
+Welcome to Ubuntu 22.04 LTS (GNU/Linux 6.5.0-1014-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, you can run the 'unminimize' command.
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+jackson@ip-10-0-216-180:~$ ls -la
+total 32
+drwxr-x--- 1 jackson jackson 4096 Mar  5 16:24 .
+drwxr-xr-x 1 root    root    4096 May  3  2023 ..
+-rw------- 1 jackson jackson   13 May  9  2023 .bash_history
+-rw-r--r-- 1 jackson jackson  220 Jan  6  2022 .bash_logout
+-rw-r--r-- 1 jackson jackson 3771 Jan  6  2022 .bashrc
+drwx------ 2 jackson jackson 4096 Mar  5 16:24 .cache

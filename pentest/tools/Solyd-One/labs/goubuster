@@ -1,0 +1,24 @@
+gobuster dir -u http://98.80.212.40 -w /usr/share/wordlists/dirb/common.txt             
+===============================================================
+Gobuster v3.8.2
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://98.80.212.40
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8.2
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+.htpasswd            (Status: 403) [Size: 277]
+.htaccess            (Status: 403) [Size: 277]
+.hta                 (Status: 403) [Size: 277]
+index.html           (Status: 200) [Size: 131]
+server-status        (Status: 403) [Size: 277]
+Progress: 4613 / 4613 (100.00%)
+===============================================================
+Finished
+===============================================================

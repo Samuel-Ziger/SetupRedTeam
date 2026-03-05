@@ -1,0 +1,11 @@
+smbclient -L //98.80.212.40 -N
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        print$          Disk      Printer Drivers
+        IPC$            IPC       IPC Service (ip-10-0-216-180 server (Samba, Ubuntu))
+Reconnecting with SMB1 for workgroup listing.
+smbXcli_negprot_smb1_done: No compatible protocol selected by server.
+Protocol negotiation to server 98.80.212.40 (for a protocol between LANMAN1 and NT1) failed: NT_STATUS_INVALID_NETWORK_RESPONSE
+Unable to connect with SMB1 -- no workgroup available
+                                                       

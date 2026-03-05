@@ -1,0 +1,19 @@
+--------------------Servicos-------------------------
+
+apache
+vsftp
+samba
+
+--------------------Caminhos-------------------------
+
+apache -> /etc/apache2/
+ftp -> /srv/files/ftp/
+
+
+--------------------Domain---------------------------
+
+market-furniture.io
+
+--------------------Importante----------------------
+
+arquivo ->  /home/TODO.txt 

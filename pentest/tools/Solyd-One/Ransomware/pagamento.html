@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Recuperação de Arquivos</title>
+<style>
+    body {
+        background-color: #0b0b0b;
+        color: #eaeaea;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 700px;
+        margin: 40px auto;
+        background: #151515;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(255,0,0,0.2);
+    }
+
+    h1 {
+        color: #ff4c4c;
+        text-align: center;
+    }
+
+    .alert {
+        background: #2a0000;
+        padding: 15px;
+        border-left: 5px solid #ff4c4c;
+        margin-bottom: 20px;
+    }
+
+    .info {
+        margin: 15px 0;
+        line-height: 1.6;
+    }
+
+    .timer {
+        font-size: 22px;
+        color: #ff4c4c;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .payment-box {
+        background: #1f1f1f;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        background: #0b0b0b;
+        border: 1px solid #444;
+        color: #eaeaea;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #ff4c4c;
+        border: none;
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #ff1f1f;
+    }
+
+    .footer {
+        font-size: 11px;
+        color: #888;
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .success {
+        text-align: center;
+        color: #00ff99;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Seus arquivos foram criptografados</h1>
+
+    <div class="alert">
+        Todos os documentos, imagens e bancos de dados foram bloqueados.
+        Tentativas de recuperação sem autorização podem causar perda permanente.
+    </div>
+
+    <div class="info">
+        Para restaurar seus arquivos, é necessário efetuar o pagamento de uma
+        <b>taxa de recuperação</b>.
+        <br><br>
+        Após a confirmação, o sistema iniciará automaticamente o processo
+        de descriptografia.
+    </div>
+
+    <div class="timer" id="timer">
+        Tempo restante: 23:59:59
+    </div>
+
+    <div class="payment-box">
+        <h3>Pagamento</h3>
+
+        <input type="text" placeholder="Nome do responsável">
+        <input type="text" placeholder="E-mail corporativo">
+        <input type="text" placeholder="Código de transação">
+
+        <button onclick="fakePay()">Confirmar Pagamento</button>
+    </div>
+
+    <div id="result"></div>
+
+    <div class="footer">
+        ⚠️ Ambiente de simulação educacional — nenhum pagamento real é processado
+    </div>
+</div>
+
+<script>
+    function fakePay() {
+        document.getElementById("result").innerHTML =
+            "<div class='success'>Pagamento recebido.<br>Iniciando recuperação dos arquivos...</div>";
+    }
+
+    // Timer fake
+    let seconds = 86399;
+
+    setInterval(() => {
+        let h = Math.floor(seconds / 3600);
+        let m = Math.floor((seconds % 3600) / 60);
+        let s = seconds % 60;
+
+        document.getElementById("timer").textContent =
+            "Tempo restante: " +
+            String(h).padStart(2, '0') + ":" +
+            String(m).padStart(2, '0') + ":" +
+            String(s).padStart(2, '0');
+
+        if (seconds > 0) seconds--;
+    }, 1000);
+</script>
+
+</body>
+</html>

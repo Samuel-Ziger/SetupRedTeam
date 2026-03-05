@@ -1,0 +1,22 @@
+ftp -p 98.80.212.40
+Connected to 98.80.212.40.
+220 (vsFTPd 3.0.5)
+Name (98.80.212.40:kali): jackson
+331 Please specify the password.
+Password: 
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> passive
+Passive mode: off; fallback to active mode: off.
+ftp> ls -la
+200 EPRT command successful. Consider using EPSV.
+150 Here comes the directory listing.
+drwxr-x---    1 1000     1000         4096 Mar 05 16:24 .
+drwxr-xr-x    1 0        0            4096 May 03  2023 ..
+-rw-------    1 1000     1000           25 Mar 05 16:24 .bash_history
+-rw-r--r--    1 1000     1000          220 Jan 06  2022 .bash_logout
+-rw-r--r--    1 1000     1000         3771 Jan 06  2022 .bashrc
+drwx------    2 1000     1000         4096 Mar 05 16:24 .cache
+-rw-r--r--    1 1000     1000          807 Jan 06  2022 .profile
+226 Directory send OK.

