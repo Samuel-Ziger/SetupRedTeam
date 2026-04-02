@@ -142,7 +142,7 @@ SetupRedTeam/
 ├── wordlists/
 ├── lib/
 ├── legacy/
-├── Pentests Privados/        # Pasta local (conteúdo sensível / privado)
+├── Pentests Privados/        # Pasta local (sensível); listada no .gitignore — não vai para o Git
 ├── .github/
 ├── README.md
 ├── INDEX.md

@@ -35,6 +35,9 @@ pentest/recon/passive/redsubv3/redsubv3
 *.tar.gz
 *.rar
 
+# Trabalhos de pentest privados (relatórios, dados de cliente) — não enviar ao GitHub
+Pentests Privados/
+
 # Credenciais e configurações sensíveis
 *.credentials
 *.config
