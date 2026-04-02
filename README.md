@@ -1,6 +1,8 @@
 # Setup Red Team - Repositório Profissional de Pentest
 
-![Setup Red Team](./setup.png)
+<p align="center">
+  <img src="./setup.png" alt="Setup Red Team — repositório profissional de pentest" width="900" />
+</p>
 
 ![Version](https://img.shields.io/badge/version-2.2.0-blue)
 ![Tools](https://img.shields.io/badge/tools-arsenal%20extenso-orange)
