@@ -1,0 +1,12 @@
+# Nmap 7.98 scan initiated Sat Mar 14 21:05:57 2026 as: /usr/lib/nmap/nmap --privileged -p- -oN nmap 13.222.16.226
+Nmap scan report for ec2-13-222-16-226.compute-1.amazonaws.com (13.222.16.226)
+Host is up (0.14s latency).
+Not shown: 65530 closed tcp ports (reset)
+PORT      STATE    SERVICE
+25/tcp    filtered smtp
+80/tcp    open     http
+137/tcp   filtered netbios-ns
+138/tcp   filtered netbios-dgm
+58000/tcp filtered unknown
+
+# Nmap done at Sat Mar 14 21:18:45 2026 -- 1 IP address (1 host up) scanned in 768.17 seconds

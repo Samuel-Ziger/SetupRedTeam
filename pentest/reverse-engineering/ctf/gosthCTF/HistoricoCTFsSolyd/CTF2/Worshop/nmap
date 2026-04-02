@@ -1,0 +1,10 @@
+# Nmap 7.98 scan initiated Sat Mar 14 14:26:31 2026 as: /usr/lib/nmap/nmap --privileged -oN nmap 44.211.59.106
+Nmap scan report for ec2-44-211-59-106.compute-1.amazonaws.com (44.211.59.106)
+Host is up (0.14s latency).
+Not shown: 997 closed tcp ports (reset)
+PORT   STATE    SERVICE
+22/tcp open     ssh
+25/tcp filtered smtp
+80/tcp open     http
+
+# Nmap done at Sat Mar 14 14:26:44 2026 -- 1 IP address (1 host up) scanned in 13.42 seconds

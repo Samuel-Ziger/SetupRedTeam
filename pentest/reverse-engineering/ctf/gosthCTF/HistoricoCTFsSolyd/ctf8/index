@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AetherPharma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --primary-color: #2d6a4f;
+      --secondary-color: #95d5b2;
+      --accent-color: #40916c;
+      --light-bg: #f8f9fa;
+      --dark-text: #333;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Poppins', sans-serif; color: var(--dark-text); background: var(--light-bg); line-height: 1.6; }
+    header { background: var(--primary-color); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    header .logo { color: white; font-size: 1.5rem; font-weight: 700; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    nav a { color: white; text-decoration: none; font-weight: 500; }
+
+    .hero {
+      background: url('images/aether-logo.png') center/cover no-repeat;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      text-align: left;
+      color: white;
+      padding: 2rem;
+      position: relative;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .hero p {
+      font-size: 1.25rem;
+      margin: 1rem 0;
+      color: black;
+      max-width: 600px;
+    }
+    .btn-primary {
+      position: absolute;
+      top: 75%;
+      left: 60%;
+      transform: translateX(-50%);
+      background: var(--secondary-color);
+      color: grey;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-primary:hover { background: var(--accent-color); }
+
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; padding: 4rem 2rem; }
+    .feature-item { background: white; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 2rem; text-align: center; }
+    .feature-item i { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem; }
+    .feature-item h3 { margin-bottom: 0.5rem; font-weight: 600; }
+
+    .about { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; padding: 4rem 2rem; background: white; }
+    .about img { flex: 1 1 300px; border-radius: 10px; }
+    .about .content { flex: 2 1 400px; }
+    .about .content h2 { margin-bottom: 1rem; font-size: 2rem; color: var(--primary-color); }
+    .about .content p { margin-bottom: 1rem; }
+
+    footer { background: var(--primary-color); color: white; padding: 2rem; text-align: center; }
+    footer .socials { margin: 1rem 0; }
+    footer .socials a { color: white; margin: 0 0.5rem; font-size: 1.2rem; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="#" class="logo">AetherPharma</a>
+    <nav>
+      <ul>
+        <li><a href="#services">Serviços</a></li>
+        <li><a href="#about">Sobre Nós</a></li>
+        <li><a href="#contact">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Cuidando da sua saúde com inovação</h1>
+    <p>Na AetherPharma, combinamos ciência e tecnologia para oferecer soluções farmacêuticas de ponta, garantindo bem-estar e qualidade de vida.</p>
+    <button class="btn-primary">Conheça Nossos Produtos</button>
+  </section>
+
+  <section id="services" class="features">
+    <div class="feature-item">
+      <i class="fas fa-pills"></i>
+      <h3>Desenvolvimento de Medicamentos</h3>
+      <p>Pesquisa e formulação de fármacos inovadores para diferentes necessidades terapêuticas.</p>
+    </div>
+    <div class="feature-item">
+      <i class="fas fa-flask"></i>
+      <h3>Análises Laboratoriais</h3>
+      <p>Testes de alta precisão para garantir qualidade e segurança em cada aplicação.</p>
+    </div>
+    <div class="feature-item">
+      <i class="fas fa-vials"></i>
+      <h3>Consultoria Farmacêutica</h3>
+      <p>Orientação especializada para instituições de saúde e indústrias farmacêuticas.</p>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <img src="team-lab.jpg" alt="Equipe de Pesquisa">
+    <div class="content">
+      <h2>Quem Somos</h2>
+      <p>AetherPharma é uma empresa líder em soluções farmacêuticas, dedicada a pesquisas avançadas e serviços laboratoriais de excelência. Nossa missão é promover a saúde global por meio da inovação e responsabilidade social.</p>
+      <p>Com uma equipe multidisciplinar e laboratórios de última geração, estamos prontos para enfrentar os desafios da medicina moderna.</p>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <p>© 2025 AetherPharma. Todos os direitos reservados.</p>
+    <div class="socials">
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-linkedin-in"></i></a>
+    </div>
+    <p>Contato: contato@aetherpharma.sy | +55 (11) 1234-5678</p>
+  </footer>
+</body>
+</html>

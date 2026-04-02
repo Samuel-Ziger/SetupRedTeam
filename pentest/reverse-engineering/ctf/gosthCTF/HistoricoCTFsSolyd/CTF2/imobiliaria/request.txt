@@ -1,0 +1,8 @@
+POST /cadastro.php HTTP/1.1
+Host: imobiliarians.solyd:8081
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Origin: http://imobiliarians.solyd:8081
+Referer: http://imobiliarians.solyd:8081/cadastro.php
+Cookie: PHPSESSID=53b09b8gf8umbhtrd339tpro8c
+code=%27&validar=validar

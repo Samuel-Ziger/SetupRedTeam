@@ -1,0 +1,9 @@
+node_modules/
+data/*.db
+data/*.db-*
+.env
+.env.local
+
+# Supabase CLI (ligação local ao projeto remoto)
+supabase/.branches/
+supabase/.temp/

@@ -1,0 +1,1 @@
+Um dos nossos clientes acredita que seu servidor foi invadido e que estavam tentando vazar credenciais de sua rede para terceiros. O cliente nos enviou um arquivo de captura de rede para você analisar, veja o que você consegue descobrir.

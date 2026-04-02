@@ -1,0 +1,67 @@
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-02-14 14:36 +0000
+Nmap scan report for ec2-98-86-169-119.compute-1.amazonaws.com (98.86.169.119)
+Host is up (0.14s latency).
+Not shown: 997 closed tcp ports (reset)
+PORT     STATE    SERVICE
+25/tcp   filtered smtp
+80/tcp   open     http
+3306/tcp open     mysql
+
+Nmap done: 1 IP address (1 host up) scanned in 13.54 seconds
+nmap -sV -sC -p3306 13.220.129.145
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-02-25 22:32 +0000
+Nmap scan report for ec2-13-220-129-145.compute-1.amazonaws.com (13.220.129.145)
+Host is up (0.32s latency).
+
+PORT     STATE SERVICE VERSION
+3306/tcp open  mysql   MySQL 8.0.44-0ubuntu0.24.04.2
+| ssl-cert: Subject: commonName=MySQL_Server_8.0.44_Auto_Generated_Server_Certificate
+| Not valid before: 2026-01-07T22:09:40
+|_Not valid after:  2036-01-05T22:09:40
+| mysql-info: 
+|   Protocol: 10
+|   Version: 8.0.44-0ubuntu0.24.04.2
+|   Thread ID: 11
+|   Capabilities flags: 65535
+|   Some Capabilities: Support41Auth, DontAllowDatabaseTableColumn, IgnoreSigpipes, InteractiveClient, Speaks41ProtocolOld, FoundRows, Speaks41ProtocolNew, IgnoreSpaceBeforeParenthesis, SupportsCompression, SupportsLoadDataLocal, ODBCClient, SupportsTransactions, LongColumnFlag, SwitchToSSLAfterHandshake, LongPassword, ConnectWithDatabase, SupportsMultipleStatments, SupportsMultipleResults, SupportsAuthPlugins
+|   Status: Autocommit
+|   Salt: N&\x14\x1541\x01W4q>X\x0Bp;m8b\x17-
+|_  Auth Plugin Name: caching_sha2_password
+|_ssl-date: TLS randomness does not represent time
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 7.27 seconds
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ nmap -p3306 --script=mysql-info,mysql-enum,mysql-databases,mysql-users 13.220.129.145
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-02-25 22:32 +0000
+Nmap scan report for ec2-13-220-129-145.compute-1.amazonaws.com (13.220.129.145)
+Host is up (0.17s latency).
+
+PORT     STATE SERVICE
+3306/tcp open  mysql
+| mysql-info: 
+|   Protocol: 10
+|   Version: 8.0.44-0ubuntu0.24.04.2
+|   Thread ID: 19
+|   Capabilities flags: 65535
+|   Some Capabilities: LongPassword, ConnectWithDatabase, InteractiveClient, SupportsCompression, Speaks41ProtocolNew, LongColumnFlag, SupportsTransactions, IgnoreSpaceBeforeParenthesis, SwitchToSSLAfterHandshake, IgnoreSigpipes, DontAllowDatabaseTableColumn, FoundRows, SupportsLoadDataLocal, ODBCClient, Support41Auth, Speaks41ProtocolOld, SupportsAuthPlugins, SupportsMultipleStatments, SupportsMultipleResults
+|   Status: Autocommit
+|   Salt: _0\x13Bpc\x1EN/\x05]\x0B\x1FKGNK\x01!\
+|_  Auth Plugin Name: caching_sha2_password
+| mysql-enum: 
+|   Valid usernames: 
+|     root:<empty> - Valid credentials
+|     user:<empty> - Valid credentials
+|     netadmin:<empty> - Valid credentials
+|     test:<empty> - Valid credentials
+|     guest:<empty> - Valid credentials
+|     sysadmin:<empty> - Valid credentials
+|     administrator:<empty> - Valid credentials
+|     webadmin:<empty> - Valid credentials
+|     admin:<empty> - Valid credentials
+|     web:<empty> - Valid credentials
+|_  Statistics: Performed 10 guesses in 2 seconds, average tps: 5.0
+
+Nmap done: 1 IP address (1 host up) scanned in 1.77 seconds
+                                                             

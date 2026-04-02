@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blogo | Notícias</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111;
+      --muted:#5a5a5a;
+      --line:#e6e6e6;
+      --blue:#1d4ed8;
+      --max:1120px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color:var(--text);
+      background:var(--bg);
+    }
+    a{color:inherit; text-decoration:none}
+    a:hover .headline{ text-decoration: underline; }
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 18px;}
+
+    header{
+      position:sticky; top:0; z-index:10;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+    }
+    .header-inner{
+      height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .left, .right{display:flex; align-items:center; gap:14px;}
+    .icon-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:8px;
+      border:1px solid transparent;
+    }
+    .icon-btn:hover{ background:#f6f6f6; border-color:#efefef; }
+    .live{
+      display:flex; align-items:center; gap:10px;
+      font-weight:600; color:#222;
+    }
+    .live .pill{
+      width:10px; height:10px; border-radius:50%;
+      background:#e11d48; box-shadow:0 0 0 3px rgba(225,29,72,.15);
+    }
+    .logo{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; font-size:28px; letter-spacing:-0.02em;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      height:40px; padding:0 14px;
+      border-radius:6px; font-weight:700;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+    }
+    .btn.primary{
+      background:var(--blue); border-color:var(--blue); color:#fff;
+      box-shadow:0 1px 0 rgba(0,0,0,.06);
+    }
+    .btn:hover{ filter:brightness(.98); }
+
+    main{ padding:22px 0 36px; }
+    .lead-grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:24px;
+      align-items:start;
+    }
+    .lead img{
+      width:100%;
+      height:auto;
+      border-radius:2px;
+      display:block;
+    }
+    .lead .headline{
+      font-size:34px;
+      line-height:1.12;
+      margin:14px 0 10px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+    }
+    .lead.secondary .headline{ font-size:30px; }
+
+    .meta{
+      font-size:14px;
+      color:var(--muted);
+      display:flex; align-items:center; gap:10px;
+    }
+    .meta .sep{ color:#b3b3b3; }
+
+    .divider{ height:1px; background:var(--line); margin:18px 0; }
+
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:24px;
+      margin-top:6px;
+    }
+    .teaser{
+      padding:16px 0;
+      border-top:1px solid var(--line);
+    }
+    .teaser:first-child{ border-top:none; padding-top:0; }
+    .teaser .headline{
+      font-size:22px;
+      line-height:1.2;
+      margin:0 0 8px;
+      font-weight:800;
+      letter-spacing:-0.01em;
+    }
+
+    footer{
+      border-top:1px solid var(--line);
+      padding:18px 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    @media (max-width: 980px){
+      .lead-grid{ grid-template-columns:1fr; }
+      .lead.secondary .headline{ font-size:32px; }
+      .split{ grid-template-columns:1fr; }
+    }
+    @media (max-width: 520px){
+      .live span{ display:none; }
+      .lead .headline{ font-size:28px; }
+      .lead.secondary .headline{ font-size:26px; }
+      .teaser .headline{ font-size:20px; }
+      .right .btn{ display:none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap header-inner">
+      <div class="left">
+        <a class="live" href="#" aria-label="Assistir ao vivo">
+          <span class="pill" aria-hidden="true"></span>
+          <span>Assistir ao vivo</span>
+        </a>
+      </div>
+
+      <a class="logo" href="#" aria-label="Blogo">
+        <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#3b82f6"/>
+              <stop offset="1" stop-color="#22c55e"/>
+            </linearGradient>
+            <linearGradient id="g2" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f59e0b"/>
+              <stop offset="1" stop-color="#3b82f6"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 10h18c10 0 16 6 16 14 0 5-2 9-7 11 6 2 9 7 9 13 0 9-7 16-18 16H18V10Z" fill="url(#g1)"/>
+          <path d="M26 18h9c5 0 8 3 8 7s-3 7-8 7h-9V18Zm0 22h11c6 0 9 3 9 8s-4 8-10 8H26V40Z" fill="url(#g2)" opacity=".95"/>
+        </svg>
+        <span>Blogo</span>
+      </a>
+      <div class="right">
+        <a class="btn primary" href="#" aria-label="Se inscrever">Inscrever na Newsletter</a>
+        <a class="btn" href="#" aria-label="Assinar">Assinar</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section aria-label="Principais notícias">
+        <div class="lead-grid">
+          <article class="lead">
+            <a href="#">
+              <img src="aetherpharma.png" alt="Pesquisadora em laboratório manipulando tubos de ensaio" />
+            </a>
+            <a href="noticias.php"><h1 class="headline">AetherPharma com previsão de crescimento em 2026, apesar de controversas</h1></a>
+            <div class="meta">
+              <span>3 horas atrás</span><span class="sep">|</span><span>Economia</span>
+            </div>
+          </article>
+
+          <article class="lead secondary">
+            <a href="#">
+              <img src="festas-ano-novo.png" alt="Fogos de artifício e multidão celebrando o ano novo" />
+            </a>
+            <a href="#"><h1 class="headline">Veja as festas de ano novo e o que está previsto para 2026</h1></a>
+            <div class="meta">
+              <span>1 hora atrás</span><span class="sep">|</span><span>Mundo</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="divider" role="presentation"></div>
+
+        <div class="split" aria-label="Mais manchetes">
+          <div class="col">
+            <article class="teaser">
+              <a href="#"><h2 class="headline">Conheça o salvador da Noogle</h2></a>
+              <div class="meta"><span>2 horas atrás</span><span class="sep">|</span><span>Tecnologia</span></div>
+            </article>
+
+            <article class="teaser">
+              <a href="#"><h2 class="headline">Veja os principais filmes de 2026</h2></a>
+              <div class="meta"><span>1 hora atrás</span><span class="sep">|</span><span>Cultura</span></div>
+            </article>
+
+            <article class="teaser">
+              <a href="#"><h2 class="headline">Congresso vota hoje sobre a lei da "Uma Internet mais amorosa" e extremistas criticam</h2></a>
+              <div class="meta"><span>6 horas atrás</span><span class="sep">|</span><span>Política</span></div>
+            </article>
+          </div>
+
+          <div class="col">
+            <article class="teaser">
+              <a href="#"><h2 class="headline">1º competição de pastel do ano</h2></a>
+              <div class="meta"><span>5 horas atrás</span><span class="sep">|</span><span>Brasil</span></div>
+            </article>
+
+            <article class="teaser">
+              <a href="#"><h2 class="headline">Maior influenciadora do mundo lança seu 1º livro</h2></a>
+              <div class="meta"><span>4 horas atrás</span><span class="sep">|</span><span>Entretenimento</span></div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      © 2026 Blogo — Seu site de notícias de credibilidade e sem Fake News, pode confiar!
+    </div>
+  </footer>
+</body>
+</html>

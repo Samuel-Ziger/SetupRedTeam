@@ -1,0 +1,5 @@
+a plataforma passa um arquivo de rede.
+que ao ser usado no wireshark passa um pdf
+a onde olhando os metados, usando o pdfinfo a gente extrair os metadados e no subject a gente acha um javascript ofuscado.
+então no navegador a gente abre beaurifiler.io
+apos isso a gente usa o node no javascript ou poderia ser feito usando um compilador online e nos re 

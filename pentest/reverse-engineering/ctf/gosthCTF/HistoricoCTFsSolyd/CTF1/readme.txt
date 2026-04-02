@@ -1,0 +1,1 @@
+Seu próximo desafio irá requerir um conhecimento de programação em sockets, você irá receber uma matriz 3x3 com caracteres aleatórios (não numeros) e números. Some todos os números dessa matriz para conseguir a flag.

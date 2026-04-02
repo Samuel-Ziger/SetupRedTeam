@@ -1,0 +1,164 @@
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql -h 13.220.129.145 -u root
+ERROR 2026 (HY000): TLS/SSL error: self-signed certificate in certificate chain
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql -h 13.220.129.145 -u blogodb -p
+Enter password: 
+ERROR 2026 (HY000): TLS/SSL error: self-signed certificate in certificate chain
+  ┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql -h 13.220.129.145 -u root --ssl-mode=DISABLED
+mysql: unknown variable 'ssl-mode=DISABLED'
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql -h 13.220.129.145 -u root --ssl=0
+ERROR 1045 (28000): Access denied for user 'root'@'179.249.64.197' (using password: NO)
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql -h 13.220.129.145 -u root --skip-ssl
+ERROR 1045 (28000): Access denied for user 'root'@'179.249.64.197' (using password: NO)
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql --protocol=TCP -h 13.220.129.145 -u root --skip-ssl
+ERROR 1045 (28000): Access denied for user 'root'@'179.249.64.197' (using password: NO)
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ sudo apt install mysql-client
+[sudo] senha para client01: 
+Sinto muito, tente novamente.
+[sudo] senha para client01: 
+O pacote mysql-client não está disponível, mas é referenciado por outro pacote.
+Isto pode significar que o pacote está faltando, ficou obsoleto ou
+está disponível somente a partir de outra fonte
+No entanto, os pacotes a seguir o substituem:
+  mariadb-client-compat
+
+
+Erro: O pacote 'mysql-client' não tem candidato para instalação
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql --protocol=TCP -h 13.220.129.145 -u root --skip-ssl
+ERROR 1045 (28000): Access denied for user 'root'@'179.249.64.197' (using password: NO)
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ sudo apt install mysql-client
+[sudo] senha para client01: 
+Sinto muito, tente novamente.
+[sudo] senha para client01: 
+O pacote mysql-client não está disponível, mas é referenciado por outro pacote.
+Isto pode significar que o pacote está faltando, ficou obsoleto ou
+está disponível somente a partir de outra fonte
+No entanto, os pacotes a seguir o substituem:
+  mariadb-client-compat
+
+
+Erro: O pacote 'mysql-client' não tem candidato para instalação
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql --protocol=TCP -h 13.220.129.145 -u blogodb -p --skip-ssl
+Enter password: 
+^C
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql --protocol=TCP -h 13.220.129.145 -u blogodb -p --default-auth=mysql_native_password --skip-ssl
+Enter password: 
+
+
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql -h 13.220.129.145 -u blogodb -p
+Enter password: 
+
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql --protocol=TCP -h 13.220.129.145 -u blogodb -p --get-server-public-key
+mysql: unknown option '--get-server-public-key'
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql --protocol=TCP -h 13.220.129.145 -u blogodb -p --ssl-mode=REQUIRED
+mysql: unknown variable 'ssl-mode=REQUIRED'
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ 
+
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ which mysql
+/usr/bin/mysql
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ mysql --version
+mysql from 11.8.5-MariaDB, client 15.2 for debian-linux-gnu (x86_64) using  EditLine wrapper
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ docker run -it --rm mysql:8.0 mysql -h 13.220.129.145 -u blogodb -p
+docker: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied.
+See 'docker run --help'.
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ sudo apt install mysql-shell
+Erro: Não é possível encontrar o pacote mysql-shell
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ 
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ sudo apt install mysql-client-8.0
+O pacote mysql-client-8.0 não está disponível, mas é referenciado por outro pacote.
+Isto pode significar que o pacote está faltando, ficou obsoleto ou
+está disponível somente a partir de outra fonte
+No entanto, os pacotes a seguir o substituem:
+  mariadb-server-core  mariadb-client
+
+
+Erro: O pacote 'mysql-client-8.0' não tem candidato para instalação
+                                                                                                                                                                       
+┌──(client01㉿cliente01)-[~/Área de trabalho/todos os ctfs/CTF9]
+└─$ sudo apt search mysql-client | grep 8.0
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+----------------------------------------------------------------------------------
+Dentro da shellReversa:
+www-data@ip-10-0-117-3:/var/www/blogo$mysql --protocol=TCP -h 127.0.0.1 -u blogodb -p                                        
+mysql --protocol=TCP -h 127.0.0.1 -u blogodb -p
+Enter password: WPcmqw16ZmzO!5paSC4
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.44-0ubuntu0.24.04.2 (Ubuntu)
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> 
+
+
+mysql> SHOW DATABASES;
+SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
++--------------------+
+2 rows in set (0.05 sec)
+
+mysql> SHOW GRANTS FOR CURRENT_USER;
+SHOW GRANTS FOR CURRENT_USER;
++---------------------------------------------+
+| Grants for blogodb@localhost                |
++---------------------------------------------+
+| GRANT USAGE ON *.* TO `blogodb`@`localhost` |
++---------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> SHOW VARIABLES LIKE 'datadir';
+SHOW VARIABLES LIKE 'datadir';
++---------------+-----------------+
+| Variable_name | Value           |
++---------------+-----------------+
+| datadir       | /var/lib/mysql/ |
++---------------+-----------------+
+1 row in set (0.08 sec)
+
+mysql> 
+

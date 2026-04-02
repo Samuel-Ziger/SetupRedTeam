@@ -1,0 +1,34 @@
+Projeto Inside — CTF Blogo / Langflow (Parte 2)
+================================================
+
+Estrutura (após organização):
+
+  credenciais.txt     → logins e notas rápidas (fica na raiz)
+  LEIAME.txt          → este ficheiro
+
+  Documentacao/
+    CONSOLIDADO.md    → tudo junto (resumo + guias + relatório + flag + credenciais + servidor.txt)
+    resumo.md         → explicação simples passo a passo
+    RELATORIO_CTF_Parte2.md → relatório técnico (estilo relatório Parte 1)
+    Parte2_passo_a_passo_flow_e_flags.md → guia detalhado
+    flag              → notas sobre flags, IMDS, API
+
+  scripts/
+    Parte2_reverse_vertices.py → reverse shell via endpoint /build/.../vertices
+
+  lab/
+    Parte2_*.json     → OpenAPI, tokens JWT, API key, payload CVE, ffuf
+    Parte2_*.txt      → saídas nmap
+    servidor.txt      → cópia de notas / enumeração na shell
+
+Como correr o script de reverse shell (exemplo):
+
+  cd /caminho/para/Inside
+  python3 scripts/Parte2_reverse_vertices.py
+
+Parte 1: se tiveres a pasta Parte1/ com RELATORIO_CTF9.md, é o outro módulo
+do cenário Blogo (site de notícias, etc.).
+
+Removido nesta limpeza: fonte .ttf, bashrc/bash_history genéricos "Untitled",
+ficheiro secret_key (só continha o placeholder público do Langflow — ver
+credenciais.txt para o .env típico).

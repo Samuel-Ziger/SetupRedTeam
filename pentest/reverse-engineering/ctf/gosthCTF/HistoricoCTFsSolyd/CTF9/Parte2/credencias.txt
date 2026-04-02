@@ -1,0 +1,72 @@
+Credenciais e notas (CTF — Langflow / Blogo)
+=============================================
+
+Ficheiro de referência rápida. As passwords aplicam-se ao **lab** onde foram
+confirmadas (vhost `flow.projects-blogo.sy`). Se o IP ou o ambiente mudarem,
+revalida no servidor (`.env`, `langflow.db` ou RCE).
+
+
+Langflow — login na página web (UI)
+-------------------------------------
+
+Utilizador: admin
+Palavra-passe: blogo123
+
+Utilizador: langflow
+Palavra-passe: langflow
+
+Utilizador: ctfenum2026
+Palavra-passe: ctf
+
+Nota: a password deste utilizador foi **alterada no painel de admin** do
+Langflow (tu definiste como `ctf`). Se outra pessoa reiniciar o lab ou
+repor a BD, deixa de ser válida.
+
+
+Nota importante
+---------------
+
+No `.env` do Langflow costuma aparecer algo como
+`LANGFLOW_SUPERUSER_PASSWORD=blogo123#` (com `#` no fim). Na prática, o hash
+guardado na base SQLite (bcrypt) correspondia à password **blogo123** sem o
+carácter `#`. Por isso, se `blogo123#` falhar no login, tenta **só**
+`blogo123`.
+
+
+Login via API (JWT)
+-------------------
+
+Substitui ALVO_IP pelo IP do lab. Mantém o cabeçalho Host a apontar para o
+Langflow por trás do nginx.
+
+  curl -sS -X POST 'http://ALVO_IP/api/v1/login' \
+    -H 'Host: flow.projects-blogo.sy' \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -H 'Accept: application/json' \
+    --data-binary 'username=admin&password=blogo123&grant_type=password'
+
+A resposta traz `access_token` e `refresh_token` (Bearer nas rotas `/api/v1/...`).
+
+
+Outros artefactos no projeto
+----------------------------
+
+Pasta **`lab/`** (tokens e scans podem estar expirados):
+
+- `lab/Parte2_admin_token.json`, `lab/Parte2_langflow_user_token.json`,
+  `lab/Parte2_ctfuser_token.json` — respostas antigas de login (JWT).
+- `lab/Parte2_api_key_create.json` — exemplo de API key (tratar como segredo).
+
+Trecho típico do `.env` no contentor (referência; não é ficheiro no repo):
+
+- `LANGFLOW_SECRET_KEY=change-this-to-a-long-random-string` (valor por defeito fraco).
+- `LANGFLOW_SUPERUSER_PASSWORD=blogo123#` (vs hash na BD → usar `blogo123` no login).
+
+Segurança
+---------
+
+Não commits estes valores em repositórios públicos. Apaga ou redige este
+ficheiro quando o CTF terminar, se quiseres limpar segredos do disco.
+
+Documentação relacionada: `Documentacao/flag`, `Documentacao/Parte2_passo_a_passo_flow_e_flags.md`.
+

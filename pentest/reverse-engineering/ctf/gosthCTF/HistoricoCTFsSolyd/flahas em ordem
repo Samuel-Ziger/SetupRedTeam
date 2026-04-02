@@ -1,0 +1,51 @@
+Mais comuns → menos comuns
+Divulgação de informação (baixa complexidade, muito recorrente)
+Comentários HTML (noticias.php, index.php, admin/home.php), view-source, flags/metadata em PDF, ficheiros “escondidos” (ex.: .aviso! no FTP), credenciais ou lógica em ficheiros expostos (backup.txt), dicas em cabeçalhos HTTP (ex.: Parte 2 Langflow com Base64).
+
+Superfície web descoberta por enumeração
+dirb/gobuster/ffuf/DirBuster → rotas /admin/, /wordpress/, backup.txt, credenciais.txt, etc. Aparece como passo obrigatório em quase todos os cenários web.
+
+Credenciais fracas, reutilizadas ou em código/config
+Senhas em scripts (backup.sh / ZIP), hashes em BD obtidas por SQLi, credenciais no APK (DUMMY_CREDENTIALS), .env / SQLite / config.php, JWT com SECRET fraco mencionado, reutilização blogo ↔ adalberto (CTF9).
+
+LFI / path traversal / php://filter
+CTF9 (LFI → RCE), workshop CTF2 (restrita.php?input= + base64). Padrão forte nos PHP-driven labs.
+
+SQL injection
+CTF1 (plugin WordPress + sqlmap); CTF2 imobiliária com erros MySQL e tentativas de SQLi em área admin.
+
+Upload de ficheiros inseguro → webshell / reverse shell
+CTF1 (currículo “PDF” + msfvenom), desafio Sherlock (upload PHP via SMB), linha de exploração sugerida na imobiliária (upload.php).
+
+Brute force (espaço pequeno ou wordlist)
+PIN 4 dígitos (workshop), Hydra no login (imobiliaria), John no rockyou (vários hashes / shadow).
+
+Serviços de rede mal postos
+FTP anónimo (CTF1); SMB com partilha gravável + credenciais em ficheiros (Sherlock); MySQL exposto / enumerado (CTF9). SSH costuma ser consequência de credencial obtida noutro sítio.
+
+Escalação de privilégio em Linux
+SUID/manifestações no relatório CTF9, CVE (below), leitura de shadow + cracking, grupos extra (www-data + mysql), scripts de backup com permissões/SUID errados (CTF1 estagiario).
+
+RCE por CVE ou funcionalidade “low-code”
+Langflow CVE-2025-3248 / vértices com código; cenário paralelo documentado na Parte 2; versão via /openapi.json como pista.
+
+Virtual host / Host correto
+imobiliarians.solyd, email company.com.br → /etc/hosts, Parte 2 com flow.projects-blogo.sy.
+
+Pós-exploração clássica
+Reverse shell (bash/python/msf), pty.spawn, enum (linpeas, processos, /proc), IMDS mencionado na enum pós-RCE (Parte 2).
+
+Forense / esteganografia / formato à parte
+Imagem + senha (CTF1), serviço custom a porto 5000 (QR/pixels + socket), tema “PCAP/captura” (CTF3 dica).
+
+Reverse engineering
+Binário license.bin (patch/strings/ltrace) no Resumo CTF1.
+
+Mobile (APK)
+Uma linha clara: decompilar e extrair credenciais hardcoded.
+
+Lógica de aplicação / manipulação de pedido
+Formulário que alterava case das credenciais → necessidade de Burp (Sherlock) — menos frequente nos teus ficheiros, mas muito específico.
+
+WordPress + plugin vulnerável
+CTF2019 (simply-poll) — um fôlego grande num write-up; nos outros labs o stack é mais PHP “à mão” ou frameworks tipo Langflow.

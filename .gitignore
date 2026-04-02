@@ -24,6 +24,10 @@ wsl.tmp
 # Ignorar arquivos muito grandes em pentest/tools/ (excedem limite do GitHub 100MB)
 pentest/tools/Solyd-One/baconCN/rockyou.txt
 
+# Binários compilados locais (Go) — não versionar
+pentest/exploitation/web/generic/redsmell/redsmell
+pentest/recon/passive/redsubv3/redsubv3
+
 # Arquivos compilados
 *.exe
 *.dll
@@ -44,6 +48,7 @@ pentest/tools/Solyd-One/baconCN/rockyou.txt
 
 # Node modules (caso use ferramentas JS)
 node_modules/
+.next/
 
 # Python
 __pycache__/
@@ -77,7 +82,8 @@ output/*
 results/
 loot/
 enum/
-recon/
+# Ignorar apenas recon na raiz do repo (output de scripts), não pentest/recon/
+/recon/
 
 # Output padronizado - ignorar conteúdo, mas manter estrutura e README
 output/*

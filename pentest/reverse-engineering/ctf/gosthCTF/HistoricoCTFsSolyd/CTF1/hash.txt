@@ -1,0 +1,1 @@
+github:$6$hfGGddWa$06gtbFIeapomT1.xjijIhWSbe3Aul5yObNRHjRAhbAkUL2gQZCUEvhqJ7GDmpGKdOC1eOde4QRWIobwGAxFux.:1000:1000:github,,,:/home/github:/bin/bash

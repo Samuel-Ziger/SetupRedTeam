@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blogo | Notícia</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111;
+      --muted:#5a5a5a;
+      --line:#e6e6e6;
+      --blue:#1d4ed8;
+      --max:920px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color:var(--text);
+      background:var(--bg);
+    }
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 18px;}
+
+    header{
+      position:sticky; top:0; z-index:10;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+    }
+    .header-inner{
+      height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .left, .right{display:flex; align-items:center; gap:14px;}
+    .icon-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:8px;
+      border:1px solid transparent;
+    }
+    .icon-btn:hover{ background:#f6f6f6; border-color:#efefef; }
+    .logo{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; font-size:28px; letter-spacing:-0.02em;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      height:40px; padding:0 14px;
+      border-radius:6px; font-weight:700;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+    }
+    .btn.primary{ background:var(--blue); border-color:var(--blue); color:#fff; }
+    .btn:hover{ filter:brightness(.98); }
+
+    main{ padding:22px 0 40px; }
+    .crumbs{
+      color:var(--muted);
+      font-size:14px;
+      margin:6px 0 16px;
+      display:flex; gap:10px; align-items:center;
+    }
+    .crumbs .sep{ color:#b3b3b3; }
+    .title{
+      font-size:40px;
+      line-height:1.08;
+      font-weight:900;
+      letter-spacing:-0.02em;
+      margin:6px 0 10px;
+    }
+    .meta{
+      font-size:14px;
+      color:var(--muted);
+      display:flex; align-items:center; gap:10px;
+      margin-bottom:18px;
+    }
+    .meta .sep{ color:#b3b3b3; }
+    figure{ margin:0 0 18px; }
+    figure img{
+      width:100%;
+      height:auto;
+      border-radius:2px;
+      display:block;
+    }
+    .caption{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+    .content{
+      font-size:18px;
+      line-height:1.75;
+    }
+    .content p{ margin:0 0 14px; }
+    .note{
+      margin-top:22px;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:#fafafa;
+      color:var(--muted);
+      font-size:14px;
+    }
+    footer{
+      border-top:1px solid var(--line);
+      padding:18px 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    @media (max-width: 620px){
+      .title{ font-size:30px; }
+      .content{ font-size:17px; }
+      .right .btn{ display:none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+<!--Solyd{9NewsNews!!!NothingWrongHereVerySecure!!!9}-->
+
+    <div class="wrap header-inner">
+      <div class="left">
+        <a class="icon-btn" href="index.html" aria-label="Voltar para a capa">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18 9 12l6-6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <a class="logo" href="index.html" aria-label="Blogo">
+        <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#3b82f6"/>
+              <stop offset="1" stop-color="#22c55e"/>
+            </linearGradient>
+            <linearGradient id="g2" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f59e0b"/>
+              <stop offset="1" stop-color="#3b82f6"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 10h18c10 0 16 6 16 14 0 5-2 9-7 11 6 2 9 7 9 13 0 9-7 16-18 16H18V10Z" fill="url(#g1)"/>
+          <path d="M26 18h9c5 0 8 3 8 7s-3 7-8 7h-9V18Zm0 22h11c6 0 9 3 9 8s-4 8-10 8H26V40Z" fill="url(#g2)" opacity=".95"/>
+        </svg>
+        <span>Blogo</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+        <div class="wrap">
+      <div class="crumbs">
+        <a href="index.html">Capa</a>
+        <span class="sep">›</span>
+        <span id="crumb-section">Notícias</span>
+      </div>
+
+      <article>
+        <h1 class="title" id="title">Carregando…</h1>
+        <div class="meta" id="meta">
+          <span id="time">—</span><span class="sep">|</span><span id="section">—</span>
+        </div>
+
+        <figure id="figure" style="display:none;">
+          <img id="image" src="" alt="" />
+          <div class="caption" id="caption"></div>
+        </figure>
+
+        <div class="content" id="content"></div>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+        2026 Blogo  -  Seu site de notícias de credibilidade e sem Fake News, pode confiar!
+    </div>
+  </footer>
+
+  <script>
+    const NEWS = {
+      "aetherpharma": {
+        title: "AetherPharma com previsão de crescimento em 2026, apesar de controversas",
+        time: "3 horas atrás",
+        section: "Economia",
+        image: "aetherpharma.png",
+        imageAlt: "Pesquisadora em laboratório manipulando tubos de ensaio",
+        caption: "A empresa afirma que novos acordos e um portfólio ampliado sustentam as projeções.",
+        body: [
+          "A AetherPharma divulgou uma projeção de expansão para 2026, citando a abertura de novos mercados e uma reestruturação interna voltada à eficiência. A estimativa, porém, chega em meio a críticas de grupos do setor sobre transparência em processos e governança.",
+          "Segundo executivos, a meta depende de um calendário agressivo de lançamentos e de parcerias com centros de pesquisa. Analistas ouvidos pelo Blogo avaliam que o cenário é possível, mas alertam para riscos regulatórios e para a necessidade de reduzir ruídos com investidores.",
+          "A companhia não detalhou números finais, mas disse que publicará relatórios trimestrais mais completos e abrirá um canal público para esclarecimentos sobre as controvérsias mencionadas."
+        ]
+      },
+      "ano-novo-2026": {
+        title: "Veja as festas de ano novo e o que está previsto para 2026",
+        time: "1 hora atrás",
+        section: "Mundo",
+        image: "festas-ano-novo.png",
+        imageAlt: "Fogos de artifício e multidão celebrando o ano novo",
+        caption: "Capitais prometem shows, queima de fogos e novidades para a virada.",
+        body: [
+          "Cidades ao redor do mundo já confirmaram parte da programação para a virada e para os primeiros meses de 2026. Em destaque estão eventos com áreas gratuitas, reforço de transporte e regras de segurança atualizadas para grandes aglomerações.",
+          "Organizadores prometem mais espaços de descanso, acessibilidade ampliada e horários escalonados para shows, buscando reduzir superlotação. Também há tendência de fogos com menor impacto sonoro em regiões residenciais.",
+          "A recomendação é checar com antecedência a entrada por setor, rotas de acesso e itens permitidos. O Blogo reunirá atualizações conforme novas cidades publicarem os calendários completos."
+        ]
+      },
+      "salvador-noogle": {
+        title: "Conheça o salvador da Noogle",
+        time: "2 horas atrás",
+        section: "Tecnologia",
+        body: [
+          "Depois de uma sequência de falhas em serviços críticos, a Noogle anunciou um novo líder técnico para coordenar a reviravolta. O executivo, conhecido por projetos de escalabilidade, chega com a missão de recuperar desempenho e confiança.",
+          "A estratégia inclui simplificação da infraestrutura, metas de disponibilidade mais rígidas e uma revisão do processo de lançamentos para reduzir incidentes em produção."
+        ]
+      },
+      "filmes-2026": {
+        title: "Veja os principais filmes de 2026",
+        time: "1 hora atrás",
+        section: "Cultura",
+        body: [
+          "Os estúdios apostam em continuações de franquias, mas 2026 também promete espaço para produções autorais e animações com novas técnicas. A lista preliminar inclui ação, ficção científica e dramas premiáveis.",
+          "Críticos apontam que o calendário do primeiro semestre tende a ser dominado por blockbusters, enquanto o segundo semestre deve concentrar estreias voltadas a festivais."
+        ]
+      },
+      "competicao-pastel": {
+        title: "1º competição de pastel do ano",
+        time: "5 horas atrás",
+        section: "Brasil",
+        body: [
+          "A competição reúne bancas tradicionais e novos nomes em uma disputa que mistura criatividade e técnica. Há categorias clássicas (carne, queijo, frango) e versões autorais com ingredientes regionais.",
+          "O evento também terá votação popular, aulas rápidas e um prêmio especial para inovação em massa e crocância."
+        ]
+      },
+      "influenciadora-livro": {
+        title: "Maior influenciadora do mundo lança seu 1º livro",
+        time: "4 horas atrás",
+        section: "Entretenimento",
+        body: [
+          "A obra promete bastidores da carreira, histórias de bastidores e um capítulo sobre saúde mental na era das redes. O lançamento inclui sessões de autógrafos e uma turnê em capitais.",
+          "Editoras apostam no público jovem e em formatos híbridos, com conteúdo extra via QR codes e edições especiais."
+        ]
+      },
+      "lei-internet-amorosa": {
+        title: "Congresso vota hoje sobre a lei da \"Uma Internet mais amorosa\" e extremistas criticam",
+        time: "6 horas atrás",
+        section: "Política",
+        body: [
+          "O projeto propõe diretrizes para reduzir assédio e incitação a ataques coordenados, com obrigações graduais para plataformas conforme o tamanho e o alcance. Parlamentares favoráveis dizem que a medida moderniza a responsabilização e protege vítimas.",
+          "Críticos afirmam que o texto pode gerar interpretações amplas e pedem salvaguardas adicionais para liberdade de expressão. Extremistas, por sua vez, atacam a proposta em campanhas nas redes, enquanto especialistas pedem debate baseado em evidências.",
+          "A votação deve ocorrer ainda hoje. Caso avance, o texto seguirá para ajustes e regulamentação, com prazos de adaptação por etapas."
+        ]
+      }
+    };
+
+    function escapeHtml(str){
+      const map = { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" };
+      return String(str).replace(/[&<>"']/g, s => map[s]);
+    }
+
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id") || "aetherpharma";
+    const data = NEWS[id] || NEWS["aetherpharma"];
+
+    document.getElementById("title").textContent = data.title;
+    document.getElementById("time").textContent = data.time || "—";
+    document.getElementById("section").textContent = data.section || "—";
+    document.getElementById("crumb-section").textContent = data.section || "Notícias";
+    document.title = "Blogo | " + data.title;
+
+    const fig = document.getElementById("figure");
+    if (data.image){
+      fig.style.display = "";
+      const img = document.getElementById("image");
+      img.src = data.image;
+      img.alt = data.imageAlt || data.title;
+      document.getElementById("caption").textContent = data.caption || "";
+    }
+
+    const content = document.getElementById("content");
+    const parts = [];
+    if (data.body && data.body.length){
+      for (const p of data.body){
+        parts.push("<p>" + escapeHtml(p) + "</p>");
+      }
+    } else {
+      parts.push("<p>Texto indisponível.</p>");
+    }
+    content.innerHTML = parts.join("");
+  </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+O pentest no site de notícias da Rede Blogo terminou, mas a sensação de encerramento nunca veio. 
+
+Enquanto revisava os artefatos coletados na primeira etapa, você percebeu algo inquietante: pequenos indícios de atividade suspeita na rede interna, além disso João Cleber, chefe da TI da Rede Blogo, disse que alguns servidores e serviços da rede interna passaram por diversas instabilidades. Não havia logs que contassem a história inteira, mas havia ruído demais para ser coincidência. 
+
+Você suspeita fortemente que o LightBringers não parou no acesso inicial. Eles podem ter extraído informações do servidor comprometido anteriormente e usado isso como ponte para a infraestrutura interna.

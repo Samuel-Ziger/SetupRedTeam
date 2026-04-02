@@ -1,0 +1,32 @@
+# Nmap 7.98 scan initiated Fri Mar 20 18:28:26 2026 as: /usr/lib/nmap/nmap --privileged -A -oN nmap 13.220.146.182
+Nmap scan report for ec2-13-220-146-182.compute-1.amazonaws.com (13.220.146.182)
+Host is up (0.14s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE    SERVICE VERSION
+22/tcp open     ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.1 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 4e:06:cc:d5:a6:57:16:ed:1d:0e:32:dc:6e:75:22:49 (RSA)
+|   256 b8:b1:b6:28:d5:54:b4:bc:19:48:02:13:bc:3e:76:07 (ECDSA)
+|_  256 d4:d7:20:3c:d9:34:d6:a3:3d:dc:e1:de:f4:26:5d:39 (ED25519)
+25/tcp filtered smtp
+Aggressive OS guesses: Linux 4.15 (94%), Linux 2.6.32 - 3.13 (93%), Linux 5.0 - 5.14 (93%), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3) (93%), Linux 3.10 - 4.11 (91%), Linux 4.12 (91%), Linux 5.10 (91%), Linux 3.2 - 4.14 (90%), Linux 4.15 - 5.19 (90%), Linux 2.6.32 - 3.10 (90%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 19 hops
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE (using port 23/tcp)
+HOP RTT       ADDRESS
+1   2.16 ms   192.168.1.1
+2   2.63 ms   186-230-207-4.ded.intelignet.com.br (186.230.207.4)
+3   18.30 ms  10.230.82.18
+4   19.33 ms  10.230.1.159
+5   281.01 ms 10.224.150.189
+6   17.22 ms  10.239.253.33
+7   18.73 ms  10.213.247.38
+8   19.38 ms  185.100.112.6
+9   123.65 ms 89.221.41.1
+10  ... 18
+19  137.89 ms ec2-13-220-146-182.compute-1.amazonaws.com (13.220.146.182)
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Fri Mar 20 18:28:54 2026 -- 1 IP address (1 host up) scanned in 28.83 seconds

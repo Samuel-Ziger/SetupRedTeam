@@ -1,0 +1,154 @@
+ nmap -A 98.92.111.173 -oN nmap
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-03-11 22:11 -0400
+Nmap scan report for ec2-98-92-111-173.compute-1.amazonaws.com (98.92.111.173)
+Host is up (0.14s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE    SERVICE VERSION
+22/tcp open     ssh     OpenSSH 9.6p1 Ubuntu 3ubuntu13.14 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 38:47:3a:f1:3d:48:76:60:22:83:8e:58:c1:4e:6c:06 (ECDSA)
+|_  256 2d:30:e6:d0:e3:14:3f:12:c5:06:bf:a2:25:ba:0d:2c (ED25519)
+25/tcp filtered smtp
+Aggressive OS guesses: Linux 4.15 (97%), Linux 2.6.32 - 3.13 (96%), Linux 5.0 - 5.14 (96%), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3) (96%), Linux 3.10 - 4.11 (95%), Linux 5.10 (94%), Linux 3.2 - 4.14 (94%), Linux 4.15 - 5.19 (94%), Linux 2.6.32 - 3.10 (93%), HP P2000 G3 NAS device (93%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 19 hops
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE (using port 53/tcp)
+HOP RTT       ADDRESS
+1   1.04 ms   192.168.1.1
+2   2.12 ms   186-230-207-4.ded.intelignet.com.br (186.230.207.4)
+3   17.87 ms  10.230.82.18
+4   20.03 ms  10.230.1.159
+5   18.26 ms  10.224.150.189
+6   18.92 ms  10.239.253.33
+7   17.03 ms  10.239.255.185
+8   17.26 ms  10.213.247.26
+9   17.86 ms  195.22.219.32
+10  124.17 ms 89.221.41.221
+11  ... 18
+19  139.87 ms ec2-98-92-111-173.compute-1.amazonaws.com (98.92.111.173)
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 30.61 seconds
+[[Initiation]]
+[[Initiation]]
+nmap -A 98.92.111.173 -p 22 -oN nmapssh
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-03-11 22:13 -0400
+Nmap scan report for ec2-98-92-111-173.compute-1.amazonaws.com (98.92.111.173)
+Host is up (0.14s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 9.6p1 Ubuntu 3ubuntu13.14 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 38:47:3a:f1:3d:48:76:60:22:83:8e:58:c1:4e:6c:06 (ECDSA)
+|_  256 2d:30:e6:d0:e3:14:3f:12:c5:06:bf:a2:25:ba:0d:2c (ED25519)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Linux 4.15 (96%), Linux 2.6.32 - 3.13 (93%), Linux 5.0 - 5.14 (93%), Linux 5.10 (93%), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3) (93%), Linux 3.2 - 4.14 (93%), Linux 4.15 - 5.19 (93%), Linux 2.6.32 - 3.10 (92%), Linux 4.19 (92%), Linux 4.12 (92%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 15 hops
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE (using port 22/tcp)
+HOP RTT       ADDRESS
+1   0.94 ms   192.168.1.1
+2   2.14 ms   186-230-207-4.ded.intelignet.com.br (186.230.207.4)
+3   18.02 ms  10.230.82.18
+4   17.92 ms  10.230.1.159
+5   34.63 ms  10.224.150.189
+6   16.86 ms  10.239.253.33
+7   17.18 ms  10.213.247.38
+8   17.66 ms  185.100.112.6
+9   17.81 ms  195.22.219.32
+10  ... 14
+15  138.28 ms ec2-98-92-111-173.compute-1.amazonaws.com (98.92.111.173)
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 18.70 seconds
+
+nmap -A 98.92.111.173 -p- -oN nmafull
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-03-11 22:16 -0400
+Nmap scan report for ec2-98-92-111-173.compute-1.amazonaws.com (98.92.111.173)
+Host is up (0.14s latency).
+Not shown: 65530 closed tcp ports (reset)
+PORT      STATE    SERVICE     VERSION
+22/tcp    open     ssh         OpenSSH 9.6p1 Ubuntu 3ubuntu13.14 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 38:47:3a:f1:3d:48:76:60:22:83:8e:58:c1:4e:6c:06 (ECDSA)
+|_  256 2d:30:e6:d0:e3:14:3f:12:c5:06:bf:a2:25:ba:0d:2c (ED25519)
+25/tcp    filtered smtp
+137/tcp   filtered netbios-ns
+138/tcp   filtered netbios-dgm
+58000/tcp filtered unknown
+Aggressive OS guesses: Linux 4.15 (94%), Linux 2.6.32 - 3.13 (93%), Linux 5.0 - 5.14 (93%), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3) (93%), Linux 3.10 - 4.11 (91%), Linux 5.10 (90%), Linux 3.2 - 4.14 (90%), Linux 4.15 - 5.19 (90%), Linux 4.19 (90%), Linux 2.6.32 - 3.10 (90%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 16 hops
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE (using port 8888/tcp)
+HOP RTT       ADDRESS
+1   0.91 ms   192.168.1.1
+2   2.47 ms   186-230-207-4.ded.intelignet.com.br (186.230.207.4)
+3   22.05 ms  10.230.82.18
+4   19.43 ms  10.230.1.159
+5   18.06 ms  10.224.150.189
+6   18.19 ms  10.224.150.162
+7   18.01 ms  10.223.255.114
+8   109.66 ms 10.213.247.26
+9   18.12 ms  195.22.219.32
+10  122.47 ms 89.221.41.1
+11  ... 15
+16  137.68 ms ec2-98-92-111-173.compute-1.amazonaws.com (98.92.111.173)
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 686.36 seconds
+                                                                  nmap -sV --script=banner -p22,25 98.92.111.173
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-03-11 22:34 -0400
+Nmap scan report for ec2-98-92-111-173.compute-1.amazonaws.com (98.92.111.173)
+Host is up (0.14s latency).
+
+PORT   STATE    SERVICE VERSION
+22/tcp open     ssh     OpenSSH 9.6p1 Ubuntu 3ubuntu13.14 (Ubuntu Linux; protocol 2.0)
+|_banner: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
+25/tcp filtered smtp
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 5.48 seconds
+
+nmap -p25 --script smtp-commands 98.92.111.173 -oN smtp
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-03-11 22:35 -0400
+Nmap scan report for ec2-98-92-111-173.compute-1.amazonaws.com (98.92.111.173)
+Host is up (0.14s latency).
+
+PORT   STATE    SERVICE
+25/tcp filtered smtp
+
+Nmap done: 1 IP address (1 host up) scanned in 3.68 seconds
+nmap -sU --top-ports 100 98.92.111.173
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-03-11 22:41 -0400
+Nmap scan report for lb-test (98.92.111.173)
+Host is up (0.14s latency).
+Not shown: 95 closed udp ports (port-unreach)
+PORT     STATE         SERVICE
+68/udp   open|filtered dhcpc
+137/udp  open|filtered netbios-ns
+138/udp  open|filtered netbios-dgm
+139/udp  open|filtered netbios-ssn
+5060/udp open|filtered sip
+
+Nmap done: 1 IP address (1 host up) scanned in 114.79 seconds
+
+nmap --script ssh-auth-methods -p22 98.92.111.173
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-03-11 23:12 -0400
+Nmap scan report for lb-test (98.92.111.173)
+Host is up (0.14s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+| ssh-auth-methods: 
+|   Supported authentication methods: 
+|     publickey
+|_    password
+
+Nmap done: 1 IP address (1 host up) scanned in 1.29 seconds

@@ -1,0 +1,36 @@
+# Nmap 7.98 scan initiated Wed Mar 18 14:56:28 2026 as: /usr/lib/nmap/nmap --privileged -A -p- -oN nmapfull 100.31.235.181
+Nmap scan report for ec2-100-31-235-181.compute-1.amazonaws.com (100.31.235.181)
+Host is up (0.14s latency).
+Not shown: 65528 closed tcp ports (reset)
+PORT      STATE    SERVICE     VERSION
+25/tcp    filtered smtp
+110/tcp   open     pop3        Dovecot pop3d
+|_pop3-capabilities: UIDL TOP SASL RESP-CODES CAPA AUTH-RESP-CODE PIPELINING
+137/tcp   filtered netbios-ns
+138/tcp   filtered netbios-dgm
+143/tcp   open     imap        Dovecot imapd
+|_imap-capabilities: capabilities IDLE listed post-login have LOGIN-REFERRALS IMAP4rev1 ENABLE OK LITERAL+ ID Pre-login LOGINDISABLEDA0001 SASL-IR more
+1445/tcp  open     netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+58000/tcp filtered unknown
+Aggressive OS guesses: Linux 4.15 (94%), Linux 2.6.32 - 3.13 (93%), Linux 5.0 - 5.14 (93%), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3) (93%), Linux 3.10 - 4.11 (91%), Linux 5.10 (91%), Linux 3.2 - 4.14 (90%), Linux 4.15 - 5.19 (90%), Linux 2.6.32 - 3.10 (90%), OpenWrt 12.09-rc1 Attitude Adjustment (Linux 3.3 - 3.7) (90%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 20 hops
+Service Info: Host: IP-10-0-206-203
+
+TRACEROUTE (using port 8080/tcp)
+HOP RTT       ADDRESS
+1   0.63 ms   192.168.1.1
+2   2.10 ms   186-230-207-4.ded.intelignet.com.br (186.230.207.4)
+3   18.97 ms  10.230.82.18
+4   19.92 ms  10.230.1.159
+5   18.35 ms  10.224.150.189
+6   18.41 ms  10.224.150.162
+7   100.13 ms 10.223.255.114
+8   323.54 ms 10.213.247.26
+9   17.75 ms  195.22.219.32
+10  122.39 ms 89.221.41.155
+11  ... 19
+20  139.02 ms ec2-100-31-235-181.compute-1.amazonaws.com (100.31.235.181)
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Wed Mar 18 15:09:57 2026 -- 1 IP address (1 host up) scanned in 808.43 seconds
