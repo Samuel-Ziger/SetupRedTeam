@@ -48,7 +48,9 @@ O autor e mantenedores deste repositório:
 
 ## 📜 Licença e Garantias
 
-Este repositório é fornecido **"COMO ESTÁ"**, sem garantias de qualquer tipo, expressas ou implícitas, incluindo, mas não limitado a:
+O **trabalho original** do mantenedor (documentação e scripts próprios indicados no repositório) está sob os termos do ficheiro **[LICENSE](./LICENSE)** (MIT), **sem prejuízo** das licenças de cada ferramenta de terceiros nas respectivas pastas.
+
+Este repositório, no seu conjunto, é fornecido **"COMO ESTÁ"**, sem garantias de qualquer tipo, expressas ou implícitas, incluindo, mas não limitado a:
 
 - Garantias de comercialização
 - Garantias de adequação a um propósito específico

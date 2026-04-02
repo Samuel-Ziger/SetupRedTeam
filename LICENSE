@@ -1,0 +1,58 @@
+MIT License
+
+Copyright (c) 2026 Samuel Ziger
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+NOTICE — Scope of this license
+
+1. Third-party components  
+   This repository is an aggregate collection. Many directories contain
+   independent projects (tools, frameworks, wordlists, etc.). Those components
+   remain under their **own** licenses, copyright notices, and terms. Where a
+   subdirectory includes a `LICENSE`, `COPYING`, or similar file, that file
+   governs that component. This MIT license does **not** replace or override
+   third-party licenses.
+
+2. Original work covered here  
+   Unless another license file in the same path states otherwise, the MIT
+   terms above apply to **original material** contributed by the copyright
+   holder in this repository, such as: top-level documentation (for example
+   `README.md`, `CONTRIBUTING.md`, `DISCLAIMER.md`, guides under `docs/` where
+   authored by the maintainer), structure and curation of the tree, and
+   original scripts under `setup/`, `lib/`, `retest/`, `ScrpitPentestSH/`, and
+   other paths where the maintainer is the sole author. If in doubt, check
+   file headers or nested `LICENSE` files.
+
+3. Authorized use only  
+   Material in this repository is intended for **authorized** security testing,
+   education, and research. Misuse may be unlawful. Read `DISCLAIMER.md` before
+   use. Neither the license grant above nor the distribution of this
+   repository constitutes permission to attack systems without explicit
+   authorization.
+
+---
+
+Nota (português)  
+Esta licença MIT aplica-se ao trabalho original do mantenedor conforme o
+ponto 2. As ferramentas de terceiros em `pentest/`, `Kali/`, etc. continuam
+regidas pelas respetivas licenças locais. O uso é apenas em contexto legal e
+autorizado; ver `DISCLAIMER.md`.

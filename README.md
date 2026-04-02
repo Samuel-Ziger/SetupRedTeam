@@ -5,7 +5,7 @@
 ![Version](https://img.shields.io/badge/version-2.2.0-blue)
 ![Tools](https://img.shields.io/badge/tools-arsenal%20extenso-orange)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Kali%20Linux-lightgrey)
-![License](https://img.shields.io/badge/license-Educational-yellow)
+![License](https://img.shields.io/badge/license-MIT%20%28original%29-blue)
 
 > ⚠️ **AVISO LEGAL:** Este repositório é destinado EXCLUSIVAMENTE para testes de penetração autorizados e pesquisa em segurança. Use apenas com autorização formal por escrito.
 
@@ -244,7 +244,9 @@ Ver [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Licença e responsabilidade
 
-Este projeto é fornecido “como está”. Cada ferramenta incluída pode ter a **sua própria licença** no respectivo subdiretório. O autor **não** se responsabiliza por uso indevido. Leia [DISCLAIMER.md](./DISCLAIMER.md).
+- **Licença do trabalho original (mantenedor):** [LICENSE](./LICENSE) (MIT), com o âmbito e excepções descritos no próprio ficheiro (ferramentas de terceiros mantêm as licenças nos respectivos subdiretórios).
+- **Ferramentas incluídas:** cada projeto em `pentest/`, `Kali/`, etc. pode ter **a sua própria licença** (`LICENSE`, `COPYING`, …) na pasta correspondente.
+- **Uso e responsabilidade:** o autor **não** se responsabiliza por uso indevido. Leia [DISCLAIMER.md](./DISCLAIMER.md).
 
 ---
 
