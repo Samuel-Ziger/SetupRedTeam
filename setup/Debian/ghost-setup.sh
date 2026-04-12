@@ -31,6 +31,8 @@ GOPATH_DIR="$REAL_HOME/go"
 LOG_FILE="/tmp/ghost-setup-$(date +%Y%m%d-%H%M%S).log"
 INSTALL_MANIFEST="$REAL_HOME/.ghost-manifest"
 PARALLEL_PIDS=()
+# Perfil escolhido no início: web | wifi | both
+GHOST_ATTACK_MODE=""
 
 # ── CLI parsing ─────────────────────────────────────────────────────────────
 parse_args() {
@@ -90,6 +92,39 @@ ask() {
             *) echo "  Responda y ou n." ;;
         esac
     done
+}
+
+choose_attack_mode() {
+    sep
+    echo ""
+    echo -e "${BOLD}  Perfil de instalação:${NC}"
+    echo -e "    ${CYAN}1)${NC} Web   — base + módulos + repos + Ghost projects (pentest web/recon)"
+    echo -e "    ${CYAN}2)${NC} WiFi  — somente ferramentas wireless (sem Fases 1–4 web)"
+    echo -e "    ${CYAN}3)${NC} Ambos — perfil Web completo + pacote WiFi ao final"
+    echo ""
+    local choice
+    while true; do
+        read -rp "$(echo -e "${YELLOW}[?]${NC} Modo de instalação [1/2/3]: ")" choice
+        case "$choice" in
+            1)
+                GHOST_ATTACK_MODE="web"
+                info "Modo Web selecionado."
+                break
+                ;;
+            2)
+                GHOST_ATTACK_MODE="wifi"
+                info "Modo WiFi selecionado."
+                break
+                ;;
+            3)
+                GHOST_ATTACK_MODE="both"
+                info "Modo Web + WiFi selecionado."
+                break
+                ;;
+            *) echo "  Responda 1, 2 ou 3." ;;
+        esac
+    done
+    sep
 }
 
 need_root() {
@@ -229,7 +264,9 @@ wait_parallel() {
         fi
     done
     PARALLEL_PIDS=()
-    (( failed > 0 )) && warn "$failed job(s) falharam — verifique $LOG_FILE"
+    if (( failed > 0 )); then
+        warn "$failed job(s) falharam — verifique $LOG_FILE"
+    fi
 }
 
 # ============================================================================
@@ -883,7 +920,7 @@ install_personal_tools() {
 }
 
 # ============================================================================
-#  4. GHOST PROJECTS (GHOSTRECON + GHOSTCTF) — seleção web / wifi
+#  4. GHOST PROJECTS (GHOSTRECON + GHOSTCTF)
 # ============================================================================
 install_ghost_projects() {
     sep
@@ -982,25 +1019,6 @@ install_ghost_projects() {
         warn "Docker já instalado"
     fi
 
-    # Seleção de modo: WEB ou WIFI
-    sep
-    echo ""
-    echo -e "${BOLD}  Selecione o modo de ataque:${NC}"
-    echo -e "    ${CYAN}1)${NC} Web  — setup já completo"
-    echo -e "    ${CYAN}2)${NC} WiFi — instala ferramentas wireless"
-    echo -e "    ${CYAN}3)${NC} Ambos"
-    echo ""
-    local mode
-    while true; do
-        read -rp "$(echo -e "${YELLOW}[?]${NC} Modo [1/2/3]: ")" mode
-        case "$mode" in
-            1) info "Modo WEB — nenhuma dependência extra."; break ;;
-            2) install_wifi_tools; break ;;
-            3) install_wifi_tools; break ;;
-            *) echo "  Responda 1, 2 ou 3." ;;
-        esac
-    done
-
     sep
     log "Ghost projects configurados!"
     sep
@@ -1037,6 +1055,7 @@ show_summary() {
     info "Usuário real: $REAL_USER ($REAL_HOME)"
     info "Log completo: $LOG_FILE"
     info "Ferramentas em: $TOOLS_DIR"
+    [[ -n "$GHOST_ATTACK_MODE" ]] && info "Perfil:       $GHOST_ATTACK_MODE"
     [[ -n "$CACHE_DIR" ]] && info "Cache em: $CACHE_DIR"
     echo ""
 
@@ -1127,10 +1146,35 @@ main() {
     info "Ferramentas:  $TOOLS_DIR"
     sep
 
-    install_base
-    install_modular
-    install_personal_tools
-    install_ghost_projects
+    choose_attack_mode
+
+    case "$GHOST_ATTACK_MODE" in
+        web)
+            install_base
+            install_modular
+            install_personal_tools
+            install_ghost_projects
+            ;;
+        wifi)
+            if [[ "$MODE" != "offline" ]]; then
+                log "Atualizando repositórios..."
+                apt-get update -qq 2>>"$LOG_FILE"
+            fi
+            install_wifi_tools
+            ;;
+        both)
+            install_base
+            install_modular
+            install_personal_tools
+            install_ghost_projects
+            install_wifi_tools
+            ;;
+        *)
+            err "Perfil de instalação inválido (interno)."
+            exit 1
+            ;;
+    esac
+
     show_summary
 
     echo ""
